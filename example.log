@@ -1,0 +1,35 @@
+DEBUG:root:Logfile initialised
+DEBUG:root:Close called
+DEBUG:root:None s
+DEBUG:root:Close called
+DEBUG:root:None s
+DEBUG:root:Close called
+DEBUG:root:None s
+DEBUG:root:Close called
+DEBUG:root:None s
+DEBUG:root:Close called
+DEBUG:root:None s
+DEBUG:root:Close called
+DEBUG:root:None s
+DEBUG:root:Logfile initialised
+DEBUG:root:200000 samples requested
+DEBUG:root:wnsm_e112e5ed
+DEBUG:root:received data
+DEBUG:root:200000 samples requested
+DEBUG:root:Close called
+DEBUG:root:None s
+DEBUG:root:Logfile initialised
+DEBUG:root:200000 samples requested
+DEBUG:root:0, wnsm_472cf39c
+DEBUG:root:wnsm_472cf39c
+DEBUG:root:1, 0
+DEBUG:root:received data
+DEBUG:root:200000 samples requested
+DEBUG:root:Close called
+DEBUG:root:None s
+DEBUG:root:Logfile initialised
+DEBUG:root:Close called
+DEBUG:root:None s
+DEBUG:root:Logfile initialised
+DEBUG:root:Close called
+DEBUG:root:None s
