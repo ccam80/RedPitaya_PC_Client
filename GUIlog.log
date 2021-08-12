@@ -412,3 +412,306 @@
 08/06/2021 04:39:33 PM received data
 08/06/2021 04:39:40 PM Close called
 08/06/2021 04:39:40 PM None s
+08/12/2021 12:54:58 PM Logfile initialised
+08/12/2021 12:55:12 PM 200000 samples requested
+08/12/2021 12:55:12 PM packet sent to socket process
+08/12/2021 12:55:12 PM start_recording_ends
+08/12/2021 12:55:12 PM 0, wnsm_dc5422f5
+08/12/2021 12:55:12 PM wnsm_dc5422f5
+08/12/2021 12:55:12 PM packet sent to socket process
+08/12/2021 12:55:12 PM 1, 0
+08/12/2021 12:55:12 PM received data
+08/12/2021 12:55:20 PM packet sent to socket process
+08/12/2021 12:55:22 PM 200000 samples requested
+08/12/2021 12:55:22 PM packet sent to socket process
+08/12/2021 12:55:22 PM start_recording_ends
+08/12/2021 12:55:22 PM 0, wnsm_8d87ecbd
+08/12/2021 12:55:22 PM wnsm_8d87ecbd
+08/12/2021 12:55:22 PM packet sent to socket process
+08/12/2021 12:55:23 PM 1, 0
+08/12/2021 12:55:23 PM received data
+08/12/2021 12:55:28 PM 200000 samples requested
+08/12/2021 12:55:28 PM packet sent to socket process
+08/12/2021 12:55:28 PM start_recording_ends
+08/12/2021 12:55:28 PM 0, wnsm_b6b19219
+08/12/2021 12:55:28 PM wnsm_b6b19219
+08/12/2021 12:55:28 PM packet sent to socket process
+08/12/2021 12:55:29 PM 1, 0
+08/12/2021 12:55:29 PM received data
+08/12/2021 12:55:31 PM packet sent to socket process
+08/12/2021 12:55:37 PM 200000 samples requested
+08/12/2021 12:55:37 PM packet sent to socket process
+08/12/2021 12:55:37 PM start_recording_ends
+08/12/2021 12:55:37 PM 0, wnsm_69bb9ae4
+08/12/2021 12:55:37 PM wnsm_69bb9ae4
+08/12/2021 12:55:37 PM packet sent to socket process
+08/12/2021 12:55:38 PM 1, 0
+08/12/2021 12:55:38 PM received data
+08/12/2021 12:55:38 PM 200000 samples requested
+08/12/2021 12:55:38 PM packet sent to socket process
+08/12/2021 12:55:38 PM start_recording_ends
+08/12/2021 12:55:39 PM 0, wnsm_84fd1c20
+08/12/2021 12:55:39 PM wnsm_84fd1c20
+08/12/2021 12:55:39 PM packet sent to socket process
+08/12/2021 12:55:39 PM 1, 0
+08/12/2021 12:55:39 PM received data
+08/12/2021 12:55:49 PM 200000 samples requested
+08/12/2021 12:55:49 PM packet sent to socket process
+08/12/2021 12:55:49 PM start_recording_ends
+08/12/2021 12:56:03 PM Close called
+08/12/2021 12:56:03 PM None s
+08/12/2021 12:56:06 PM Logfile initialised
+08/12/2021 12:56:11 PM 200000 samples requested
+08/12/2021 12:56:11 PM packet sent to socket process
+08/12/2021 12:56:11 PM start_recording_ends
+08/12/2021 12:56:11 PM 0, wnsm_fa4218fc
+08/12/2021 12:56:11 PM wnsm_fa4218fc
+08/12/2021 12:56:11 PM packet sent to socket process
+08/12/2021 12:56:11 PM 1, 0
+08/12/2021 12:56:11 PM received data
+08/12/2021 12:56:21 PM Close called
+08/12/2021 12:56:21 PM None s
+08/12/2021 12:58:26 PM Logfile initialised
+08/12/2021 12:58:28 PM 200000 samples requested
+08/12/2021 12:58:28 PM packet sent to socket process
+08/12/2021 12:58:28 PM start_recording_ends
+08/12/2021 12:58:28 PM 0, wnsm_70e989ac
+08/12/2021 12:58:28 PM wnsm_70e989ac
+08/12/2021 12:58:28 PM packet sent to socket process
+08/12/2021 12:58:29 PM 1, 0
+08/12/2021 12:58:29 PM received data
+08/12/2021 02:54:57 PM Logfile initialised
+08/12/2021 02:54:57 PM Close called
+08/12/2021 02:54:57 PM None s
+08/12/2021 02:55:02 PM Close called
+08/12/2021 02:55:02 PM None s
+08/12/2021 02:55:04 PM can't invoke "update" command: application has been destroyed
+08/12/2021 02:55:07 PM Logfile initialised
+08/12/2021 02:55:10 PM 200000 samples requested
+08/12/2021 02:55:10 PM packet sent to socket process
+08/12/2021 02:55:10 PM start_recording_ends
+08/12/2021 02:55:10 PM 0, wnsm_f5451cc6
+08/12/2021 02:55:10 PM wnsm_f5451cc6
+08/12/2021 02:55:10 PM packet sent to socket process
+08/12/2021 02:55:10 PM 1, 0
+08/12/2021 02:55:10 PM received data
+08/12/2021 02:55:14 PM 200000 samples requested
+08/12/2021 02:55:14 PM packet sent to socket process
+08/12/2021 02:55:14 PM start_recording_ends
+08/12/2021 02:55:14 PM 0, wnsm_f42d8908
+08/12/2021 02:55:14 PM wnsm_f42d8908
+08/12/2021 02:55:14 PM packet sent to socket process
+08/12/2021 02:55:14 PM 1, 0
+08/12/2021 02:55:14 PM received data
+08/12/2021 02:55:21 PM 200000 samples requested
+08/12/2021 02:55:21 PM packet sent to socket process
+08/12/2021 02:55:21 PM start_recording_ends
+08/12/2021 02:55:21 PM 0, wnsm_bf863e4e
+08/12/2021 02:55:21 PM wnsm_bf863e4e
+08/12/2021 02:55:21 PM packet sent to socket process
+08/12/2021 02:55:21 PM 1, 0
+08/12/2021 02:55:21 PM received data
+08/12/2021 02:55:26 PM packet sent to socket process
+08/12/2021 02:55:27 PM packet sent to socket process
+08/12/2021 02:55:31 PM 200000 samples requested
+08/12/2021 02:55:31 PM packet sent to socket process
+08/12/2021 02:55:31 PM start_recording_ends
+08/12/2021 02:55:31 PM 0, wnsm_f722b4d4
+08/12/2021 02:55:31 PM wnsm_f722b4d4
+08/12/2021 02:55:31 PM packet sent to socket process
+08/12/2021 02:55:35 PM Close called
+08/12/2021 02:55:35 PM None s
+08/12/2021 02:55:51 PM Logfile initialised
+08/12/2021 02:55:52 PM packet sent to socket process
+08/12/2021 02:55:59 PM 200000 samples requested
+08/12/2021 02:55:59 PM packet sent to socket process
+08/12/2021 02:55:59 PM start_recording_ends
+08/12/2021 02:55:59 PM 0, wnsm_dfe1a83e
+08/12/2021 02:55:59 PM wnsm_dfe1a83e
+08/12/2021 02:55:59 PM packet sent to socket process
+08/12/2021 02:56:23 PM Close called
+08/12/2021 02:56:23 PM None s
+08/12/2021 02:57:00 PM Logfile initialised
+08/12/2021 02:57:16 PM Close called
+08/12/2021 02:57:16 PM None s
+08/12/2021 02:57:23 PM Logfile initialised
+08/12/2021 02:57:30 PM 200000 samples requested
+08/12/2021 02:57:30 PM packet sent to socket process
+08/12/2021 02:57:30 PM start_recording_ends
+08/12/2021 02:57:30 PM 0, wnsm_a97dc52f
+08/12/2021 02:57:30 PM wnsm_a97dc52f
+08/12/2021 02:57:30 PM packet sent to socket process
+08/12/2021 02:57:30 PM 1, 0
+08/12/2021 02:57:30 PM received data
+08/12/2021 02:57:42 PM packet sent to socket process
+08/12/2021 02:57:49 PM 200000 samples requested
+08/12/2021 02:57:49 PM packet sent to socket process
+08/12/2021 02:57:49 PM start_recording_ends
+08/12/2021 02:58:19 PM Close called
+08/12/2021 02:58:19 PM None s
+08/12/2021 03:19:06 PM Logfile initialised
+08/12/2021 03:19:11 PM packet sent to socket process
+08/12/2021 03:19:14 PM 200000 samples requested
+08/12/2021 03:19:14 PM packet sent to socket process
+08/12/2021 03:19:14 PM start_recording_ends
+08/12/2021 03:19:31 PM Logfile initialised
+08/12/2021 03:19:35 PM 200000 samples requested
+08/12/2021 03:19:35 PM packet sent to socket process
+08/12/2021 03:19:35 PM start_recording_ends
+08/12/2021 03:19:36 PM 0, wnsm_85adfaed
+08/12/2021 03:19:36 PM wnsm_85adfaed
+08/12/2021 03:19:36 PM packet sent to socket process
+08/12/2021 03:19:36 PM 1, 0
+08/12/2021 03:19:36 PM received data
+08/12/2021 03:20:39 PM packet sent to socket process
+08/12/2021 03:20:54 PM Close called
+08/12/2021 03:20:54 PM None s
+08/12/2021 03:21:00 PM Logfile initialised
+08/12/2021 03:21:11 PM 200000 samples requested
+08/12/2021 03:21:11 PM packet sent to socket process
+08/12/2021 03:21:11 PM start_recording_ends
+08/12/2021 03:21:11 PM 0, wnsm_a3bc0c9b
+08/12/2021 03:21:11 PM wnsm_a3bc0c9b
+08/12/2021 03:21:11 PM packet sent to socket process
+08/12/2021 03:21:11 PM 1, 0
+08/12/2021 03:21:11 PM received data
+08/12/2021 03:21:20 PM packet sent to socket process
+08/12/2021 03:21:45 PM Close called
+08/12/2021 03:21:45 PM None s
+08/12/2021 03:21:49 PM Logfile initialised
+08/12/2021 03:22:18 PM 200000 samples requested
+08/12/2021 03:22:18 PM packet sent to socket process
+08/12/2021 03:22:18 PM start_recording_ends
+08/12/2021 03:22:19 PM 0, wnsm_63c296f5
+08/12/2021 03:22:19 PM wnsm_63c296f5
+08/12/2021 03:22:19 PM packet sent to socket process
+08/12/2021 03:22:19 PM 1, 0
+08/12/2021 03:22:19 PM received data
+08/12/2021 03:22:45 PM 200000 samples requested
+08/12/2021 03:22:45 PM packet sent to socket process
+08/12/2021 03:22:45 PM start_recording_ends
+08/12/2021 04:09:50 PM Logfile initialised
+08/12/2021 04:10:30 PM packet sent to socket process
+08/12/2021 04:10:32 PM 200000 samples requested
+08/12/2021 04:10:32 PM packet sent to socket process
+08/12/2021 04:10:32 PM start_recording_ends
+08/12/2021 04:10:32 PM 0, wnsm_3a32c460
+08/12/2021 04:10:32 PM wnsm_3a32c460
+08/12/2021 04:10:32 PM packet sent to socket process
+08/12/2021 04:10:32 PM 1, 0
+08/12/2021 04:10:32 PM received data
+08/12/2021 04:10:55 PM Close called
+08/12/2021 04:10:55 PM None s
+08/12/2021 04:11:24 PM Logfile initialised
+08/12/2021 04:11:27 PM packet sent to socket process
+08/12/2021 04:11:54 PM Close called
+08/12/2021 04:11:54 PM None s
+08/12/2021 04:12:04 PM Logfile initialised
+08/12/2021 04:12:06 PM packet sent to socket process
+08/12/2021 04:12:32 PM 200000 samples requested
+08/12/2021 04:12:32 PM packet sent to socket process
+08/12/2021 04:12:32 PM start_recording_ends
+08/12/2021 04:12:33 PM 0, wnsm_021f85d6
+08/12/2021 04:12:33 PM wnsm_021f85d6
+08/12/2021 04:12:33 PM packet sent to socket process
+08/12/2021 04:12:43 PM Close called
+08/12/2021 04:12:43 PM None s
+08/12/2021 04:12:48 PM Logfile initialised
+08/12/2021 04:12:50 PM 200000 samples requested
+08/12/2021 04:12:50 PM packet sent to socket process
+08/12/2021 04:12:50 PM start_recording_ends
+08/12/2021 04:12:55 PM Close called
+08/12/2021 04:12:55 PM None s
+08/12/2021 04:13:08 PM Logfile initialised
+08/12/2021 04:13:11 PM 200000 samples requested
+08/12/2021 04:13:11 PM packet sent to socket process
+08/12/2021 04:13:11 PM start_recording_ends
+08/12/2021 04:13:11 PM 0, wnsm_c596151d
+08/12/2021 04:13:11 PM wnsm_c596151d
+08/12/2021 04:13:11 PM packet sent to socket process
+08/12/2021 04:13:11 PM 1, 0
+08/12/2021 04:13:11 PM received data
+08/12/2021 04:13:22 PM 200000 samples requested
+08/12/2021 04:13:22 PM packet sent to socket process
+08/12/2021 04:13:22 PM start_recording_ends
+08/12/2021 04:13:22 PM 0, wnsm_6816ef9b
+08/12/2021 04:13:22 PM wnsm_6816ef9b
+08/12/2021 04:13:22 PM packet sent to socket process
+08/12/2021 04:13:22 PM 1, 0
+08/12/2021 04:13:22 PM received data
+08/12/2021 04:13:23 PM packet sent to socket process
+08/12/2021 04:13:24 PM 200000 samples requested
+08/12/2021 04:13:24 PM packet sent to socket process
+08/12/2021 04:13:24 PM start_recording_ends
+08/12/2021 04:13:24 PM 0, wnsm_eb9c60f2
+08/12/2021 04:13:24 PM wnsm_eb9c60f2
+08/12/2021 04:13:24 PM packet sent to socket process
+08/12/2021 04:13:25 PM 1, 0
+08/12/2021 04:13:25 PM received data
+08/12/2021 04:13:26 PM 200000 samples requested
+08/12/2021 04:13:26 PM packet sent to socket process
+08/12/2021 04:13:26 PM start_recording_ends
+08/12/2021 04:13:26 PM 0, wnsm_42f31a64
+08/12/2021 04:13:26 PM wnsm_42f31a64
+08/12/2021 04:13:26 PM packet sent to socket process
+08/12/2021 04:13:26 PM 1, 0
+08/12/2021 04:13:26 PM received data
+08/12/2021 04:17:49 PM Close called
+08/12/2021 04:17:49 PM None s
+08/12/2021 04:19:15 PM Logfile initialised
+08/12/2021 04:19:18 PM 200000 samples requested
+08/12/2021 04:19:18 PM packet sent to socket process
+08/12/2021 04:19:18 PM start_recording_ends
+08/12/2021 04:19:18 PM 0, wnsm_f5f51a20
+08/12/2021 04:19:18 PM wnsm_f5f51a20
+08/12/2021 04:19:18 PM packet sent to socket process
+08/12/2021 04:19:19 PM 1, 0
+08/12/2021 04:19:19 PM received data
+08/12/2021 04:51:22 PM Logfile initialised
+08/12/2021 04:51:28 PM 200000 samples requested
+08/12/2021 04:51:28 PM packet sent to socket process
+08/12/2021 04:51:28 PM start_recording_ends
+08/12/2021 04:51:28 PM 0, wnsm_1ae45fca
+08/12/2021 04:51:28 PM wnsm_1ae45fca
+08/12/2021 04:51:28 PM packet sent to socket process
+08/12/2021 04:53:47 PM Close called
+08/12/2021 04:53:47 PM None s
+08/12/2021 05:03:29 PM Logfile initialised
+08/12/2021 05:03:31 PM 200000 samples requested
+08/12/2021 05:03:31 PM packet sent to socket process
+08/12/2021 05:03:31 PM start_recording_ends
+08/12/2021 05:03:32 PM 0, wnsm_5265fcf0
+08/12/2021 05:03:32 PM wnsm_5265fcf0
+08/12/2021 05:03:32 PM packet sent to socket process
+08/12/2021 05:03:32 PM 1, 0
+08/12/2021 05:03:32 PM received data
+08/12/2021 05:03:37 PM Close called
+08/12/2021 05:03:37 PM None s
+08/12/2021 05:04:40 PM Logfile initialised
+08/12/2021 05:04:42 PM packet sent to socket process
+08/12/2021 05:04:44 PM 200000 samples requested
+08/12/2021 05:04:44 PM packet sent to socket process
+08/12/2021 05:04:44 PM start_recording_ends
+08/12/2021 05:04:44 PM 0, wnsm_44a9feb5
+08/12/2021 05:04:44 PM wnsm_44a9feb5
+08/12/2021 05:04:44 PM packet sent to socket process
+08/12/2021 05:05:02 PM Close called
+08/12/2021 05:05:02 PM None s
+08/12/2021 05:05:04 PM Logfile initialised
+08/12/2021 05:05:13 PM 200000 samples requested
+08/12/2021 05:05:13 PM packet sent to socket process
+08/12/2021 05:05:13 PM start_recording_ends
+08/12/2021 05:05:13 PM 0, wnsm_686904bc
+08/12/2021 05:05:13 PM wnsm_686904bc
+08/12/2021 05:05:13 PM packet sent to socket process
+08/12/2021 05:05:14 PM 1, 0
+08/12/2021 05:05:14 PM received data
+08/12/2021 05:05:16 PM packet sent to socket process
+08/12/2021 05:05:19 PM 200000 samples requested
+08/12/2021 05:05:19 PM packet sent to socket process
+08/12/2021 05:05:19 PM start_recording_ends
+08/12/2021 05:05:19 PM 0, wnsm_6923cf61
+08/12/2021 05:05:19 PM wnsm_6923cf61
+08/12/2021 05:05:19 PM packet sent to socket process
+08/12/2021 05:05:19 PM 1, 0
+08/12/2021 05:05:19 PM received data

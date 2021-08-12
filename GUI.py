@@ -446,8 +446,8 @@ class GUI:
                 temp = np.ndarray((self.num_samples), dtype=np.int16, buffer=self.shared_mem.buf)
                  #copy into kept array
                 recording = np.copy(temp)
-                self.input_recording = recording[1::2]
-                self.output_recording = recording[0::2]
+                self.output_recording = recording[1::2]
+                self.input_recording = recording[0::2]
                 del temp
                 logging.debug("received data")
                 self.active_f.configure(bg='red')
