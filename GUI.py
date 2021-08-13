@@ -101,6 +101,89 @@ def time_this(func):
         return r
     return wrapper
 
+class NumpyFloatToFixConverter(object):
+    """*** IMPORTED FROM RIG LIBRARY, RIG NOT AVAILABLE THROUGH CONDA CHANNELS***
+    A callable which converts Numpy arrays of floats to fixed point arrays.
+    General usage is to create a new converter and then call this on arrays of
+    values.  The `dtype` of the returned array is determined from the
+    parameters passed.  For example::
+        >>> f = NumpyFloatToFixConverter(signed=True, n_bits=8, n_frac=4)
+    Will convert floating point values to 8-bit signed representations with 4
+    fractional bits.  Consequently the returned `dtype` will be `int8`::
+        >>> import numpy as np
+        >>> vals = np.array([0.0, 0.25, 0.5, -0.5, -0.25])
+        >>> f(vals)
+        array([ 0,  4,  8, -8, -4], dtype=int8)
+    The conversion is saturating::
+        >>> f(np.array([15.0, 16.0, -16.0, -17.0]))
+        array([ 127,  127, -128, -128], dtype=int8)
+    The byte representation can be expected to match that for using
+    `float_to_fix`::
+        >>> d = f(np.array([-16.0]))
+        >>> import struct
+        >>> g = float_to_fix(True, 8, 4)
+        >>> val = g(-16.0)
+        >>> struct.pack('B', val) == bytes(d.data)
+        True
+    An exception is raised if the number of bits specified cannot be
+    represented using a whole `dtype`::
+        >>> NumpyFloatToFixConverter(True, 12, 0)
+        Traceback (most recent call last):
+        ValueError: n_bits: 12: Must be 8, 16, 32 or 64.
+    """
+    dtypes = {
+        (False, 8): np.uint8,
+        (True, 8): np.int8,
+        (False, 16): np.uint16,
+        (True, 16): np.int16,
+        (False, 32): np.uint32,
+        (True, 32): np.int32,
+        (False, 64): np.uint64,
+        (True, 64): np.int64,
+    }
+
+    def __init__(self, signed, n_bits, n_frac):
+        """Create a new converter from floats into ints.
+        Parameters
+        ----------
+        signed : bool
+            Indicates that the converted values are to be signed or otherwise.
+        n_bits : int
+            The number of bits each value will use overall (must be 8, 16, 32,
+            or 64).
+        n_frac : int
+            The number of fractional bits.
+        """
+        # Check the number of bits is sane
+        if n_bits not in [8, 16, 32, 64]:
+            raise ValueError(
+                "n_bits: {}: Must be 8, 16, 32 or 64.".format(n_bits))
+
+        # Determine the maximum and minimum values after conversion
+        if signed:
+            self.max_value = 2**(n_bits - 1) - 1
+            self.min_value = -self.max_value - 1
+        else:
+            self.max_value = 2**n_bits - 1
+            self.min_value = 0
+
+        # Store the settings
+        self.bytes_per_element = n_bits / 8
+        self.dtype = self.dtypes[(signed, n_bits)]
+        self.n_frac = n_frac
+
+    def __call__(self, values):
+        """Convert the given NumPy array of values into fixed point format."""
+        # Scale and cast to appropriate int types
+        vals = values * 2.0 ** self.n_frac
+
+        # Saturate the values
+        vals = np.clip(vals, self.min_value, self.max_value)
+
+        # **NOTE** for some reason just casting resulted in shape
+        # being zeroed on some indeterminate selection of OSes,
+        # architectures, Python and Numpy versions"
+        return np.array(vals, copy=True, dtype=self.dtype)
 
 class GUI:
     """
@@ -132,6 +215,9 @@ class GUI:
         self.output_recording = np.zeros(0, dtype=np.int16)
         # Plotting guide lines
         self.max_time_vec = np.linspace(0, 7.2e6, 10)
+        
+        self.dt = np.dtype([('in', np.int16), ('out', np.uint16)])
+        self.q16_16 = NumpyFloatToFixConverter(signed=True, n_bits=32, n_frac=16)
 
         # Initialise Git storage
         self.git_storage = Sync()
@@ -256,6 +342,8 @@ class GUI:
         self.start_b = tk.Button(self.control_f, text='Start', command=self.start_recording,
                                  font=buttonFont, highlightthickness=5, borderwidth=5)
         self.active_f = tk.Frame(self.control_f, width=50, height=50, bg='red')
+        self.kick_b = tk.Button(self.control_f, text="Kick",
+                                         command=self.kick, font=buttonFont, highlightthickness=5, borderwidth=5)
         
         self.graph_close_b = tk.Button(self.control_f, text="Close", command=self.close_graph,
                                        fg='red', font=buttonFont, highlightthickness=5, borderwidth=5)
@@ -277,6 +365,7 @@ class GUI:
         self.start_b.grid(row=7, column=1, sticky='nsew')
         self.graph_close_b.grid(row=8, column=1, sticky='nsew')
         self.active_f.grid(row=8, column=0, sticky='nsew')
+        self.kick_b.grid(row=9, column=0, columnspan=2, stick='nsew')
         self.set_cell_weights_to_1(self.control_f)
 
         # animations
@@ -350,6 +439,12 @@ class GUI:
         self.send_config_to_data("record_request")
         logging.debug("start_recording_ends")
         # self.save_data()
+        
+    def kick(self):
+        self.data.close()
+        self.data = sp.dataThread()
+        self.stop_trial()
+        self.data.start_Process()
 
     def stop_trial(self):
         """ Turns red light green and saves the current trial"""
@@ -384,23 +479,11 @@ class GUI:
         self.FPGA_config["ch1_ampl"] = self.ampl_var.get()
         self.FPGA_config["CIC Divider"] = int(np.floor(125000000 / 
                                               self.sampling_freq_var.get()))
-        a_val = self.a_var.get()
-        a_split = a_val.split(".")
+        a_val = np.float32(self.a_var.get())
+        a_fixed = self.q16_16(a_val)
         
-        if len(a_split) == 1:
-            integer = np.int16(a_split)
-            mantissa = 0
-            a_good = True
-        elif len(a_split) == 2:
-            integer = np.int16(a_split[0])
-            mantissa = np.int16(a_split[1])
-            a_good = True
-        else:
-            self.a_var.set("Bad number!")
-            a_good=False
-        
-        if a_good:
-            self.FPGA_config["a_const"] = (integer << 16 | mantissa)
+  
+        self.FPGA_config["a_const"] = a_fixed
         self.FPGA_config["b_const"] = self.b_var.get()
         self.send_config_to_data("config_change")
         
@@ -416,10 +499,10 @@ class GUI:
             packet = [0, self.FPGA_config, True, [False,0]]
         
         elif event == "trigger":
-            packet = [1, self.FPGA_config, False, [False,self.num_samples * 2]]
+            packet = [1, self.FPGA_config, False, [False,self.num_samples * 4]]
             
         elif event == "record_request":
-            packet = [0, self.FPGA_config, False, [True, self.num_samples * 2]]
+            packet = [0, self.FPGA_config, False, [True, self.num_samples * 4]]
             logging.debug("{} samples requested".format(self.num_samples))
         
         try:
@@ -437,17 +520,17 @@ class GUI:
             logging.debug ("{}, {}".format(data_ready, memory_name))
             if memory_name:
                 logging.debug(memory_name)
-                self.shared_mem = SharedMemory(name=memory_name, size=self.num_samples * 2, create=False)
+                self.shared_mem = SharedMemory(name=memory_name, size=self.num_samples * 4, create=False)
                 self.send_config_to_data("trigger")
                 return True
             
             elif data_ready:
                 #create array with view of shared mem
-                temp = np.ndarray((self.num_samples), dtype=np.int16, buffer=self.shared_mem.buf)
+                temp = np.ndarray((self.num_samples), dtype=self.dt, buffer=self.shared_mem.buf)
                  #copy into kept array
                 recording = np.copy(temp)
-                self.output_recording = recording[1::2]
-                self.input_recording = recording[0::2]
+                self.input_recording = recording['in']
+                self.output_recording = -recording['out']
                 del temp
                 logging.debug("received data")
                 self.active_f.configure(bg='red')

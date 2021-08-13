@@ -39,7 +39,7 @@ class dataThread:
         self.reopen_serial = False
 
     def send_settings_to_FPGA(self):
-       format_ = "HIIHH"
+       format_ = "HIiHh"
        logging.debug(format_)
        logging.debug(self.config)
        config_send = struct.pack(format_,                
@@ -50,6 +50,9 @@ class dataThread:
                                  self.config["b_const"])
        logging.debug(self.config)
        self.s.send(config_send)
+       self.s.close()
+       sleep(0.001)
+       self.reopen_serial = True
        logging.debug("FPGA settings sent")
        
 
@@ -65,8 +68,8 @@ class dataThread:
         """
         try:
             self.trigger, self.config, self.config_change, [self.record_request, self.bytes_to_receive] = self.GUI_to_data_Queue.get(block=False)
-            # logging.debug("message received")
-            # logging.debug(self.record_request)
+            logging.debug("message received")
+            logging.debug(self.config)
             return True
         except Exception as e:
             # logging.debug(str(e))
