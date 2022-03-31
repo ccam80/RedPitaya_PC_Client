@@ -157,7 +157,7 @@ class GUI:
         self.max_time_vec = np.linspace(0, 7.2e6, 10)
         
         # Data formats
-        self.dt = np.dtype([('in', np.uint16), ('out', np.uint16)])
+        self.dt = np.dtype([('in', '>i2'), ('out', '>i2')])
         self.q16_16 = NumpyFloatToFixConverter(signed=True, n_bits=32, n_frac=16)
      
         # Create data processing thread
@@ -485,14 +485,16 @@ class GUI:
                 logging.debug("recording copied")
                 
                 # This triple-shift operation may not be required, can optimise out if required.
-                self.input_temp_unshifted = np.uint16(np.bitwise_and(recording['in'], np.uint16(mask)))
-                self.output_temp_unshifted = np.uint16(np.bitwise_and(recording['out'], np.uint16(mask)))
+                # self.input_temp_unshifted = np.uint16(np.bitwise_and(recording['in'], np.uint16(mask)))
+                # self.output_temp_unshifted = np.uint16(np.bitwise_and(recording['out'], np.uint16(mask)))
                 
-                self.input_temp = np.uint16(np.left_shift(recording['in'], np.uint16(2)))
-                self.output_temp = np.uint16(np.left_shift(recording['out'], np.uint16(2)))
+                # self.input_temp = np.uint16(np.left_shift(recording['in'], np.uint16(2)))
+                # self.output_temp = np.uint16(np.left_shift(recording['out'], np.uint16(2)))
                 
-                self.input_recording = (np.int16(np.right_shift(self.input_temp, np.uint16(2))).byteswap() - self.adc_0) / self.adc1_scale
-                self.output_recording = np.int16(np.right_shift(self.output_temp, np.int16(2))).byteswap()
+                # self.input_recording = (np.int16(np.right_shift(self.input_temp, np.int16(2))) - self.adc_0) / self.adc_scale
+                # self.output_recording = np.int16(np.right_shift(self.output_temp, np.int16(2)))
+                self.input_recording = (recording['in'] - self.adc_0) / self.adc_scale
+                self.output_recording = recording['out']
                 
                 logging.debug("recordings broken up")
                 

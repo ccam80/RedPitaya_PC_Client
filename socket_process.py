@@ -176,6 +176,8 @@ class dataThread:
                     logging.debug("trigger received")
                     logging.debug("{} to receive".format(self.bytes_to_receive))
                     self.trigger = False
+                    self.send_settings_to_FPGA()
+
                 
                 else:
                     sleep(0.1)
@@ -184,6 +186,7 @@ class dataThread:
             if self.isRecord:
                 
                 logging.debug("isRecord triggered")
+                self.reopen_socket()
                 
                 #Create view of shared memory buffer
                 view = memoryview(self.shared_mem.buf)
