@@ -1263,3 +1263,42 @@
 03/25/2022 05:06:22 PM {'trigger': 0, 'state': 1, 'CIC_divider': 1250, 'fixed_freq': 0, 'start_freq': 1, 'stop_freq': 100, 'a_const': array(0), 'interval': 146989, 'b_const': 0, 'CIC_Divider': 1250}
 03/25/2022 05:06:22 PM FPGA settings sent
 03/25/2022 05:06:22 PM Trigger off sent
+03/31/2022 05:30:41 PM Logfile initialised
+03/31/2022 05:30:41 PM socket connected
+03/31/2022 05:30:50 PM message received
+03/31/2022 05:30:50 PM {'trigger': 0, 'state': 1, 'CIC_divider': 1250, 'fixed_freq': 0, 'start_freq': 1, 'stop_freq': 110, 'a_const': array(0), 'interval': 1335, 'b_const': 0, 'CIC_Divider': 1250}
+03/31/2022 05:30:50 PM FPGA settings sent
+03/31/2022 05:31:03 PM Logfile initialised
+03/31/2022 05:31:03 PM socket connected
+03/31/2022 05:31:06 PM message received
+03/31/2022 05:31:06 PM {'trigger': 0, 'state': 1, 'CIC_divider': 1250, 'fixed_freq': 0, 'start_freq': 1, 'stop_freq': 110, 'a_const': array(0), 'interval': 1335, 'b_const': 0, 'CIC_Divider': 1250}
+03/31/2022 05:31:06 PM FPGA settings sent
+03/31/2022 05:37:24 PM Logfile initialised
+03/31/2022 05:37:24 PM socket connected
+03/31/2022 05:37:34 PM message received
+03/31/2022 05:37:34 PM {'trigger': 0, 'state': 1, 'CIC_divider': 1250, 'fixed_freq': 0, 'start_freq': 1, 'stop_freq': 100, 'a_const': array(0), 'interval': 1469, 'b_const': 0, 'CIC_Divider': 1250}
+03/31/2022 05:37:34 PM FPGA settings sent
+03/31/2022 05:40:13 PM Logfile initialised
+03/31/2022 05:40:13 PM socket connected
+03/31/2022 05:40:20 PM message received
+03/31/2022 05:40:20 PM {'trigger': 0, 'state': 1, 'CIC_divider': 1250, 'fixed_freq': 0, 'start_freq': 1, 'stop_freq': 100, 'a_const': array(0), 'interval': 146989, 'b_const': 0, 'CIC_Divider': 1250}
+03/31/2022 05:40:20 PM FPGA settings sent
+03/31/2022 05:40:24 PM message received
+03/31/2022 05:40:24 PM {'trigger': 0, 'state': 1, 'CIC_divider': 1250, 'fixed_freq': 0, 'start_freq': 1, 'stop_freq': 100, 'a_const': array(0), 'interval': 1469, 'b_const': 0, 'CIC_Divider': 1250}
+03/31/2022 05:40:24 PM FPGA settings sent
+03/31/2022 05:40:25 PM message received
+03/31/2022 05:40:25 PM {'trigger': 0, 'state': 1, 'CIC_divider': 1250, 'fixed_freq': 0, 'start_freq': 1, 'stop_freq': 100, 'a_const': array(0), 'interval': 1469, 'b_const': 0, 'CIC_Divider': 1250}
+03/31/2022 05:40:25 PM FPGA settings sent
+03/31/2022 05:40:26 PM message received
+03/31/2022 05:40:26 PM request received
+03/31/2022 05:40:26 PM wnsm_fd314701
+03/31/2022 05:40:26 PM inform GUI executed
+03/31/2022 05:40:26 PM message received
+03/31/2022 05:40:26 PM {'trigger': 1, 'state': 1, 'CIC_divider': 1250, 'fixed_freq': 0, 'start_freq': 1, 'stop_freq': 100, 'a_const': array(0), 'interval': 1469, 'b_const': 0, 'CIC_Divider': 1250}
+03/31/2022 05:40:26 PM FPGA settings sent
+03/31/2022 05:40:26 PM trigger received
+03/31/2022 05:40:26 PM 4000 to receive
+03/31/2022 05:40:26 PM isRecord triggered
+03/31/2022 05:40:26 PM memory view created
+03/31/2022 05:40:26 PM 4000 to receive
+03/31/2022 05:40:26 PM Awaiting trigger confirmation from server on MCU

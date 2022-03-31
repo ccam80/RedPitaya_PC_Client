@@ -44,7 +44,7 @@ class dataThread:
         self.port = port
         self.ip = ip
         self.s = None
-        self.reopen_socket = False
+        self.reopen_socket_flag = False
         
         
     def send_settings_to_FPGA(self):
@@ -73,7 +73,7 @@ class dataThread:
         # Close and reopen socket
         self.s.close()
         sleep(0.001)
-        self.reopen_socket = True
+        self.reopen_socket_flag = True
         logging.debug("FPGA settings sent")
        
 
@@ -141,7 +141,7 @@ class dataThread:
         
         while(True):
             
-            if self.reopen_socket:
+            if self.reopen_socket_flag:
                 self.reopen_socket()
 
             # Check for instructions and dispatch accordingly
@@ -230,7 +230,7 @@ class dataThread:
         """Open same socket again. Used for regular reset"""
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
         self.s.connect((self.ip, self.port))
-        self.reopen_socket=False
+        self.reopen_socket_flag=False
 
     def close(self):
         """End process and close socket when GUI is closed"""

@@ -267,3 +267,55 @@
 03/31/2022 01:39:00 PM Window Created
 03/31/2022 01:42:28 PM Close called
 03/31/2022 01:42:28 PM None s
+03/31/2022 05:07:09 PM Logfile initialised
+03/31/2022 05:07:09 PM MPLFs created
+03/31/2022 05:07:10 PM Window Created
+03/31/2022 05:07:25 PM packet sent to socket process
+03/31/2022 05:07:26 PM packet sent to socket process
+03/31/2022 05:07:27 PM packet sent to socket process
+03/31/2022 05:07:28 PM 1000 samples requested
+03/31/2022 05:07:28 PM packet sent to socket process
+03/31/2022 05:07:28 PM start_recording_ends
+03/31/2022 05:07:38 PM Close called
+03/31/2022 05:07:38 PM None s
+03/31/2022 05:10:58 PM Close called
+03/31/2022 05:10:58 PM None s
+03/31/2022 05:30:40 PM Logfile initialised
+03/31/2022 05:30:40 PM MPLFs created
+03/31/2022 05:30:40 PM Window Created
+03/31/2022 05:30:50 PM packet sent to socket process
+03/31/2022 05:30:50 PM packet sent to socket process
+03/31/2022 05:30:52 PM packet sent to socket process
+03/31/2022 05:30:53 PM 1000 samples requested
+03/31/2022 05:30:53 PM packet sent to socket process
+03/31/2022 05:30:53 PM start_recording_ends
+03/31/2022 05:31:02 PM Close called
+03/31/2022 05:31:02 PM None s
+03/31/2022 05:31:06 PM packet sent to socket process
+03/31/2022 05:31:11 PM 1000 samples requested
+03/31/2022 05:31:11 PM packet sent to socket process
+03/31/2022 05:31:11 PM start_recording_ends
+03/31/2022 05:35:44 PM can't invoke "update" command: application has been destroyed
+03/31/2022 05:37:24 PM Logfile initialised
+03/31/2022 05:37:24 PM MPLFs created
+03/31/2022 05:37:24 PM Window Created
+03/31/2022 05:37:34 PM packet sent to socket process
+03/31/2022 05:37:40 PM 1000 samples requested
+03/31/2022 05:37:40 PM packet sent to socket process
+03/31/2022 05:37:40 PM start_recording_ends
+03/31/2022 05:40:10 PM Close called
+03/31/2022 05:40:10 PM None s
+03/31/2022 05:40:12 PM Logfile initialised
+03/31/2022 05:40:12 PM MPLFs created
+03/31/2022 05:40:12 PM Window Created
+03/31/2022 05:40:20 PM packet sent to socket process
+03/31/2022 05:40:24 PM packet sent to socket process
+03/31/2022 05:40:25 PM packet sent to socket process
+03/31/2022 05:40:26 PM 1000 samples requested
+03/31/2022 05:40:26 PM packet sent to socket process
+03/31/2022 05:40:26 PM start_recording_ends
+03/31/2022 05:40:26 PM 0, wnsm_fd314701
+03/31/2022 05:40:26 PM wnsm_fd314701
+03/31/2022 05:40:26 PM packet sent to socket process
+03/31/2022 05:40:38 PM Close called
+03/31/2022 05:40:38 PM None s
