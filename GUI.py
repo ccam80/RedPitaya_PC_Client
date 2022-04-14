@@ -157,7 +157,7 @@ class GUI:
         self.max_time_vec = np.linspace(0, 7.2e6, 10)
         
         # Data formats
-        self.dt = np.dtype([('in', '>i2'), ('out', '>i2')])
+        self.dt = np.dtype([('in', '<i2'), ('out', '<i2')])
         self.q16_16 = NumpyFloatToFixConverter(signed=True, n_bits=32, n_frac=16)
      
         # Create data processing thread

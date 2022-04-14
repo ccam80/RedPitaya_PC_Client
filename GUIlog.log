@@ -732,3 +732,983 @@
 04/01/2022 12:29:49 PM received data
 04/01/2022 12:30:24 PM Close called
 04/01/2022 12:30:24 PM None s
+04/08/2022 02:40:30 PM Logfile initialised
+04/08/2022 02:40:30 PM MPLFs created
+04/08/2022 02:40:30 PM Window Created
+04/08/2022 02:44:36 PM packet sent to socket process
+04/08/2022 02:44:36 PM packet sent to socket process
+04/08/2022 02:44:37 PM packet sent to socket process
+04/08/2022 02:44:46 PM 1000 samples requested
+04/08/2022 02:44:46 PM packet sent to socket process
+04/08/2022 02:44:46 PM start_recording_ends
+04/08/2022 02:44:46 PM 0, wnsm_983d6e13
+04/08/2022 02:44:46 PM wnsm_983d6e13
+04/08/2022 02:44:46 PM packet sent to socket process
+04/08/2022 02:44:58 PM Close called
+04/08/2022 02:44:58 PM None s
+04/08/2022 02:45:02 PM Logfile initialised
+04/08/2022 02:45:02 PM MPLFs created
+04/08/2022 02:45:02 PM Window Created
+04/08/2022 02:45:14 PM packet sent to socket process
+04/08/2022 02:45:16 PM 1000 samples requested
+04/08/2022 02:45:16 PM packet sent to socket process
+04/08/2022 02:45:16 PM start_recording_ends
+04/08/2022 02:45:16 PM 0, wnsm_14087c9e
+04/08/2022 02:45:16 PM wnsm_14087c9e
+04/08/2022 02:45:16 PM packet sent to socket process
+04/08/2022 02:45:21 PM Close called
+04/08/2022 02:45:21 PM None s
+04/08/2022 02:46:39 PM Logfile initialised
+04/08/2022 02:46:39 PM MPLFs created
+04/08/2022 02:46:39 PM Window Created
+04/08/2022 02:46:58 PM packet sent to socket process
+04/08/2022 02:47:12 PM 1000 samples requested
+04/08/2022 02:47:12 PM packet sent to socket process
+04/08/2022 02:47:12 PM start_recording_ends
+04/08/2022 02:47:12 PM 0, wnsm_10e7c977
+04/08/2022 02:47:12 PM wnsm_10e7c977
+04/08/2022 02:47:12 PM packet sent to socket process
+04/08/2022 02:47:14 PM 1, 0
+04/08/2022 02:47:14 PM data_ready recognised
+04/08/2022 02:47:14 PM recording copied
+04/08/2022 02:47:14 PM recordings broken up
+04/08/2022 02:47:14 PM received data
+04/08/2022 02:54:17 PM Close called
+04/08/2022 02:54:17 PM None s
+04/08/2022 02:55:03 PM Logfile initialised
+04/08/2022 02:55:03 PM MPLFs created
+04/08/2022 02:55:03 PM Window Created
+04/08/2022 02:55:14 PM packet sent to socket process
+04/08/2022 02:55:16 PM 1000 samples requested
+04/08/2022 02:55:16 PM packet sent to socket process
+04/08/2022 02:55:16 PM start_recording_ends
+04/08/2022 02:55:16 PM 0, wnsm_af947e8a
+04/08/2022 02:55:16 PM wnsm_af947e8a
+04/08/2022 02:55:16 PM packet sent to socket process
+04/08/2022 02:55:18 PM 1, 0
+04/08/2022 02:55:18 PM data_ready recognised
+04/08/2022 02:55:18 PM recording copied
+04/08/2022 02:55:18 PM recordings broken up
+04/08/2022 02:55:18 PM received data
+04/08/2022 02:55:25 PM 1000 samples requested
+04/08/2022 02:55:25 PM packet sent to socket process
+04/08/2022 02:55:25 PM start_recording_ends
+04/08/2022 02:55:25 PM 0, wnsm_8fee78cf
+04/08/2022 02:55:25 PM wnsm_8fee78cf
+04/08/2022 02:55:25 PM packet sent to socket process
+04/08/2022 02:55:27 PM 1, 0
+04/08/2022 02:55:27 PM data_ready recognised
+04/08/2022 02:55:27 PM recording copied
+04/08/2022 02:55:27 PM recordings broken up
+04/08/2022 02:55:27 PM received data
+04/08/2022 02:55:53 PM packet sent to socket process
+04/08/2022 02:55:54 PM 1000 samples requested
+04/08/2022 02:55:54 PM packet sent to socket process
+04/08/2022 02:55:54 PM start_recording_ends
+04/08/2022 02:55:55 PM 0, wnsm_820c6cf3
+04/08/2022 02:55:55 PM wnsm_820c6cf3
+04/08/2022 02:55:55 PM packet sent to socket process
+04/08/2022 02:55:56 PM 1, 0
+04/08/2022 02:55:56 PM data_ready recognised
+04/08/2022 02:55:56 PM recording copied
+04/08/2022 02:55:56 PM recordings broken up
+04/08/2022 02:55:56 PM received data
+04/08/2022 02:55:58 PM 1000 samples requested
+04/08/2022 02:55:58 PM packet sent to socket process
+04/08/2022 02:55:58 PM start_recording_ends
+04/08/2022 02:55:58 PM 0, wnsm_6c41724d
+04/08/2022 02:55:58 PM wnsm_6c41724d
+04/08/2022 02:55:58 PM packet sent to socket process
+04/08/2022 02:56:00 PM 1, 0
+04/08/2022 02:56:00 PM data_ready recognised
+04/08/2022 02:56:00 PM recording copied
+04/08/2022 02:56:00 PM recordings broken up
+04/08/2022 02:56:00 PM received data
+04/08/2022 02:56:02 PM 1000 samples requested
+04/08/2022 02:56:02 PM packet sent to socket process
+04/08/2022 02:56:02 PM start_recording_ends
+04/08/2022 02:56:02 PM 0, wnsm_d8be85dc
+04/08/2022 02:56:02 PM wnsm_d8be85dc
+04/08/2022 02:56:02 PM packet sent to socket process
+04/08/2022 02:56:04 PM 1, 0
+04/08/2022 02:56:04 PM data_ready recognised
+04/08/2022 02:56:04 PM recording copied
+04/08/2022 02:56:04 PM recordings broken up
+04/08/2022 02:56:04 PM received data
+04/08/2022 02:56:08 PM 100000 samples requested
+04/08/2022 02:56:08 PM packet sent to socket process
+04/08/2022 02:56:08 PM start_recording_ends
+04/08/2022 02:56:08 PM 0, wnsm_e76487dc
+04/08/2022 02:56:08 PM wnsm_e76487dc
+04/08/2022 02:56:08 PM packet sent to socket process
+04/08/2022 02:56:11 PM 1, 0
+04/08/2022 02:56:11 PM data_ready recognised
+04/08/2022 02:56:11 PM recording copied
+04/08/2022 02:56:11 PM recordings broken up
+04/08/2022 02:56:11 PM received data
+04/08/2022 02:56:26 PM Close called
+04/08/2022 02:56:26 PM None s
+04/14/2022 09:44:16 AM Logfile initialised
+04/14/2022 09:44:16 AM MPLFs created
+04/14/2022 09:44:16 AM Window Created
+04/14/2022 09:44:31 AM packet sent to socket process
+04/14/2022 09:44:33 AM 1000 samples requested
+04/14/2022 09:44:33 AM packet sent to socket process
+04/14/2022 09:44:33 AM start_recording_ends
+04/14/2022 09:44:34 AM 0, wnsm_f88e997d
+04/14/2022 09:44:34 AM wnsm_f88e997d
+04/14/2022 09:44:34 AM packet sent to socket process
+04/14/2022 09:44:36 AM 1, 0
+04/14/2022 09:44:36 AM data_ready recognised
+04/14/2022 09:44:36 AM recording copied
+04/14/2022 09:44:36 AM recordings broken up
+04/14/2022 09:44:36 AM received data
+04/14/2022 09:44:44 AM 10000 samples requested
+04/14/2022 09:44:44 AM packet sent to socket process
+04/14/2022 09:44:44 AM start_recording_ends
+04/14/2022 09:44:44 AM 0, wnsm_9fa8a08d
+04/14/2022 09:44:44 AM wnsm_9fa8a08d
+04/14/2022 09:44:44 AM packet sent to socket process
+04/14/2022 09:44:46 AM 1, 0
+04/14/2022 09:44:46 AM data_ready recognised
+04/14/2022 09:44:46 AM recording copied
+04/14/2022 09:44:46 AM recordings broken up
+04/14/2022 09:44:46 AM received data
+04/14/2022 09:45:07 AM packet sent to socket process
+04/14/2022 09:45:09 AM 1000 samples requested
+04/14/2022 09:45:09 AM packet sent to socket process
+04/14/2022 09:45:09 AM start_recording_ends
+04/14/2022 09:45:09 AM 0, wnsm_133480b8
+04/14/2022 09:45:09 AM wnsm_133480b8
+04/14/2022 09:45:09 AM packet sent to socket process
+04/14/2022 09:45:11 AM 1, 0
+04/14/2022 09:45:11 AM data_ready recognised
+04/14/2022 09:45:11 AM recording copied
+04/14/2022 09:45:11 AM recordings broken up
+04/14/2022 09:45:11 AM received data
+04/14/2022 09:45:13 AM 1000 samples requested
+04/14/2022 09:45:13 AM packet sent to socket process
+04/14/2022 09:45:13 AM start_recording_ends
+04/14/2022 09:45:13 AM 0, wnsm_0c3e7dd4
+04/14/2022 09:45:13 AM wnsm_0c3e7dd4
+04/14/2022 09:45:13 AM packet sent to socket process
+04/14/2022 09:45:15 AM 1, 0
+04/14/2022 09:45:15 AM data_ready recognised
+04/14/2022 09:45:15 AM recording copied
+04/14/2022 09:45:15 AM recordings broken up
+04/14/2022 09:45:15 AM received data
+04/14/2022 09:45:17 AM 1000 samples requested
+04/14/2022 09:45:17 AM packet sent to socket process
+04/14/2022 09:45:17 AM start_recording_ends
+04/14/2022 09:45:17 AM 0, wnsm_cd9e034d
+04/14/2022 09:45:17 AM wnsm_cd9e034d
+04/14/2022 09:45:17 AM packet sent to socket process
+04/14/2022 09:45:18 AM 1, 0
+04/14/2022 09:45:18 AM data_ready recognised
+04/14/2022 09:45:18 AM recording copied
+04/14/2022 09:45:18 AM recordings broken up
+04/14/2022 09:45:18 AM received data
+04/14/2022 09:45:21 AM 1000 samples requested
+04/14/2022 09:45:21 AM packet sent to socket process
+04/14/2022 09:45:21 AM start_recording_ends
+04/14/2022 09:45:21 AM 0, wnsm_90e33d54
+04/14/2022 09:45:21 AM wnsm_90e33d54
+04/14/2022 09:45:21 AM packet sent to socket process
+04/14/2022 09:45:23 AM 1, 0
+04/14/2022 09:45:23 AM data_ready recognised
+04/14/2022 09:45:23 AM recording copied
+04/14/2022 09:45:23 AM recordings broken up
+04/14/2022 09:45:23 AM received data
+04/14/2022 09:45:35 AM packet sent to socket process
+04/14/2022 09:45:48 AM Close called
+04/14/2022 09:45:48 AM None s
+04/14/2022 09:45:50 AM packet sent to socket process
+04/14/2022 09:45:55 AM Close called
+04/14/2022 09:45:55 AM None s
+04/14/2022 09:46:08 AM Logfile initialised
+04/14/2022 09:46:09 AM MPLFs created
+04/14/2022 09:46:09 AM Window Created
+04/14/2022 09:46:20 AM packet sent to socket process
+04/14/2022 09:46:21 AM 1000 samples requested
+04/14/2022 09:46:21 AM packet sent to socket process
+04/14/2022 09:46:21 AM start_recording_ends
+04/14/2022 09:46:21 AM 0, wnsm_d0123fb4
+04/14/2022 09:46:21 AM wnsm_d0123fb4
+04/14/2022 09:46:21 AM packet sent to socket process
+04/14/2022 09:46:23 AM 1, 0
+04/14/2022 09:46:23 AM data_ready recognised
+04/14/2022 09:46:23 AM recording copied
+04/14/2022 09:46:23 AM recordings broken up
+04/14/2022 09:46:23 AM received data
+04/14/2022 09:46:31 AM 1000 samples requested
+04/14/2022 09:46:31 AM packet sent to socket process
+04/14/2022 09:46:31 AM start_recording_ends
+04/14/2022 09:46:31 AM 0, wnsm_6f3a18d8
+04/14/2022 09:46:31 AM wnsm_6f3a18d8
+04/14/2022 09:46:31 AM packet sent to socket process
+04/14/2022 09:46:33 AM 1, 0
+04/14/2022 09:46:33 AM data_ready recognised
+04/14/2022 09:46:33 AM recording copied
+04/14/2022 09:46:33 AM recordings broken up
+04/14/2022 09:46:33 AM received data
+04/14/2022 09:46:48 AM Close called
+04/14/2022 09:46:48 AM None s
+04/14/2022 11:30:25 AM Logfile initialised
+04/14/2022 11:30:25 AM MPLFs created
+04/14/2022 11:30:25 AM Window Created
+04/14/2022 11:30:40 AM packet sent to socket process
+04/14/2022 11:30:41 AM packet sent to socket process
+04/14/2022 11:30:42 AM packet sent to socket process
+04/14/2022 11:30:47 AM 1000 samples requested
+04/14/2022 11:30:47 AM packet sent to socket process
+04/14/2022 11:30:47 AM start_recording_ends
+04/14/2022 11:30:47 AM 0, wnsm_7c87ad88
+04/14/2022 11:30:47 AM wnsm_7c87ad88
+04/14/2022 11:30:47 AM packet sent to socket process
+04/14/2022 11:30:49 AM 1, 0
+04/14/2022 11:30:49 AM data_ready recognised
+04/14/2022 11:30:49 AM recording copied
+04/14/2022 11:30:49 AM recordings broken up
+04/14/2022 11:30:49 AM received data
+04/14/2022 11:30:57 AM 1000 samples requested
+04/14/2022 11:30:57 AM packet sent to socket process
+04/14/2022 11:30:57 AM start_recording_ends
+04/14/2022 11:30:58 AM 0, wnsm_c0dc3495
+04/14/2022 11:30:58 AM wnsm_c0dc3495
+04/14/2022 11:30:58 AM packet sent to socket process
+04/14/2022 11:30:59 AM 1, 0
+04/14/2022 11:30:59 AM data_ready recognised
+04/14/2022 11:30:59 AM recording copied
+04/14/2022 11:30:59 AM recordings broken up
+04/14/2022 11:30:59 AM received data
+04/14/2022 11:32:02 AM Close called
+04/14/2022 11:32:02 AM None s
+04/14/2022 11:36:49 AM Logfile initialised
+04/14/2022 11:36:49 AM MPLFs created
+04/14/2022 11:36:49 AM Window Created
+04/14/2022 11:37:05 AM packet sent to socket process
+04/14/2022 11:37:06 AM 1000 samples requested
+04/14/2022 11:37:06 AM packet sent to socket process
+04/14/2022 11:37:06 AM start_recording_ends
+04/14/2022 11:37:06 AM 0, wnsm_0886af17
+04/14/2022 11:37:06 AM wnsm_0886af17
+04/14/2022 11:37:06 AM packet sent to socket process
+04/14/2022 11:37:19 AM Close called
+04/14/2022 11:37:19 AM None s
+04/14/2022 11:37:21 AM 1000 samples requested
+04/14/2022 11:37:21 AM packet sent to socket process
+04/14/2022 11:37:21 AM start_recording_ends
+04/14/2022 11:37:21 AM 0, wnsm_ebdba250
+04/14/2022 11:37:21 AM wnsm_ebdba250
+04/14/2022 11:37:21 AM packet sent to socket process
+04/14/2022 11:37:31 AM Close called
+04/14/2022 11:37:31 AM None s
+04/14/2022 11:39:04 AM Logfile initialised
+04/14/2022 11:39:04 AM MPLFs created
+04/14/2022 11:39:04 AM Window Created
+04/14/2022 11:39:15 AM packet sent to socket process
+04/14/2022 11:39:16 AM 1000 samples requested
+04/14/2022 11:39:16 AM packet sent to socket process
+04/14/2022 11:39:16 AM start_recording_ends
+04/14/2022 11:39:17 AM 0, wnsm_961335b6
+04/14/2022 11:39:17 AM wnsm_961335b6
+04/14/2022 11:39:17 AM packet sent to socket process
+04/14/2022 11:39:18 AM 1, 0
+04/14/2022 11:39:18 AM data_ready recognised
+04/14/2022 11:39:18 AM recording copied
+04/14/2022 11:39:18 AM recordings broken up
+04/14/2022 11:39:18 AM received data
+04/14/2022 11:39:30 AM 10000 samples requested
+04/14/2022 11:39:30 AM packet sent to socket process
+04/14/2022 11:39:30 AM start_recording_ends
+04/14/2022 11:39:31 AM 0, wnsm_f2804641
+04/14/2022 11:39:31 AM wnsm_f2804641
+04/14/2022 11:39:31 AM packet sent to socket process
+04/14/2022 11:39:32 AM 1, 0
+04/14/2022 11:39:32 AM data_ready recognised
+04/14/2022 11:39:32 AM recording copied
+04/14/2022 11:39:32 AM recordings broken up
+04/14/2022 11:39:32 AM received data
+04/14/2022 11:40:03 AM packet sent to socket process
+04/14/2022 11:40:04 AM 10000 samples requested
+04/14/2022 11:40:04 AM packet sent to socket process
+04/14/2022 11:40:04 AM start_recording_ends
+04/14/2022 11:40:04 AM 0, wnsm_1d1c893a
+04/14/2022 11:40:04 AM wnsm_1d1c893a
+04/14/2022 11:40:04 AM packet sent to socket process
+04/14/2022 11:40:10 AM Close called
+04/14/2022 11:40:10 AM None s
+04/14/2022 11:40:15 AM Logfile initialised
+04/14/2022 11:40:15 AM MPLFs created
+04/14/2022 11:40:15 AM Window Created
+04/14/2022 11:40:18 AM packet sent to socket process
+04/14/2022 11:40:21 AM 100000 samples requested
+04/14/2022 11:40:21 AM packet sent to socket process
+04/14/2022 11:40:21 AM start_recording_ends
+04/14/2022 11:40:21 AM 0, wnsm_3af5d6b9
+04/14/2022 11:40:21 AM wnsm_3af5d6b9
+04/14/2022 11:40:21 AM packet sent to socket process
+04/14/2022 11:41:59 AM Close called
+04/14/2022 11:41:59 AM None s
+04/14/2022 11:44:00 AM Logfile initialised
+04/14/2022 11:44:01 AM MPLFs created
+04/14/2022 11:44:01 AM Window Created
+04/14/2022 11:44:20 AM packet sent to socket process
+04/14/2022 11:44:22 AM 1000 samples requested
+04/14/2022 11:44:22 AM packet sent to socket process
+04/14/2022 11:44:22 AM start_recording_ends
+04/14/2022 11:44:22 AM 0, wnsm_149fe454
+04/14/2022 11:44:22 AM wnsm_149fe454
+04/14/2022 11:44:22 AM packet sent to socket process
+04/14/2022 11:44:24 AM 1, 0
+04/14/2022 11:44:24 AM data_ready recognised
+04/14/2022 11:44:24 AM recording copied
+04/14/2022 11:44:24 AM recordings broken up
+04/14/2022 11:44:24 AM received data
+04/14/2022 11:44:51 AM Close called
+04/14/2022 11:44:51 AM None s
+04/14/2022 11:44:53 AM Logfile initialised
+04/14/2022 11:44:53 AM MPLFs created
+04/14/2022 11:44:54 AM Window Created
+04/14/2022 11:45:01 AM packet sent to socket process
+04/14/2022 11:45:01 AM 1000 samples requested
+04/14/2022 11:45:01 AM packet sent to socket process
+04/14/2022 11:45:01 AM start_recording_ends
+04/14/2022 11:45:02 AM 0, wnsm_722cecf6
+04/14/2022 11:45:02 AM wnsm_722cecf6
+04/14/2022 11:45:02 AM packet sent to socket process
+04/14/2022 11:45:03 AM 1, 0
+04/14/2022 11:45:03 AM data_ready recognised
+04/14/2022 11:45:03 AM recording copied
+04/14/2022 11:45:03 AM recordings broken up
+04/14/2022 11:45:03 AM received data
+04/14/2022 11:46:04 AM Close called
+04/14/2022 11:46:04 AM None s
+04/14/2022 11:46:06 AM Logfile initialised
+04/14/2022 11:46:06 AM MPLFs created
+04/14/2022 11:46:06 AM Window Created
+04/14/2022 11:46:14 AM packet sent to socket process
+04/14/2022 11:46:15 AM 1000 samples requested
+04/14/2022 11:46:15 AM packet sent to socket process
+04/14/2022 11:46:15 AM start_recording_ends
+04/14/2022 11:46:15 AM 0, wnsm_b6c7ca04
+04/14/2022 11:46:15 AM wnsm_b6c7ca04
+04/14/2022 11:46:15 AM packet sent to socket process
+04/14/2022 11:46:17 AM 1, 0
+04/14/2022 11:46:17 AM data_ready recognised
+04/14/2022 11:46:17 AM recording copied
+04/14/2022 11:46:17 AM recordings broken up
+04/14/2022 11:46:17 AM received data
+04/14/2022 11:46:41 AM packet sent to socket process
+04/14/2022 11:46:42 AM 1000 samples requested
+04/14/2022 11:46:42 AM packet sent to socket process
+04/14/2022 11:46:42 AM start_recording_ends
+04/14/2022 11:46:42 AM 0, wnsm_8c33b28f
+04/14/2022 11:46:42 AM wnsm_8c33b28f
+04/14/2022 11:46:42 AM packet sent to socket process
+04/14/2022 11:46:44 AM 1, 0
+04/14/2022 11:46:44 AM data_ready recognised
+04/14/2022 11:46:44 AM recording copied
+04/14/2022 11:46:44 AM recordings broken up
+04/14/2022 11:46:44 AM received data
+04/14/2022 11:47:27 AM Close called
+04/14/2022 11:47:27 AM None s
+04/14/2022 11:52:49 AM Logfile initialised
+04/14/2022 11:52:49 AM MPLFs created
+04/14/2022 11:52:49 AM Window Created
+04/14/2022 11:53:21 AM packet sent to socket process
+04/14/2022 11:53:23 AM 1000 samples requested
+04/14/2022 11:53:23 AM packet sent to socket process
+04/14/2022 11:53:23 AM start_recording_ends
+04/14/2022 11:53:23 AM 0, wnsm_f1e0e8c3
+04/14/2022 11:53:23 AM wnsm_f1e0e8c3
+04/14/2022 11:53:23 AM packet sent to socket process
+04/14/2022 11:53:25 AM 1, 0
+04/14/2022 11:53:25 AM data_ready recognised
+04/14/2022 11:53:25 AM recording copied
+04/14/2022 11:53:25 AM recordings broken up
+04/14/2022 11:53:25 AM received data
+04/14/2022 11:53:37 AM packet sent to socket process
+04/14/2022 11:53:38 AM packet sent to socket process
+04/14/2022 11:53:39 AM packet sent to socket process
+04/14/2022 11:53:40 AM 100000 samples requested
+04/14/2022 11:53:40 AM packet sent to socket process
+04/14/2022 11:53:40 AM start_recording_ends
+04/14/2022 11:53:40 AM 0, wnsm_ef552800
+04/14/2022 11:53:40 AM wnsm_ef552800
+04/14/2022 11:53:40 AM packet sent to socket process
+04/14/2022 11:53:42 AM 1, 0
+04/14/2022 11:53:42 AM data_ready recognised
+04/14/2022 11:53:42 AM recording copied
+04/14/2022 11:53:42 AM recordings broken up
+04/14/2022 11:53:42 AM received data
+04/14/2022 11:53:52 AM packet sent to socket process
+04/14/2022 11:53:53 AM packet sent to socket process
+04/14/2022 11:53:54 AM packet sent to socket process
+04/14/2022 11:53:55 AM 1000 samples requested
+04/14/2022 11:53:55 AM packet sent to socket process
+04/14/2022 11:53:55 AM start_recording_ends
+04/14/2022 11:53:55 AM 0, wnsm_7fc103f0
+04/14/2022 11:53:55 AM wnsm_7fc103f0
+04/14/2022 11:53:55 AM packet sent to socket process
+04/14/2022 11:53:57 AM 1, 0
+04/14/2022 11:53:57 AM data_ready recognised
+04/14/2022 11:53:57 AM recording copied
+04/14/2022 11:53:57 AM recordings broken up
+04/14/2022 11:53:57 AM received data
+04/14/2022 12:01:43 PM packet sent to socket process
+04/14/2022 12:01:45 PM 1000 samples requested
+04/14/2022 12:01:45 PM packet sent to socket process
+04/14/2022 12:01:45 PM start_recording_ends
+04/14/2022 12:01:46 PM 0, wnsm_678d74cc
+04/14/2022 12:01:46 PM wnsm_678d74cc
+04/14/2022 12:01:46 PM packet sent to socket process
+04/14/2022 12:01:47 PM 1, 0
+04/14/2022 12:01:47 PM data_ready recognised
+04/14/2022 12:01:47 PM recording copied
+04/14/2022 12:01:47 PM recordings broken up
+04/14/2022 12:01:47 PM received data
+04/14/2022 12:02:14 PM packet sent to socket process
+04/14/2022 12:02:14 PM 1000 samples requested
+04/14/2022 12:02:14 PM packet sent to socket process
+04/14/2022 12:02:14 PM start_recording_ends
+04/14/2022 12:02:15 PM 0, wnsm_8e2e5134
+04/14/2022 12:02:15 PM wnsm_8e2e5134
+04/14/2022 12:02:15 PM packet sent to socket process
+04/14/2022 12:02:16 PM 1, 0
+04/14/2022 12:02:16 PM data_ready recognised
+04/14/2022 12:02:16 PM recording copied
+04/14/2022 12:02:16 PM recordings broken up
+04/14/2022 12:02:16 PM received data
+04/14/2022 12:02:17 PM 1000 samples requested
+04/14/2022 12:02:17 PM packet sent to socket process
+04/14/2022 12:02:17 PM start_recording_ends
+04/14/2022 12:02:17 PM 0, wnsm_f438e7a8
+04/14/2022 12:02:17 PM wnsm_f438e7a8
+04/14/2022 12:02:17 PM packet sent to socket process
+04/14/2022 12:02:19 PM 1, 0
+04/14/2022 12:02:19 PM data_ready recognised
+04/14/2022 12:02:19 PM recording copied
+04/14/2022 12:02:19 PM recordings broken up
+04/14/2022 12:02:19 PM received data
+04/14/2022 12:02:21 PM packet sent to socket process
+04/14/2022 12:02:22 PM 1000 samples requested
+04/14/2022 12:02:22 PM packet sent to socket process
+04/14/2022 12:02:22 PM start_recording_ends
+04/14/2022 12:02:22 PM 0, wnsm_4b4a106d
+04/14/2022 12:02:22 PM wnsm_4b4a106d
+04/14/2022 12:02:22 PM packet sent to socket process
+04/14/2022 12:02:24 PM 1, 0
+04/14/2022 12:02:24 PM data_ready recognised
+04/14/2022 12:02:24 PM recording copied
+04/14/2022 12:02:24 PM recordings broken up
+04/14/2022 12:02:24 PM received data
+04/14/2022 12:02:27 PM Close called
+04/14/2022 12:02:27 PM None s
+04/14/2022 12:02:46 PM Logfile initialised
+04/14/2022 12:02:46 PM MPLFs created
+04/14/2022 12:02:46 PM Window Created
+04/14/2022 12:03:00 PM packet sent to socket process
+04/14/2022 12:03:02 PM 1000 samples requested
+04/14/2022 12:03:02 PM packet sent to socket process
+04/14/2022 12:03:02 PM start_recording_ends
+04/14/2022 12:03:02 PM 0, wnsm_5019abfd
+04/14/2022 12:03:02 PM wnsm_5019abfd
+04/14/2022 12:03:02 PM packet sent to socket process
+04/14/2022 12:03:04 PM 1, 0
+04/14/2022 12:03:04 PM data_ready recognised
+04/14/2022 12:03:04 PM recording copied
+04/14/2022 12:03:04 PM recordings broken up
+04/14/2022 12:03:04 PM received data
+04/14/2022 12:03:45 PM 1000 samples requested
+04/14/2022 12:03:45 PM packet sent to socket process
+04/14/2022 12:03:45 PM start_recording_ends
+04/14/2022 12:03:45 PM 0, wnsm_d40f39e1
+04/14/2022 12:03:45 PM wnsm_d40f39e1
+04/14/2022 12:03:45 PM packet sent to socket process
+04/14/2022 12:03:47 PM 1, 0
+04/14/2022 12:03:47 PM data_ready recognised
+04/14/2022 12:03:47 PM recording copied
+04/14/2022 12:03:47 PM recordings broken up
+04/14/2022 12:03:47 PM received data
+04/14/2022 12:03:53 PM 1000 samples requested
+04/14/2022 12:03:53 PM packet sent to socket process
+04/14/2022 12:03:53 PM start_recording_ends
+04/14/2022 12:03:53 PM 0, wnsm_9c0e515e
+04/14/2022 12:03:53 PM wnsm_9c0e515e
+04/14/2022 12:03:53 PM packet sent to socket process
+04/14/2022 12:03:55 PM 1, 0
+04/14/2022 12:03:55 PM data_ready recognised
+04/14/2022 12:03:55 PM recording copied
+04/14/2022 12:03:55 PM recordings broken up
+04/14/2022 12:03:55 PM received data
+04/14/2022 12:03:59 PM 1000 samples requested
+04/14/2022 12:03:59 PM packet sent to socket process
+04/14/2022 12:03:59 PM start_recording_ends
+04/14/2022 12:04:00 PM 0, wnsm_e2797b91
+04/14/2022 12:04:00 PM wnsm_e2797b91
+04/14/2022 12:04:00 PM packet sent to socket process
+04/14/2022 12:04:02 PM 1, 0
+04/14/2022 12:04:02 PM data_ready recognised
+04/14/2022 12:04:02 PM recording copied
+04/14/2022 12:04:02 PM recordings broken up
+04/14/2022 12:04:02 PM received data
+04/14/2022 12:06:36 PM packet sent to socket process
+04/14/2022 12:06:38 PM packet sent to socket process
+04/14/2022 12:06:41 PM 10000 samples requested
+04/14/2022 12:06:41 PM packet sent to socket process
+04/14/2022 12:06:41 PM start_recording_ends
+04/14/2022 12:06:41 PM 0, wnsm_06bdfde9
+04/14/2022 12:06:41 PM wnsm_06bdfde9
+04/14/2022 12:06:41 PM packet sent to socket process
+04/14/2022 12:06:43 PM 1, 0
+04/14/2022 12:06:43 PM data_ready recognised
+04/14/2022 12:06:43 PM recording copied
+04/14/2022 12:06:43 PM recordings broken up
+04/14/2022 12:06:43 PM received data
+04/14/2022 12:07:11 PM packet sent to socket process
+04/14/2022 12:07:12 PM 100000 samples requested
+04/14/2022 12:07:12 PM packet sent to socket process
+04/14/2022 12:07:12 PM start_recording_ends
+04/14/2022 12:07:13 PM 0, wnsm_57e65618
+04/14/2022 12:07:13 PM wnsm_57e65618
+04/14/2022 12:07:13 PM packet sent to socket process
+04/14/2022 12:07:15 PM 1, 0
+04/14/2022 12:07:15 PM data_ready recognised
+04/14/2022 12:07:15 PM recording copied
+04/14/2022 12:07:15 PM recordings broken up
+04/14/2022 12:07:15 PM received data
+04/14/2022 12:07:21 PM packet sent to socket process
+04/14/2022 12:07:22 PM packet sent to socket process
+04/14/2022 12:07:24 PM 1000 samples requested
+04/14/2022 12:07:24 PM packet sent to socket process
+04/14/2022 12:07:24 PM start_recording_ends
+04/14/2022 12:07:24 PM 0, wnsm_3f7ab8a2
+04/14/2022 12:07:24 PM wnsm_3f7ab8a2
+04/14/2022 12:07:24 PM packet sent to socket process
+04/14/2022 12:07:26 PM 1, 0
+04/14/2022 12:07:26 PM data_ready recognised
+04/14/2022 12:07:26 PM recording copied
+04/14/2022 12:07:26 PM recordings broken up
+04/14/2022 12:07:26 PM received data
+04/14/2022 12:08:15 PM packet sent to socket process
+04/14/2022 12:09:37 PM Close called
+04/14/2022 12:09:37 PM None s
+04/14/2022 12:11:24 PM Logfile initialised
+04/14/2022 12:11:24 PM MPLFs created
+04/14/2022 12:11:24 PM Window Created
+04/14/2022 12:27:15 PM Close called
+04/14/2022 12:27:15 PM None s
+04/14/2022 12:27:21 PM Logfile initialised
+04/14/2022 12:27:21 PM MPLFs created
+04/14/2022 12:27:22 PM Window Created
+04/14/2022 12:27:41 PM packet sent to socket process
+04/14/2022 12:27:42 PM packet sent to socket process
+04/14/2022 12:28:04 PM packet sent to socket process
+04/14/2022 12:28:05 PM packet sent to socket process
+04/14/2022 12:28:06 PM packet sent to socket process
+04/14/2022 12:28:11 PM 1000 samples requested
+04/14/2022 12:28:11 PM packet sent to socket process
+04/14/2022 12:28:11 PM start_recording_ends
+04/14/2022 12:28:11 PM 0, wnsm_69f5cde6
+04/14/2022 12:28:11 PM wnsm_69f5cde6
+04/14/2022 12:28:11 PM packet sent to socket process
+04/14/2022 12:28:45 PM Close called
+04/14/2022 12:28:45 PM None s
+04/14/2022 12:29:23 PM packet sent to socket process
+04/14/2022 12:29:33 PM packet sent to socket process
+04/14/2022 12:29:38 PM packet sent to socket process
+04/14/2022 12:29:40 PM 1000 samples requested
+04/14/2022 12:29:40 PM packet sent to socket process
+04/14/2022 12:29:40 PM start_recording_ends
+04/14/2022 12:29:40 PM 0, wnsm_82c64b59
+04/14/2022 12:29:40 PM wnsm_82c64b59
+04/14/2022 12:29:40 PM packet sent to socket process
+04/14/2022 12:29:54 PM packet sent to socket process
+04/14/2022 12:29:55 PM Close called
+04/14/2022 12:29:55 PM None s
+04/14/2022 12:29:57 PM packet sent to socket process
+04/14/2022 12:30:05 PM 1000 samples requested
+04/14/2022 12:30:05 PM packet sent to socket process
+04/14/2022 12:30:05 PM start_recording_ends
+04/14/2022 12:30:05 PM 0, wnsm_e31df91a
+04/14/2022 12:30:05 PM wnsm_e31df91a
+04/14/2022 12:30:05 PM packet sent to socket process
+04/14/2022 12:30:07 PM 1, 0
+04/14/2022 12:30:07 PM data_ready recognised
+04/14/2022 12:30:07 PM recording copied
+04/14/2022 12:30:07 PM recordings broken up
+04/14/2022 12:30:07 PM received data
+04/14/2022 12:31:30 PM 1000 samples requested
+04/14/2022 12:31:30 PM packet sent to socket process
+04/14/2022 12:31:30 PM start_recording_ends
+04/14/2022 12:31:30 PM 0, wnsm_7092dfbf
+04/14/2022 12:31:30 PM wnsm_7092dfbf
+04/14/2022 12:31:30 PM packet sent to socket process
+04/14/2022 12:31:32 PM 1, 0
+04/14/2022 12:31:32 PM data_ready recognised
+04/14/2022 12:31:32 PM recording copied
+04/14/2022 12:31:32 PM recordings broken up
+04/14/2022 12:31:32 PM received data
+04/14/2022 12:31:37 PM 1000 samples requested
+04/14/2022 12:31:37 PM packet sent to socket process
+04/14/2022 12:31:37 PM start_recording_ends
+04/14/2022 12:31:37 PM 0, wnsm_f29f58ef
+04/14/2022 12:31:37 PM wnsm_f29f58ef
+04/14/2022 12:31:37 PM packet sent to socket process
+04/14/2022 12:31:39 PM 1, 0
+04/14/2022 12:31:39 PM data_ready recognised
+04/14/2022 12:31:39 PM recording copied
+04/14/2022 12:31:39 PM recordings broken up
+04/14/2022 12:31:39 PM received data
+04/14/2022 01:06:55 PM Close called
+04/14/2022 01:06:55 PM None s
+04/14/2022 01:07:10 PM Logfile initialised
+04/14/2022 01:07:10 PM MPLFs created
+04/14/2022 01:07:10 PM Window Created
+04/14/2022 01:07:19 PM packet sent to socket process
+04/14/2022 01:07:27 PM 1000 samples requested
+04/14/2022 01:07:27 PM packet sent to socket process
+04/14/2022 01:07:27 PM start_recording_ends
+04/14/2022 01:07:28 PM 0, wnsm_b96b0406
+04/14/2022 01:07:28 PM wnsm_b96b0406
+04/14/2022 01:07:28 PM packet sent to socket process
+04/14/2022 01:07:55 PM 1, 0
+04/14/2022 01:07:55 PM data_ready recognised
+04/14/2022 01:07:55 PM recording copied
+04/14/2022 01:07:55 PM recordings broken up
+04/14/2022 01:07:55 PM received data
+04/14/2022 01:10:14 PM 1000 samples requested
+04/14/2022 01:10:14 PM packet sent to socket process
+04/14/2022 01:10:14 PM start_recording_ends
+04/14/2022 01:10:14 PM 0, wnsm_e577f856
+04/14/2022 01:10:14 PM wnsm_e577f856
+04/14/2022 01:10:14 PM packet sent to socket process
+04/14/2022 01:10:24 PM 1, 0
+04/14/2022 01:10:24 PM data_ready recognised
+04/14/2022 01:10:24 PM recording copied
+04/14/2022 01:10:24 PM recordings broken up
+04/14/2022 01:10:24 PM received data
+04/14/2022 01:17:45 PM Close called
+04/14/2022 01:17:45 PM None s
+04/14/2022 01:17:49 PM Logfile initialised
+04/14/2022 01:17:49 PM MPLFs created
+04/14/2022 01:17:49 PM Window Created
+04/14/2022 01:18:03 PM packet sent to socket process
+04/14/2022 01:18:09 PM 1000 samples requested
+04/14/2022 01:18:09 PM packet sent to socket process
+04/14/2022 01:18:09 PM start_recording_ends
+04/14/2022 01:18:09 PM 0, wnsm_a7af2ef4
+04/14/2022 01:18:09 PM wnsm_a7af2ef4
+04/14/2022 01:18:09 PM packet sent to socket process
+04/14/2022 01:18:11 PM 1, 0
+04/14/2022 01:18:11 PM data_ready recognised
+04/14/2022 01:18:11 PM recording copied
+04/14/2022 01:18:11 PM recordings broken up
+04/14/2022 01:18:11 PM received data
+04/14/2022 01:18:23 PM 1000 samples requested
+04/14/2022 01:18:23 PM packet sent to socket process
+04/14/2022 01:18:23 PM start_recording_ends
+04/14/2022 01:18:23 PM 0, wnsm_1084c0a6
+04/14/2022 01:18:23 PM wnsm_1084c0a6
+04/14/2022 01:18:23 PM packet sent to socket process
+04/14/2022 01:18:24 PM 1, 0
+04/14/2022 01:18:24 PM data_ready recognised
+04/14/2022 01:18:24 PM recording copied
+04/14/2022 01:18:24 PM recordings broken up
+04/14/2022 01:18:24 PM received data
+04/14/2022 01:23:42 PM Close called
+04/14/2022 01:23:42 PM None s
+04/14/2022 01:23:45 PM Logfile initialised
+04/14/2022 01:23:45 PM MPLFs created
+04/14/2022 01:23:45 PM Window Created
+04/14/2022 01:23:54 PM packet sent to socket process
+04/14/2022 01:23:54 PM 100000 samples requested
+04/14/2022 01:23:54 PM packet sent to socket process
+04/14/2022 01:23:54 PM start_recording_ends
+04/14/2022 01:23:55 PM 0, wnsm_2538779a
+04/14/2022 01:23:55 PM wnsm_2538779a
+04/14/2022 01:23:55 PM packet sent to socket process
+04/14/2022 01:23:57 PM 1, 0
+04/14/2022 01:23:57 PM data_ready recognised
+04/14/2022 01:23:57 PM recording copied
+04/14/2022 01:23:57 PM recordings broken up
+04/14/2022 01:23:57 PM received data
+04/14/2022 01:27:19 PM Close called
+04/14/2022 01:27:19 PM None s
+04/14/2022 01:51:02 PM Logfile initialised
+04/14/2022 01:51:02 PM MPLFs created
+04/14/2022 01:51:02 PM Window Created
+04/14/2022 01:51:11 PM packet sent to socket process
+04/14/2022 01:51:12 PM 100000 samples requested
+04/14/2022 01:51:12 PM packet sent to socket process
+04/14/2022 01:51:12 PM start_recording_ends
+04/14/2022 01:51:12 PM 0, wnsm_1bfb39e5
+04/14/2022 01:51:12 PM wnsm_1bfb39e5
+04/14/2022 01:51:12 PM packet sent to socket process
+04/14/2022 01:51:46 PM Close called
+04/14/2022 01:51:46 PM None s
+04/14/2022 01:51:48 PM 100000 samples requested
+04/14/2022 01:51:48 PM packet sent to socket process
+04/14/2022 01:51:48 PM start_recording_ends
+04/14/2022 01:51:49 PM 0, wnsm_ed7dcd7f
+04/14/2022 01:51:49 PM wnsm_ed7dcd7f
+04/14/2022 01:51:49 PM packet sent to socket process
+04/14/2022 01:52:10 PM Close called
+04/14/2022 01:52:10 PM None s
+04/14/2022 01:52:30 PM Close called
+04/14/2022 01:52:30 PM None s
+04/14/2022 01:59:42 PM Logfile initialised
+04/14/2022 01:59:42 PM MPLFs created
+04/14/2022 01:59:42 PM Window Created
+04/14/2022 02:00:01 PM packet sent to socket process
+04/14/2022 02:00:05 PM 1000 samples requested
+04/14/2022 02:00:05 PM packet sent to socket process
+04/14/2022 02:00:05 PM start_recording_ends
+04/14/2022 02:00:06 PM 0, wnsm_bfc4d3be
+04/14/2022 02:00:06 PM wnsm_bfc4d3be
+04/14/2022 02:00:06 PM packet sent to socket process
+04/14/2022 02:01:28 PM Close called
+04/14/2022 02:01:28 PM None s
+04/14/2022 02:25:00 PM Logfile initialised
+04/14/2022 02:25:00 PM MPLFs created
+04/14/2022 02:25:00 PM Window Created
+04/14/2022 02:25:13 PM packet sent to socket process
+04/14/2022 02:25:13 PM 100000 samples requested
+04/14/2022 02:25:13 PM packet sent to socket process
+04/14/2022 02:25:13 PM start_recording_ends
+04/14/2022 02:25:14 PM 0, wnsm_8cb07f4b
+04/14/2022 02:25:14 PM wnsm_8cb07f4b
+04/14/2022 02:25:14 PM packet sent to socket process
+04/14/2022 02:27:11 PM Close called
+04/14/2022 02:27:11 PM None s
+04/14/2022 02:27:13 PM Logfile initialised
+04/14/2022 02:27:13 PM MPLFs created
+04/14/2022 02:27:13 PM Window Created
+04/14/2022 02:27:20 PM packet sent to socket process
+04/14/2022 02:27:21 PM 100000 samples requested
+04/14/2022 02:27:21 PM packet sent to socket process
+04/14/2022 02:27:21 PM start_recording_ends
+04/14/2022 02:27:21 PM 0, wnsm_531db6bd
+04/14/2022 02:27:21 PM wnsm_531db6bd
+04/14/2022 02:27:21 PM packet sent to socket process
+04/14/2022 02:27:35 PM Close called
+04/14/2022 02:27:35 PM None s
+04/14/2022 02:32:49 PM Logfile initialised
+04/14/2022 02:32:49 PM MPLFs created
+04/14/2022 02:32:49 PM Window Created
+04/14/2022 02:32:59 PM packet sent to socket process
+04/14/2022 02:32:59 PM 100000 samples requested
+04/14/2022 02:32:59 PM packet sent to socket process
+04/14/2022 02:32:59 PM start_recording_ends
+04/14/2022 02:33:00 PM 0, wnsm_306dad8f
+04/14/2022 02:33:00 PM wnsm_306dad8f
+04/14/2022 02:33:00 PM packet sent to socket process
+04/14/2022 02:33:02 PM 1, 0
+04/14/2022 02:33:02 PM data_ready recognised
+04/14/2022 02:33:02 PM recording copied
+04/14/2022 02:33:02 PM recordings broken up
+04/14/2022 02:33:02 PM received data
+04/14/2022 02:33:24 PM 1000 samples requested
+04/14/2022 02:33:24 PM packet sent to socket process
+04/14/2022 02:33:24 PM start_recording_ends
+04/14/2022 02:33:24 PM 0, wnsm_89fe98e9
+04/14/2022 02:33:24 PM wnsm_89fe98e9
+04/14/2022 02:33:24 PM packet sent to socket process
+04/14/2022 02:33:33 PM Close called
+04/14/2022 02:33:33 PM None s
+04/14/2022 02:33:56 PM Logfile initialised
+04/14/2022 02:33:56 PM MPLFs created
+04/14/2022 02:33:56 PM Window Created
+04/14/2022 02:34:00 PM packet sent to socket process
+04/14/2022 02:34:00 PM 100000 samples requested
+04/14/2022 02:34:00 PM packet sent to socket process
+04/14/2022 02:34:00 PM start_recording_ends
+04/14/2022 02:34:01 PM 0, wnsm_bb9de733
+04/14/2022 02:34:01 PM wnsm_bb9de733
+04/14/2022 02:34:01 PM packet sent to socket process
+04/14/2022 02:36:55 PM Close called
+04/14/2022 02:36:55 PM None s
+04/14/2022 02:44:55 PM Logfile initialised
+04/14/2022 02:44:55 PM MPLFs created
+04/14/2022 02:44:55 PM Window Created
+04/14/2022 02:45:13 PM packet sent to socket process
+04/14/2022 02:45:13 PM 100000 samples requested
+04/14/2022 02:45:13 PM packet sent to socket process
+04/14/2022 02:45:13 PM start_recording_ends
+04/14/2022 02:45:14 PM 0, wnsm_38328226
+04/14/2022 02:45:14 PM wnsm_38328226
+04/14/2022 02:45:14 PM packet sent to socket process
+04/14/2022 02:45:16 PM 1, 0
+04/14/2022 02:45:16 PM data_ready recognised
+04/14/2022 02:45:16 PM recording copied
+04/14/2022 02:45:16 PM recordings broken up
+04/14/2022 02:45:16 PM received data
+04/14/2022 02:45:43 PM 100000 samples requested
+04/14/2022 02:45:43 PM packet sent to socket process
+04/14/2022 02:45:43 PM start_recording_ends
+04/14/2022 02:45:43 PM 0, wnsm_12444b27
+04/14/2022 02:45:43 PM wnsm_12444b27
+04/14/2022 02:45:43 PM packet sent to socket process
+04/14/2022 02:52:43 PM Close called
+04/14/2022 02:52:43 PM None s
+04/14/2022 03:00:54 PM Logfile initialised
+04/14/2022 03:00:54 PM MPLFs created
+04/14/2022 03:00:54 PM Window Created
+04/14/2022 03:01:04 PM packet sent to socket process
+04/14/2022 03:01:05 PM 1000 samples requested
+04/14/2022 03:01:05 PM packet sent to socket process
+04/14/2022 03:01:05 PM start_recording_ends
+04/14/2022 03:01:05 PM 0, wnsm_f3721f05
+04/14/2022 03:01:05 PM wnsm_f3721f05
+04/14/2022 03:01:05 PM packet sent to socket process
+04/14/2022 03:01:24 PM 1, 0
+04/14/2022 03:01:24 PM data_ready recognised
+04/14/2022 03:01:24 PM recording copied
+04/14/2022 03:01:24 PM recordings broken up
+04/14/2022 03:01:24 PM received data
+04/14/2022 03:01:44 PM Close called
+04/14/2022 03:01:44 PM None s
+04/14/2022 03:02:17 PM Logfile initialised
+04/14/2022 03:02:17 PM MPLFs created
+04/14/2022 03:02:17 PM Window Created
+04/14/2022 03:02:27 PM packet sent to socket process
+04/14/2022 03:02:27 PM 1000 samples requested
+04/14/2022 03:02:27 PM packet sent to socket process
+04/14/2022 03:02:27 PM start_recording_ends
+04/14/2022 03:02:28 PM 0, wnsm_13c99793
+04/14/2022 03:02:28 PM wnsm_13c99793
+04/14/2022 03:02:28 PM packet sent to socket process
+04/14/2022 03:02:30 PM 1, 0
+04/14/2022 03:02:30 PM data_ready recognised
+04/14/2022 03:02:30 PM recording copied
+04/14/2022 03:02:30 PM recordings broken up
+04/14/2022 03:02:30 PM received data
+04/14/2022 03:04:25 PM 1000 samples requested
+04/14/2022 03:04:25 PM packet sent to socket process
+04/14/2022 03:04:25 PM start_recording_ends
+04/14/2022 03:04:25 PM 0, wnsm_4b993592
+04/14/2022 03:04:25 PM wnsm_4b993592
+04/14/2022 03:04:25 PM packet sent to socket process
+04/14/2022 03:05:02 PM Close called
+04/14/2022 03:05:02 PM None s
+04/14/2022 03:12:05 PM Logfile initialised
+04/14/2022 03:12:05 PM MPLFs created
+04/14/2022 03:12:05 PM Window Created
+04/14/2022 03:12:21 PM packet sent to socket process
+04/14/2022 03:12:23 PM 1000 samples requested
+04/14/2022 03:12:23 PM packet sent to socket process
+04/14/2022 03:12:23 PM start_recording_ends
+04/14/2022 03:12:23 PM 0, wnsm_95b71e56
+04/14/2022 03:12:23 PM wnsm_95b71e56
+04/14/2022 03:12:23 PM packet sent to socket process
+04/14/2022 03:12:25 PM 1, 0
+04/14/2022 03:12:25 PM data_ready recognised
+04/14/2022 03:12:25 PM recording copied
+04/14/2022 03:12:25 PM recordings broken up
+04/14/2022 03:12:25 PM received data
+04/14/2022 03:13:12 PM 1000 samples requested
+04/14/2022 03:13:12 PM packet sent to socket process
+04/14/2022 03:13:12 PM start_recording_ends
+04/14/2022 03:13:12 PM 0, wnsm_8c8114ff
+04/14/2022 03:13:12 PM wnsm_8c8114ff
+04/14/2022 03:13:12 PM packet sent to socket process
+04/14/2022 03:13:58 PM Close called
+04/14/2022 03:13:58 PM None s
+04/14/2022 03:14:05 PM packet sent to socket process
+04/14/2022 03:19:37 PM Close called
+04/14/2022 03:19:37 PM None s
+04/14/2022 03:19:43 PM Logfile initialised
+04/14/2022 03:19:43 PM MPLFs created
+04/14/2022 03:19:44 PM Window Created
+04/14/2022 03:19:54 PM packet sent to socket process
+04/14/2022 03:20:01 PM Close called
+04/14/2022 03:20:01 PM None s
+04/14/2022 03:20:07 PM Logfile initialised
+04/14/2022 03:20:07 PM MPLFs created
+04/14/2022 03:20:07 PM Window Created
+04/14/2022 03:20:17 PM packet sent to socket process
+04/14/2022 03:20:18 PM packet sent to socket process
+04/14/2022 03:20:19 PM 1000 samples requested
+04/14/2022 03:20:19 PM packet sent to socket process
+04/14/2022 03:20:19 PM start_recording_ends
+04/14/2022 03:20:20 PM 0, wnsm_1fc6c603
+04/14/2022 03:20:20 PM wnsm_1fc6c603
+04/14/2022 03:20:20 PM packet sent to socket process
+04/14/2022 03:20:35 PM Close called
+04/14/2022 03:20:35 PM None s
+04/14/2022 03:21:39 PM Logfile initialised
+04/14/2022 03:21:39 PM MPLFs created
+04/14/2022 03:21:39 PM Window Created
+04/14/2022 03:21:46 PM packet sent to socket process
+04/14/2022 03:21:58 PM 100000 samples requested
+04/14/2022 03:21:58 PM packet sent to socket process
+04/14/2022 03:21:58 PM start_recording_ends
+04/14/2022 03:21:58 PM 0, wnsm_db0f5746
+04/14/2022 03:21:58 PM wnsm_db0f5746
+04/14/2022 03:21:58 PM packet sent to socket process
+04/14/2022 03:22:01 PM 1, 0
+04/14/2022 03:22:01 PM data_ready recognised
+04/14/2022 03:22:01 PM recording copied
+04/14/2022 03:22:01 PM recordings broken up
+04/14/2022 03:22:01 PM received data
+04/14/2022 03:22:05 PM packet sent to socket process
+04/14/2022 03:24:19 PM Close called
+04/14/2022 03:24:19 PM None s
+04/14/2022 03:24:24 PM Logfile initialised
+04/14/2022 03:24:24 PM MPLFs created
+04/14/2022 03:24:24 PM Window Created
+04/14/2022 03:24:34 PM packet sent to socket process
+04/14/2022 03:24:43 PM 1000 samples requested
+04/14/2022 03:24:43 PM packet sent to socket process
+04/14/2022 03:24:43 PM start_recording_ends
+04/14/2022 03:24:43 PM 0, wnsm_7f247cba
+04/14/2022 03:24:43 PM wnsm_7f247cba
+04/14/2022 03:24:43 PM packet sent to socket process
+04/14/2022 03:24:47 PM 1, 0
+04/14/2022 03:24:47 PM data_ready recognised
+04/14/2022 03:24:47 PM recording copied
+04/14/2022 03:24:47 PM recordings broken up
+04/14/2022 03:24:47 PM received data
+04/14/2022 03:25:00 PM packet sent to socket process
+04/14/2022 03:25:53 PM Close called
+04/14/2022 03:25:53 PM None s
+04/14/2022 03:45:57 PM Logfile initialised
+04/14/2022 03:45:57 PM MPLFs created
+04/14/2022 03:45:57 PM Window Created
+04/14/2022 03:46:10 PM packet sent to socket process
+04/14/2022 03:46:11 PM 1000 samples requested
+04/14/2022 03:46:11 PM packet sent to socket process
+04/14/2022 03:46:11 PM start_recording_ends
+04/14/2022 03:46:12 PM 0, wnsm_71e68e02
+04/14/2022 03:46:12 PM wnsm_71e68e02
+04/14/2022 03:46:12 PM packet sent to socket process
+04/14/2022 03:46:13 PM 1, 0
+04/14/2022 03:46:13 PM data_ready recognised
+04/14/2022 03:46:13 PM recording copied
+04/14/2022 03:46:13 PM recordings broken up
+04/14/2022 03:46:13 PM received data
+04/14/2022 03:46:20 PM 1000 samples requested
+04/14/2022 03:46:20 PM packet sent to socket process
+04/14/2022 03:46:20 PM start_recording_ends
+04/14/2022 03:46:20 PM 0, wnsm_7c6d9f44
+04/14/2022 03:46:20 PM wnsm_7c6d9f44
+04/14/2022 03:46:20 PM packet sent to socket process
+04/14/2022 03:46:22 PM 1, 0
+04/14/2022 03:46:22 PM data_ready recognised
+04/14/2022 03:46:22 PM recording copied
+04/14/2022 03:46:22 PM recordings broken up
+04/14/2022 03:46:22 PM received data
+04/14/2022 03:47:25 PM 100000 samples requested
+04/14/2022 03:47:25 PM packet sent to socket process
+04/14/2022 03:47:25 PM start_recording_ends
+04/14/2022 03:47:25 PM 0, wnsm_5031bcab
+04/14/2022 03:47:25 PM wnsm_5031bcab
+04/14/2022 03:47:25 PM packet sent to socket process
+04/14/2022 03:47:27 PM 1, 0
+04/14/2022 03:47:27 PM data_ready recognised
+04/14/2022 03:47:27 PM recording copied
+04/14/2022 03:47:27 PM recordings broken up
+04/14/2022 03:47:27 PM received data
+04/14/2022 03:50:29 PM Close called
+04/14/2022 03:50:29 PM None s

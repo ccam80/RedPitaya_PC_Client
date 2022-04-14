@@ -176,7 +176,7 @@ class dataThread:
                     logging.debug("trigger received")
                     logging.debug("{} to receive".format(self.bytes_to_receive))
                     self.trigger = False
-                    self.send_settings_to_FPGA()
+                    # self.send_settings_to_FPGA()
 
                 
                 else:
@@ -197,10 +197,10 @@ class dataThread:
                 
                 # wait for trigger confirmation from server - process may get stuck in 
                 # this loop if trigger acknowledgement is lost
-                while(int.from_bytes(self.s.recv(1), "little", signed=True) != 1):
+                while(int.from_bytes(self.s.recv(4), "little", signed=True) != 1):
                     pass
                 
-                while self.bytes_to_receive:
+                while (self.bytes_to_receive):
                     logging.debug("start receive")
                     
                     #Load info into array in nbyte chunks
@@ -227,6 +227,10 @@ class dataThread:
                 self.config['trigger'] = 0
                 self.send_settings_to_FPGA()
                 logging.debug("Trigger off sent")
+                
+                # Kick socket
+                self.s.close()
+                self.reopen_socket()
 
  
     def reopen_socket(self):
