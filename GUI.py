@@ -330,10 +330,11 @@ class GUI:
         
     def kick(self):
         """ Close and reopen data thread in case of hang """
-        self.data.close()
-        self.data = sp.dataThread()
-        self.stop_trial()
-        self.data.start_Process()
+        pass
+        # self.data.close()
+        # self.data = sp.dataThread()
+        # self.stop_trial()
+        # self.data.start_Process()
 
     def stop_trial(self):
         """ Turns red light green """
