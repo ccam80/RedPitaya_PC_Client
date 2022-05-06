@@ -7,6 +7,7 @@ import socket
 import struct
 import logging
 import select
+import sys
 # import fabric
 
 class StreamToLogger(object):
@@ -120,26 +121,27 @@ class dataThread:
         """Package FPGA_config attribute and send to server"""
 
         # Get config and package into c-readable struct
-        format_ = "HHHIIIIIhxx"
+        format_ = "HHHhIIIII"
 
         config_send = struct.pack(format_,
                                   self.config["trigger"],
                                   self.config["state"],
                                   self.config["CIC_divider"],
+                                  self.config["b_const"],
                                   self.config["fixed_freq"],
                                   self.config["start_freq"],
                                   self.config["stop_freq"],
                                   self.config["a_const"],
-                                  self.config["interval"],
-                                  self.config["b_const"])
+                                  self.config["interval"]
+                                  )
 
         self.open_socket()
         if (self.initiate_transfer("config") < 1):
-            logging.debug("Socket type not acknowledged by server")
+            logging.debug("Socket type (config) not acknowledged by server")
         else:
             try:
                 self.s.sendall(config_send)
-            except Excpetion as e:
+            except Exception as e:
                 logging.debug("config send error")
                 logging.debug(e)
 
@@ -150,7 +152,9 @@ class dataThread:
 
     def record(self):
         self.open_socket()
-        self.intitiate_transfer("recording")
+        if (self.initiate_transfer("recording") < 1):
+            logging.debug("Socket type (record) not acknowledged by server")
+
         #Create view of shared memory buffer
 
         view = memoryview(self.shared_mem.buf)
@@ -183,21 +187,33 @@ class dataThread:
     def wait_for_ack(self, ack_value=1):
         """ Wait for an acknowledge byte from MCU. If no byte or incorrect value
         received, log error and return -1. Returns 1 on ack. """
-        if (int.from_bytes(self.s.recv(4), "little", signed=False) == ack_value):
+        ack = int.from_bytes(self.s.recv(4), "little", signed=False)
+        logging.debug("Ack value received: {}, expected {}".format(ack, ack_value))
+        
+        if ack == ack_value:
             return 1
         else:
-            logging.debug("No acknowledge received")
+            logging.debug("Bad acknowledge")
             return -1
 
     def purge_socket(self):
         """Purge receive buffer if server is streaming naiively and likely to overshoot.
         . Ensure you have all the data you need first. Should only be required after record"""
-        junk = 1;
-        while junk != 0:
+        readers = [1]
+        self.s.setblocking(False)
+        sockets = [self.s]
+            
+        while readers != []:
+            readers, writers, err = select.select(sockets,
+                                                  sockets,
+                                                  sockets,
+                                                  2)
             try:
-                junk = self.s.recv(1)
+                purged = self.s.recv(16384)
+                print("{} bytes received in purge, header = {} {} {} {}".format(len(purged), purged[0], purged[1], purged[3], purged[4]))
             except Exception as e:
-                pass
+                logging.debug("Purge recv error: {}".format(e))
+                break
 
     def close_socket(self):
         """Close socket and wait for a second. """
@@ -226,7 +242,7 @@ class dataThread:
 
         self.s.sendall(payload)
         if (self.wait_for_ack(ack_value) == 1):
-            return 0
+            return 1
         else:
             return -1
 
@@ -244,7 +260,7 @@ class dataThread:
                             datefmt='%m/%d/%Y %I:%M:%S %p')
 
         logging.debug('Logfile initialised')
-        logging.getLogger('socket')
+        log = logging.getLogger('socket')
         sys.stdout = StreamToLogger(log, logging.DEBUG)
         sys.stderr = StreamToLogger(log, logging.DEBUG)
 
@@ -259,7 +275,7 @@ class dataThread:
 
                 elif self.record_request:
                     logging.debug("request received")
-                    self.initiate_record(self)
+                    self.initiate_record()
                     self.record_request = False
 
                 elif self.trigger:
