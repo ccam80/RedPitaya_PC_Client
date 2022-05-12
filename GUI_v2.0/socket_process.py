@@ -1,6 +1,5 @@
 from multiprocessing import Process, Queue
 from multiprocessing.shared_memory import SharedMemory
-import traceback
 from time import sleep
 import numpy as np
 import socket
@@ -50,7 +49,7 @@ class dataThread:
 
         #FPGA config struct
         self.config = { "trigger":0,
-                        "state":0,
+                        "mode":0,
                         "CIC_divider":1250,
                         "fixed_freq":2,
                         "start_freq":0,
@@ -125,7 +124,7 @@ class dataThread:
 
         config_send = struct.pack(format_,
                                   self.config["trigger"],
-                                  self.config["state"],
+                                  self.config["mode"],
                                   self.config["CIC_divider"],
                                   self.config["b_const"],
                                   self.config["fixed_freq"],
