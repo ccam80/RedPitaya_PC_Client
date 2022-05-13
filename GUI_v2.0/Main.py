@@ -157,7 +157,7 @@ class Window(QtWidgets.QMainWindow):
             self.FPGA_config["fixed_freq"] = int(self.ui.inputData1.text())
             self.FPGA_config["start_freq"] = int(self.ui.inputData1.text())
             self.FPGA_config["stop_freq"] = int(self.ui.inputData2.text())
-            self.FPGA_config["CIC_Divider"] = int(np.floor(125000000 / int(self.ui.inputData4.text())))
+            self.FPGA_config["CIC_divider"] = int(np.floor(125000000 / int(self.ui.inputData4.text())))
             #Convert multiplication constant to fixed point
             a_fixed = self.FloatToFix(float(self.ui.inputData1.text()))
             self.FPGA_config["a_const"] = a_fixed
@@ -175,7 +175,6 @@ class Window(QtWidgets.QMainWindow):
                 self.FPGA_config["interval"] = 1
         except:
             logging.debug("invalid config data")
-            
         # Send config data to server
         packet = [0, self.FPGA_config, True, [False,0]]
         try:
