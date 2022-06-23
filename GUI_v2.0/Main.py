@@ -143,8 +143,8 @@ class Window(QtWidgets.QMainWindow):
             while os.path.exists(datadir + '{}{}.csv'.format(label, i)):
                 i += 1
             np.savetxt(datadir + '{}{}.csv'.format(label, i), 
-                        [recording['in'], recording['out']], 
-                        delimiter=",",
+                        np.transpose([recording['in'], recording['out']]), 
+                        delimiter=";", fmt='%d',
                         header="Sample rate: {}".format(125000000 / self.FPGA_config["CIC_divider"]))
         
         # Close shared memory
@@ -198,19 +198,6 @@ class Window(QtWidgets.QMainWindow):
                     logging.debug("Value out of Range")
                     self.FPGA_config["param_c"] = 0
             
-# =============================================================================
-#             
-#             #Process frequency sweep information to get interval
-#             start_phase = self.FPGA_config["param_a"]*(2**(self.FPGA_phase_width))/self.FPGA_fclk
-#             stop_phase = self.FPGA_config["param_b"]*(2**(self.FPGA_phase_width))/self.FPGA_fclk
-#             phase_span = np.abs(stop_phase - start_phase)
-#             
-#             #test for 0 phase span -> infinite interval if in different mode
-#             if phase_span:
-#                 self.FPGA_config["interval"] = int(int(self.ui.inputData9.text())/int(self.ui.inputData10.text()) * self.FPGA_fclk / phase_span)
-#             else:
-#                 self.FPGA_config["interval"] = 1
-# =============================================================================
         except:
             logging.debug("invalid config data")
         # Send config data to server
