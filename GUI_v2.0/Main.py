@@ -56,12 +56,14 @@ class Window(QtWidgets.QMainWindow):
         self.FPGA_config = {"trigger": 0,
                             "mode": 0,
                             "CIC_divider":int(np.floor(self.FPGA_fclk / 100000)),#int(self.ui.inputData1.text()))),
-                            "fixed_freq":5,
-                            "start_freq":0,
-                            "stop_freq":0,
-                            "a_const":1.0,
-                            "interval":1,
-                            "b_const":1}
+                            "param_a":5,
+                            "param_b":0,
+                            "param_c":0,
+                            "param_d":0,
+                            "param_e":0,
+                            "param_f":0,
+                            "param_g":0,
+                            "param_h":0}
         
         # init float to fix conversion
         self.FloatToFix = NumpyFloatToFixConverter(signed=True, n_bits=32, n_frac=16)
@@ -154,25 +156,61 @@ class Window(QtWidgets.QMainWindow):
     def ButtonPressSend(self):
         """Update FPGA config struct with variables from GUI """
         try:   
-            self.FPGA_config["fixed_freq"] = int(self.ui.inputData1.text())
-            self.FPGA_config["start_freq"] = int(self.ui.inputData1.text())
-            self.FPGA_config["stop_freq"] = int(self.ui.inputData2.text())
-            self.FPGA_config["CIC_divider"] = int(np.floor(125000000 / int(self.ui.inputData4.text())))
-            #Convert multiplication constant to fixed point
-            a_fixed = self.FloatToFix(float(self.ui.inputData1.text()))
-            self.FPGA_config["a_const"] = a_fixed
-            self.FPGA_config["b_const"] = int(self.ui.inputData2.text())
+            self.FPGA_config["param_a"] = int(self.ui.inputData1.text())
+            self.FPGA_config["param_b"] = int(self.ui.inputData2.text())
+            self.FPGA_config["param_c"] = int(self.ui.inputData3.text())
+            self.FPGA_config["param_d"] = int(self.ui.inputData4.text())
+            self.FPGA_config["param_e"] = int(self.ui.inputData5.text())
+            self.FPGA_config["param_f"] = int(self.ui.inputData6.text())
+            self.FPGA_config["param_g"] = int(self.ui.inputData7.text())
+            self.FPGA_config["param_h"] = int(self.ui.inputData8.text())
+        
+            self.FPGA_config["CIC_divider"] = int(np.floor(125000000 / int(self.ui.inputData10.text())))
             
-            #Process frequency sweep information to get interval
-            start_phase = self.FPGA_config["start_freq"]*(2**(self.FPGA_phase_width))/self.FPGA_fclk
-            stop_phase = self.FPGA_config["stop_freq"]*(2**(self.FPGA_phase_width))/self.FPGA_fclk
-            phase_span = np.abs(stop_phase - start_phase)
+            # Mode dependent parameter calculation
             
-            #test for 0 phase span -> infinite interval if in different mode
-            if phase_span:
-                self.FPGA_config["interval"] = int(int(self.ui.inputData3.text())/int(self.ui.inputData4.text()) * self.FPGA_fclk / phase_span)
-            else:
-                self.FPGA_config["interval"] = 1
+            if self.ui.Fixed_Frequency.isChecked():
+                if int(self.ui.inputData1.text()) <= 1000000 and int(self.ui.inputData1.text()) > 0:
+                    self.FPGA_config["param_a"] = int(float(self.ui.inputData1.text())/ 125.0e6 * (1<<30) + 0.5) #calculate fixed phase
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_a"] = 42
+                if float(self.ui.inputData2.text()) <= 1000 and float(self.ui.inputData2.text()) > 0:
+                    self.FPGA_config["param_b"] = int(float(self.ui.inputData2.text())*8.192)
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_b"] = 0
+            
+            if self.ui.Frequency_Sweep.isChecked():
+                if int(self.ui.inputData1.text()) <= 1000000 and int(self.ui.inputData1.text()) > 0 and int(self.ui.inputData2.text()) <= 1000000 and int(self.ui.inputData2.text()) > 0:
+                    start_phase = float(self.ui.inputData1.text())/ 125.0e6 * (1<<30) + 0.5 #calculate start phase
+                    stop_phase = float(self.ui.inputData2.text())/ 125.0e6 * (1<<30) + 0.5 #calculate stop phase
+                    phase_span = stop_phase - start_phase
+                    self.FPGA_config["param_a"] = int(start_phase)
+                    self.FPGA_config["param_b"] = int(int(self.ui.inputData9.text())/int(self.ui.inputData10.text())*125.0e6 / phase_span)
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_a"] = 42
+                    self.FPGA_config["param_b"] = 0
+                if float(self.ui.inputData3.text()) <= 1000 and float(self.ui.inputData3.text()) > 0:
+                    self.FPGA_config["param_c"] = int(float(self.ui.inputData3.text())*8.192)
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_c"] = 0
+            
+# =============================================================================
+#             
+#             #Process frequency sweep information to get interval
+#             start_phase = self.FPGA_config["param_a"]*(2**(self.FPGA_phase_width))/self.FPGA_fclk
+#             stop_phase = self.FPGA_config["param_b"]*(2**(self.FPGA_phase_width))/self.FPGA_fclk
+#             phase_span = np.abs(stop_phase - start_phase)
+#             
+#             #test for 0 phase span -> infinite interval if in different mode
+#             if phase_span:
+#                 self.FPGA_config["interval"] = int(int(self.ui.inputData9.text())/int(self.ui.inputData10.text()) * self.FPGA_fclk / phase_span)
+#             else:
+#                 self.FPGA_config["interval"] = 1
+# =============================================================================
         except:
             logging.debug("invalid config data")
         # Send config data to server
@@ -192,7 +230,7 @@ class Window(QtWidgets.QMainWindow):
             #Send config before measure
             self.ButtonPressSend()
             
-            self.num_samples = int(self.ui.inputData3.text())
+            self.num_samples = int(self.ui.inputData9.text())
             self.num_bytes = self.num_samples * 4
             # Send record request to server
             packet = [0, self.FPGA_config, False, [True, self.num_bytes]]
@@ -224,22 +262,51 @@ class Window(QtWidgets.QMainWindow):
             logging.debug('toggel to Fixed_Frequency')
             self.FPGA_config["mode"] = 0
             self.ui.labelData1.setText("Frequency Out [Hz]") # change button text
-            self.ui.labelData2.setText("Data2") # change button text
+            self.ui.inputData1.setText("5")
+            self.ui.labelData2.setText("Amplitude Out [mV]") # change button text
+            self.ui.inputData2.setText("100")
+            self.ui.labelData3.setText("Param3") # change button text
+            self.ui.labelData4.setText("Param4") # change button text
+            self.ui.labelData5.setText("Param5") # change button text
+            self.ui.labelData6.setText("Param6") # change button text
+            self.ui.labelData7.setText("Param7") # change button text
+            self.ui.labelData8.setText("Param8") # change button text
         if self.ui.Frequency_Sweep.isChecked():
             logging.debug('toggel to Frequency_Sweep')
             self.FPGA_config["mode"] = 1
             self.ui.labelData1.setText("Frequency Start [Hz]") # change button text
+            self.ui.inputData1.setText("5")
             self.ui.labelData2.setText("Frequency Stop [Hz]") # change button text
+            self.ui.inputData2.setText("100")
+            self.ui.labelData3.setText("Amplitude Out [mV]") # change button text
+            self.ui.inputData3.setText("100")
+            self.ui.labelData4.setText("Param4") # change button text
+            self.ui.labelData5.setText("Param5") # change button text
+            self.ui.labelData6.setText("Param6") # change button text
+            self.ui.labelData7.setText("Param7") # change button text
+            self.ui.labelData8.setText("Param8") # change button text
         if self.ui.Linear_Feedback.isChecked():
             logging.debug('toggel to Linear_Feedback')
             self.FPGA_config["mode"] = 2
             self.ui.labelData1.setText("a Constant") # change button text
             self.ui.labelData2.setText("b Constant") # change button text
+            self.ui.labelData3.setText("Param3") # change button text
+            self.ui.labelData4.setText("Param4") # change button text
+            self.ui.labelData5.setText("Param5") # change button text
+            self.ui.labelData6.setText("Param6") # change button text
+            self.ui.labelData7.setText("Param7") # change button text
+            self.ui.labelData8.setText("Param8") # change button text
         if self.ui.Parametric_Feedback.isChecked():
             logging.debug('toggel to Parametric_Feedback')
             self.FPGA_config["mode"] = 3
-            self.ui.labelData1.setText("Data1") # change button text
-            self.ui.labelData2.setText("Data2") # change button text 
+            self.ui.labelData1.setText("Param1") # change button text
+            self.ui.labelData2.setText("Param2") # change button text
+            self.ui.labelData3.setText("Param3") # change button text
+            self.ui.labelData4.setText("Param4") # change button text
+            self.ui.labelData5.setText("Param5") # change button text
+            self.ui.labelData6.setText("Param6") # change button text
+            self.ui.labelData7.setText("Param7") # change button text
+            self.ui.labelData8.setText("Param8") # change button text
 
 ## Main Loop
 

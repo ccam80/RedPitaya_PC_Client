@@ -51,12 +51,14 @@ class dataThread:
         self.config = { "trigger":0,
                         "mode":0,
                         "CIC_divider":1250,
-                        "fixed_freq":2,
-                        "start_freq":0,
-                        "stop_freq":0,
-                        "a_const":0,
-                        "interval":1,
-                        "b_const":1}
+                        "param_a":5,
+                        "param_b":0,
+                        "param_c":0,
+                        "param_d":0,
+                        "param_e":0,
+                        "param_f":0,
+                        "param_g":0,
+                        "param_h":0}
 
         #Socket config
         self.port = port
@@ -92,7 +94,7 @@ class dataThread:
             logging.debug("message received")
             return True
         except Exception as e:
-            # logging.debug(str(e))
+            #logging.debug(str(e))
             return False
 
     def inform_GUI(self, event):
@@ -120,18 +122,20 @@ class dataThread:
         """Package FPGA_config attribute and send to server"""
 
         # Get config and package into c-readable struct
-        format_ = "HHHhIIIII"
+        format_ = "HHHiiiiiiii"
 
         config_send = struct.pack(format_,
                                   self.config["trigger"],
                                   self.config["mode"],
                                   self.config["CIC_divider"],
-                                  self.config["b_const"],
-                                  self.config["fixed_freq"],
-                                  self.config["start_freq"],
-                                  self.config["stop_freq"],
-                                  self.config["a_const"],
-                                  self.config["interval"]
+                                  self.config["param_a"],
+                                  self.config["param_b"],
+                                  self.config["param_c"],
+                                  self.config["param_d"],
+                                  self.config["param_e"],
+                                  self.config["param_f"],
+                                  self.config["param_g"],
+                                  self.config["param_h"]
                                   )
 
         self.open_socket()
