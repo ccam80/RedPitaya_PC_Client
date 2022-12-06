@@ -394,7 +394,7 @@ class Ui_MainWindow(object):
         self.labelData2.setText(_translate("MainWindow", "Amplitude Out [mV]"))
         self.inputData3.setText(_translate("MainWindow", "0"))
         self.labelData9.setText(_translate("MainWindow", "Number of Samples"))
-        self.labelData3.setText(_translate("MainWindow", "Param3"))
+        self.labelData3.setText(_translate("MainWindow", "Offset Out [mV]"))
         self.Parametric_Feedback.setText(_translate("MainWindow", "Parametric Feedback"))
         self.inputData7.setText(_translate("MainWindow", "0"))
         self.labelData5.setText(_translate("MainWindow", "Param5"))

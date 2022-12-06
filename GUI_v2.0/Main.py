@@ -175,11 +175,16 @@ class Window(QtWidgets.QMainWindow):
                 else:
                     logging.debug("Value out of Range")
                     self.FPGA_config["param_a"] = 42
-                if float(self.ui.inputData2.text()) <= 1000 and float(self.ui.inputData2.text()) > 0:
+                if float(self.ui.inputData2.text()) <= 1000 and float(self.ui.inputData2.text()) > -1000:
                     self.FPGA_config["param_b"] = int(float(self.ui.inputData2.text())*8.192)
                 else:
                     logging.debug("Value out of Range")
                     self.FPGA_config["param_b"] = 0
+                if float(self.ui.inputData3.text()) <= 1000 and float(self.ui.inputData3.text()) > -1000:
+                    self.FPGA_config["param_c"] = int(float(self.ui.inputData3.text())*8.192*32768)
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_c"] = 0 
             
             if self.ui.Frequency_Sweep.isChecked():
                 if int(self.ui.inputData1.text()) <= 1000000 and int(self.ui.inputData1.text()) > 0 and int(self.ui.inputData2.text()) <= 1000000 and int(self.ui.inputData2.text()) > 0:
@@ -197,6 +202,93 @@ class Window(QtWidgets.QMainWindow):
                 else:
                     logging.debug("Value out of Range")
                     self.FPGA_config["param_c"] = 0
+                    
+            if self.ui.Linear_Feedback.isChecked():
+                if float(self.ui.inputData1.text()) <= 10000 and float(self.ui.inputData1.text()) > 0: 
+                    self.FPGA_config["param_a"] = int(float(self.ui.inputData1.text())*8.192)
+                # elif float(self.ui.inputData1.text()) >= -10000 and float(self.ui.inputData1.text()) < 0:  
+                    # self.FPGA_config["param_a"] = int(float(self.ui.inputData1.text()+(2^17)/8192))
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_a"] = 0
+                if float(self.ui.inputData2.text()) <= 5000 and float(self.ui.inputData2.text()) > 0: 
+                    self.FPGA_config["param_b"] = int(float(self.ui.inputData2.text())*8.192)
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_b"] = 0
+                if float(self.ui.inputData3.text()) <= 5000 and float(self.ui.inputData3.text()) > 0: 
+                    self.FPGA_config["param_c"] = int(float(self.ui.inputData3.text()))
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_c"] = 0
+                if float(self.ui.inputData4.text()) <= 1000000 and float(self.ui.inputData4.text()) > 0: 
+                    self.FPGA_config["param_d"] = int(self.ui.inputData4.text())
+                    #[63:10] 2048|0
+                    #[63:9] 1024|0
+                    #[63:8] 512|0
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_d"] = 0
+                if float(self.ui.inputData5.text()) <= 10000 and float(self.ui.inputData5.text()) >= -10000: 
+                        self.FPGA_config["param_e"] = int(self.ui.inputData5.text())
+                        
+                else:
+                        logging.debug("Value out of Range")
+                        self.FPGA_config["param_e"] = 0
+                if int(self.ui.inputData6.text()) <= 1000000 and int(self.ui.inputData6.text()) > 0:
+                    self.FPGA_config["param_f"] = int(float(self.ui.inputData6.text())/ 125.0e6 * (1<<30) + 0.5) #calculate fixed phase
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_f"] = 43
+                    
+            if self.ui.Parametric_Feedback.isChecked():
+                if float(self.ui.inputData1.text()) <= 10000 and float(self.ui.inputData1.text()) > 0: 
+                    self.FPGA_config["param_a"] = int(float(self.ui.inputData1.text())*8.192)
+                # elif float(self.ui.inputData1.text()) >= -10000 and float(self.ui.inputData1.text()) < 0:  
+                    # self.FPGA_config["param_a"] = int(float(self.ui.inputData1.text()+(2^17)/8192))
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_a"] = 0
+                if float(self.ui.inputData2.text()) <= 5000 and float(self.ui.inputData2.text()) > 0: 
+                    self.FPGA_config["param_b"] = int(float(self.ui.inputData2.text())*8.192)
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_b"] = 0
+                if float(self.ui.inputData3.text()) <= 5000 and float(self.ui.inputData3.text()) > 0: 
+                    self.FPGA_config["param_c"] = int(float(self.ui.inputData3.text()))
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_c"] = 0
+                if float(self.ui.inputData4.text()) <= 1000000 and float(self.ui.inputData4.text()) > 0: 
+                    self.FPGA_config["param_d"] = int(self.ui.inputData4.text())
+                    #[63:10] 2048|0
+                    #[63:9] 1024|0
+                    #[63:8] 512|0
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_d"] = 0
+                if float(self.ui.inputData5.text()) <= 10000 and float(self.ui.inputData5.text()) >= -10000: 
+                        self.FPGA_config["param_e"] = int(self.ui.inputData5.text())
+                        
+                else:
+                        logging.debug("Value out of Range")
+                        self.FPGA_config["param_e"] = 0
+                
+                
+            
+# =============================================================================
+#             
+#             #Process frequency sweep information to get interval
+#             start_phase = self.FPGA_config["param_a"]*(2**(self.FPGA_phase_width))/self.FPGA_fclk
+#             stop_phase = self.FPGA_config["param_b"]*(2**(self.FPGA_phase_width))/self.FPGA_fclk
+#             phase_span = np.abs(stop_phase - start_phase)
+#             
+#             #test for 0 phase span -> infinite interval if in different mode
+#             if phase_span:
+#                 self.FPGA_config["interval"] = int(int(self.ui.inputData9.text())/int(self.ui.inputData10.text()) * self.FPGA_fclk / phase_span)
+#             else:
+#                 self.FPGA_config["interval"] = 1
+# =============================================================================
             
         except:
             logging.debug("invalid config data")
@@ -252,7 +344,8 @@ class Window(QtWidgets.QMainWindow):
             self.ui.inputData1.setText("5")
             self.ui.labelData2.setText("Amplitude Out [mV]") # change button text
             self.ui.inputData2.setText("100")
-            self.ui.labelData3.setText("Param3") # change button text
+            self.ui.labelData3.setText("Offset Out [mV]") # change button text
+            self.ui.inputData3.setText("0")
             self.ui.labelData4.setText("Param4") # change button text
             self.ui.labelData5.setText("Param5") # change button text
             self.ui.labelData6.setText("Param6") # change button text
@@ -275,23 +368,23 @@ class Window(QtWidgets.QMainWindow):
         if self.ui.Linear_Feedback.isChecked():
             logging.debug('toggel to Linear_Feedback')
             self.FPGA_config["mode"] = 2
-            self.ui.labelData1.setText("a Constant") # change button text
-            self.ui.labelData2.setText("b Constant") # change button text
-            self.ui.labelData3.setText("Param3") # change button text
-            self.ui.labelData4.setText("Param4") # change button text
-            self.ui.labelData5.setText("Param5") # change button text
+            self.ui.labelData1.setText("Offset Out [mV]") # change button text
+            self.ui.labelData2.setText("Param2") # change button text
+            self.ui.labelData3.setText("Feedback gain IN1[V]*IN2[V]/2^10") # change button text
+            self.ui.labelData4.setText("Gain IN1[V]^2/2^10") # change button text
+            self.ui.labelData5.setText("Gain IN1[V]^3/2^10") # change button text
             self.ui.labelData6.setText("Param6") # change button text
             self.ui.labelData7.setText("Param7") # change button text
             self.ui.labelData8.setText("Param8") # change button text
         if self.ui.Parametric_Feedback.isChecked():
             logging.debug('toggel to Parametric_Feedback')
             self.FPGA_config["mode"] = 3
-            self.ui.labelData1.setText("Param1") # change button text
+            self.ui.labelData1.setText("Offset Out [mV]") # change button text
             self.ui.labelData2.setText("Param2") # change button text
-            self.ui.labelData3.setText("Param3") # change button text
-            self.ui.labelData4.setText("Param4") # change button text
-            self.ui.labelData5.setText("Param5") # change button text
-            self.ui.labelData6.setText("Param6") # change button text
+            self.ui.labelData3.setText("Feedback gain IN1[V]*DDS/2^10") # change button text
+            self.ui.labelData4.setText("Gain IN1[V]^2/2^10") # change button text
+            self.ui.labelData5.setText("Gain IN1[V]^3/2^10") # change button text
+            self.ui.labelData6.setText("Frequency Out [Hz]") # change button text
             self.ui.labelData7.setText("Param7") # change button text
             self.ui.labelData8.setText("Param8") # change button text
 
