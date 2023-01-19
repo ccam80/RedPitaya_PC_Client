@@ -367,7 +367,8 @@ class Window(QtWidgets.QMainWindow):
             self.ui.inputData2.setText("100")
             self.ui.labelData3.setText("Amplitude Out [mV]") # change button text
             self.ui.inputData3.setText("100")
-            self.ui.labelData4.setText("Param4") # change button text
+            self.ui.labelData4.setText("DC Offset [mV]") # change button text
+            self.uilinputData4.setText("0")
             self.ui.labelData5.setText("Param5") # change button text
             self.ui.labelData6.setText("Param6") # change button text
             self.ui.labelData7.setText("Param7") # change button text
