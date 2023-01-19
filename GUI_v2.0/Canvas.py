@@ -1,5 +1,5 @@
 import numpy as np
-from matplotlib.backends.backend_qtagg import (FigureCanvas)
+from matplotlib.backends.backend_qt5agg import (FigureCanvas)
 import matplotlib.figure as mpl_fig
 
 ## This is the FigureCanvas in which the plot is drawn. (according https://stackoverflow.com/questions/57891219/how-to-make-a-fast-matplotlib-live-plot-in-a-pyqt5-gui)

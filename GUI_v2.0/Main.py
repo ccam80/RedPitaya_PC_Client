@@ -2,7 +2,7 @@ import sys
 import numpy as np
 import os
 import logging
-from matplotlib.backends.backend_qtagg import (NavigationToolbar2QT as NavigationToolbar)
+from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as NavigationToolbar)
 from PyQt5.QtCore import QTimer
 from multiprocessing.shared_memory import SharedMemory
 
@@ -175,12 +175,13 @@ class Window(QtWidgets.QMainWindow):
                 else:
                     logging.debug("Value out of Range")
                     self.FPGA_config["param_a"] = 42
-                if float(self.ui.inputData2.text()) <= 1000 and float(self.ui.inputData2.text()) > -1000:
+                if abs(float(self.ui.inputData2.text())) <= 1000:
                     self.FPGA_config["param_b"] = int(float(self.ui.inputData2.text())*8.192)
                 else:
                     logging.debug("Value out of Range")
                     self.FPGA_config["param_b"] = 0
-                if float(self.ui.inputData3.text()) <= 1000 and float(self.ui.inputData3.text()) > -1000:
+                if (abs(float(self.ui.inputData3.text())) + abs(float(self.ui.inputData2.text()))) <= 1000:
+                    #limit DC offset if combined DC + AC stimulation will exceed 1V.
                     self.FPGA_config["param_c"] = int(float(self.ui.inputData3.text())*8.192*32768)
                 else:
                     logging.debug("Value out of Range")
@@ -202,6 +203,12 @@ class Window(QtWidgets.QMainWindow):
                 else:
                     logging.debug("Value out of Range")
                     self.FPGA_config["param_c"] = 0
+                if (abs(float(self.ui.inputData4.text())) + abs(float(self.ui.inputData3.text()))) <= 1000:
+                    #limit DC offset if combined DC + AC stimulation will exceed 1V.
+                    self.FPGA_config["param_d"] = int(float(self.ui.inputData4.text())*8.192*32768)
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_d"] = 0 
                     
             if self.ui.Linear_Feedback.isChecked():
                 if float(self.ui.inputData1.text()) <= 10000 and float(self.ui.inputData1.text()) > 0: 
