@@ -36,6 +36,11 @@ class Window(QtWidgets.QMainWindow):
         self.ui.Frequency_Sweep.released.connect(self.RadioButtonMode)
         self.ui.Linear_Feedback.released.connect(self.RadioButtonMode)
         self.ui.Parametric_Feedback.released.connect(self.RadioButtonMode)
+        self.ui.A_x_plus_b.released.connect(self.RadioButtonMode)
+        self.ui.white_noise.released.connect(self.RadioButtonMode)
+        self.ui.polynomial.released.connect(self.RadioButtonMode)
+        self.ui.CBC.released.connect(self.RadioButtonMode)
+
         
         # Create data processing thread
         self.data = sp.dataThread()
@@ -281,7 +286,99 @@ class Window(QtWidgets.QMainWindow):
                         logging.debug("Value out of Range")
                         self.FPGA_config["param_e"] = 0
                 
+            if self.ui.A_x_plus_b.isChecked():
+    
                 
+                start_phase = float(self.ui.inputData1.text())/ 125.0e6 * (1<<30) + 0.5 #calculate start phase
+                stop_phase = float(self.ui.inputData2.text())/ 125.0e6 * (1<<30) + 0.5 #calculate stop phase
+                phase_span = stop_phase - start_phase
+                    
+                if float(self.ui.inputData1.text()) <= 10000 and float(self.ui.inputData1.text()) > 0: 
+                    self.FPGA_config["param_b"] = self.FloatToFix(float(self.ui.inputData1.text()))
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_b"] = 0
+                    
+                if (self.ui.inputData2.text() != "0"): 
+                    # Calculate interval from start/stop values
+                    astart = self.FloatToFix(float(self.ui.inputData1.text()))
+                    astop = self.FloatToFix(float(self.ui.inputData2.text()))
+                    aspan = astop - astart
+                    ainterval = int(self.ui.inputData9.text())/int(self.ui.inputData10.text())*125.0e6 / aspan
+                    self.FPGA_config["param_d"] = ainterval
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_d"] = 0
+                if float(self.ui.inputData3.text()) <= 5000 and float(self.ui.inputData3.text()) > -5000: 
+                    self.FPGA_config["param_c"] = int(float(self.ui.inputData3.text())*8.192)
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_c"] = 0
+                    
+                if (self.ui.inputData4.text() != "0"):
+                    # Calculate interval from start/stop values
+                    bstart = int(float(self.ui.inputData3.text())*8.192)
+                    bstop = int(float(self.ui.inputData4.text())*8.192)
+                    bspan = bstop - bstart
+                    binterval = int(self.ui.inputData9.text())/int(self.ui.inputData10.text())*125.0e6 / bspan
+                    self.FPGA_config["param_e"] = binterval
+
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_e"] = 0
+                
+                
+            if self.ui.white_noise.isChecked():
+                if float(self.ui.inputData1.text()) <= 10000 and float(self.ui.inputData1.text()) > 0: 
+                    self.FPGA_config["param_c"] = int(float(self.ui.inputData1.text())*8.192)
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_c"] = 0
+                    
+                if (self.ui.inputData2.text() != "0"): 
+                    self.FPGA_config["param_d"] = int(float(self.ui.inputData3.text())*8.192)
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_d"] = 0
+                
+            if self.ui.white_noise.isChecked():
+                if float(self.ui.inputData1.text()) <= 10000 and float(self.ui.inputData1.text()) > 0: 
+                    self.FPGA_config["param_c"] = int(float(self.ui.inputData1.text())*8.192)
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_c"] = 0
+                    
+                if (self.ui.inputData2.text() != "0"): 
+                    self.FPGA_config["param_d"] = int(float(self.ui.inputData3.text())*8.192)
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_d"] = 0
+                    
+            if self.ui.white_noise.isChecked():
+                if float(self.ui.inputData1.text()) <= 10000 and float(self.ui.inputData1.text()) > 0: 
+                    self.FPGA_config["param_c"] = int(float(self.ui.inputData1.text())*8.192)
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_c"] = 0
+                    
+                if (self.ui.inputData2.text() != "0"): 
+                    self.FPGA_config["param_d"] = int(float(self.ui.inputData3.text())*8.192)
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_d"] = 0
+                    
+            if self.ui.white_noise.isChecked():
+                if float(self.ui.inputData1.text()) <= 10000 and float(self.ui.inputData1.text()) > 0: 
+                    self.FPGA_config["param_c"] = int(float(self.ui.inputData1.text())*8.192)
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_c"] = 0
+                    
+                if (self.ui.inputData2.text() != "0"): 
+                    self.FPGA_config["param_d"] = int(float(self.ui.inputData3.text())*8.192)
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_d"] = 0
             
 # =============================================================================
 #             
@@ -368,7 +465,7 @@ class Window(QtWidgets.QMainWindow):
             self.ui.labelData3.setText("Amplitude Out [mV]") # change button text
             self.ui.inputData3.setText("100")
             self.ui.labelData4.setText("DC Offset [mV]") # change button text
-            self.uilinputData4.setText("0")
+            self.ui.inputData4.setText("0")
             self.ui.labelData5.setText("Param5") # change button text
             self.ui.labelData6.setText("Param6") # change button text
             self.ui.labelData7.setText("Param7") # change button text
@@ -393,6 +490,66 @@ class Window(QtWidgets.QMainWindow):
             self.ui.labelData4.setText("Gain IN1[V]^2/2^10") # change button text
             self.ui.labelData5.setText("Gain IN1[V]^3/2^10") # change button text
             self.ui.labelData6.setText("Frequency Out [Hz]") # change button text
+            self.ui.labelData7.setText("Param7") # change button text
+            self.ui.labelData8.setText("Param8") # change button text
+        if self.ui.A_x_plus_b.isChecked():
+            logging.debug('toggel to A_x_plus_b')
+            self.FPGA_config["mode"] = 4
+            self.ui.labelData1.setText("A start") # change button text
+            self.ui.inputData1.setText("1")
+            self.ui.labelData2.setText("A stop (0 for no sweep)") # change button text
+            self.ui.inputData2.setText("0")
+            self.ui.labelData3.setText("B [mV]") # change button text
+            self.ui.inputData3.setText("100")
+            self.ui.labelData4.setText("B stop (0 for no sweep) [mV]") # change button text
+            self.ui.inputData4.setText("0")
+            self.ui.labelData5.setText("Param5") # change button text
+            self.ui.labelData6.setText("Param6") # change button text
+            self.ui.labelData7.setText("Param7") # change button text
+            self.ui.labelData8.setText("Param8") # change button text
+        if self.ui.white_noise.isChecked():
+            logging.debug('toggel to Frequency_Sweep')
+            self.FPGA_config["mode"] = 5
+            self.ui.labelData1.setText("Amplitude") # change button text
+            self.ui.inputData1.setText("0")
+            self.ui.labelData2.setText("DC Offset [mV]") # change button text
+            self.ui.inputData2.setText("0")
+            self.ui.labelData3.setText("Param3") # change button text
+            self.ui.inputData3.setText("0")
+            self.ui.labelData4.setText("Param4") # change button text
+            self.ui.inputData4.setText("0")
+            self.ui.labelData5.setText("Param5") # change button text
+            self.ui.labelData6.setText("Param6") # change button text
+            self.ui.labelData7.setText("Param7") # change button text
+            self.ui.labelData8.setText("Param8") # change button text
+        if self.ui.polynomial.isChecked():
+            logging.debug('toggel to polynomial')
+            self.FPGA_config["mode"] = 6
+            self.ui.labelData1.setText("X^0 coefficient") # change button text
+            self.ui.inputData1.setText("0")
+            self.ui.labelData2.setText("X^1 coefficient") # change button text
+            self.ui.inputData2.setText("0")
+            self.ui.labelData3.setText("X^2 coefficient") # change button text
+            self.ui.inputData3.setText("0")
+            self.ui.labelData4.setText("X^3 coefficient") # change button text
+            self.ui.inputData4.setText("0")
+            self.ui.labelData5.setText("X^4 coefficient") # change button text
+            self.ui.labelData6.setText("Param6") # change button text
+            self.ui.labelData7.setText("Param7") # change button text
+            self.ui.labelData8.setText("Param8") # change button text
+        if self.ui.CBC.isChecked():
+            logging.debug('toggel to CBC')
+            self.FPGA_config["mode"] = 7
+            self.ui.labelData1.setText("None") # change button text
+            self.ui.inputData1.setText("0")
+            self.ui.labelData2.setText("of") # change button text
+            self.ui.inputData2.setText("0")
+            self.ui.labelData3.setText("these") # change button text
+            self.ui.inputData3.setText("0")
+            self.ui.labelData4.setText("do") # change button text
+            self.ui.inputData4.setText("0")
+            self.ui.labelData5.setText("anything") # change button text
+            self.ui.labelData6.setText("Param6") # change button text
             self.ui.labelData7.setText("Param7") # change button text
             self.ui.labelData8.setText("Param8") # change button text
 

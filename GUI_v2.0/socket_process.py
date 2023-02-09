@@ -30,7 +30,7 @@ class StreamToLogger(object):
 class dataThread:
     def __init__(self,
                  port=1001,
-                 ip="192.168.1.100",
+                 ip="192.168.1.3",
                  ):
 
 
