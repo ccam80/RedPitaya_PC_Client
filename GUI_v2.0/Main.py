@@ -6,13 +6,15 @@ from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as Navigati
 from PyQt5.QtCore import QTimer
 from multiprocessing.shared_memory import SharedMemory
 
+from traceback import format_exc
+
 ##Include clases from other files
 from UI import Ui_MainWindow, QtWidgets
 import socket_process as sp
 from Canvas import MyFigureCanvas
 from float_converter import NumpyFloatToFixConverter
-
-
+float_to_fix = NumpyFloatToFixConverter(True, 16, 16)
+float_to_fix(1)
 
     
 class Window(QtWidgets.QMainWindow):
@@ -161,21 +163,12 @@ class Window(QtWidgets.QMainWindow):
     def ButtonPressSend(self):
         """Update FPGA config struct with variables from GUI """
         try:   
-            self.FPGA_config["param_a"] = int(self.ui.inputData1.text())
-            self.FPGA_config["param_b"] = int(self.ui.inputData2.text())
-            self.FPGA_config["param_c"] = int(self.ui.inputData3.text())
-            self.FPGA_config["param_d"] = int(self.ui.inputData4.text())
-            self.FPGA_config["param_e"] = int(self.ui.inputData5.text())
-            self.FPGA_config["param_f"] = int(self.ui.inputData6.text())
-            self.FPGA_config["param_g"] = int(self.ui.inputData7.text())
-            self.FPGA_config["param_h"] = int(self.ui.inputData8.text())
-        
             self.FPGA_config["CIC_divider"] = int(np.floor(125000000 / int(self.ui.inputData10.text())))
             
             # Mode dependent parameter calculation
             
             if self.ui.Fixed_Frequency.isChecked():
-                if int(self.ui.inputData1.text()) <= 1000000 and int(self.ui.inputData1.text()) > 0:
+                if float(self.ui.inputData1.text()) <= 1000 and int(self.ui.inputData1.text()) > 0:
                     self.FPGA_config["param_a"] = int(float(self.ui.inputData1.text())/ 125.0e6 * (1<<30) + 0.5) #calculate fixed phase
                 else:
                     logging.debug("Value out of Range")
@@ -191,7 +184,15 @@ class Window(QtWidgets.QMainWindow):
                 else:
                     logging.debug("Value out of Range")
                     self.FPGA_config["param_c"] = 0 
-            
+                    
+                self.FPGA_config["param_d"] = 0
+                self.FPGA_config["param_e"] = 0
+                self.FPGA_config["param_f"] = 0
+                self.FPGA_config["param_g"] = 0
+                self.FPGA_config["param_h"] = 0
+                logging.debug("Offset: {}".format(self.FPGA_config["param_b"]))
+
+                
             if self.ui.Frequency_Sweep.isChecked():
                 if int(self.ui.inputData1.text()) <= 1000000 and int(self.ui.inputData1.text()) > 0 and int(self.ui.inputData2.text()) <= 1000000 and int(self.ui.inputData2.text()) > 0:
                     start_phase = float(self.ui.inputData1.text())/ 125.0e6 * (1<<30) + 0.5 #calculate start phase
@@ -213,7 +214,11 @@ class Window(QtWidgets.QMainWindow):
                     self.FPGA_config["param_d"] = int(float(self.ui.inputData4.text())*8.192*32768)
                 else:
                     logging.debug("Value out of Range")
-                    self.FPGA_config["param_d"] = 0 
+                    self.FPGA_config["param_d"] = 0              
+                self.FPGA_config["param_e"] = 0
+                self.FPGA_config["param_f"] = 0
+                self.FPGA_config["param_g"] = 0
+                self.FPGA_config["param_h"] = 0
                     
             if self.ui.Linear_Feedback.isChecked():
                 if float(self.ui.inputData1.text()) <= 10000 and float(self.ui.inputData1.text()) > 0: 
@@ -253,6 +258,9 @@ class Window(QtWidgets.QMainWindow):
                     logging.debug("Value out of Range")
                     self.FPGA_config["param_f"] = 43
                     
+                self.FPGA_config["param_g"] = 0
+                self.FPGA_config["param_h"] = 0
+                
             if self.ui.Parametric_Feedback.isChecked():
                 if float(self.ui.inputData1.text()) <= 10000 and float(self.ui.inputData1.text()) > 0: 
                     self.FPGA_config["param_a"] = int(float(self.ui.inputData1.text())*8.192)
@@ -285,16 +293,18 @@ class Window(QtWidgets.QMainWindow):
                 else:
                         logging.debug("Value out of Range")
                         self.FPGA_config["param_e"] = 0
+                        
+                self.FPGA_config["param_f"] = 0                
+                self.FPGA_config["param_g"] = 0
+                self.FPGA_config["param_h"] = 0
+                
                 
             if self.ui.A_x_plus_b.isChecked():
     
-                
-                start_phase = float(self.ui.inputData1.text())/ 125.0e6 * (1<<30) + 0.5 #calculate start phase
-                stop_phase = float(self.ui.inputData2.text())/ 125.0e6 * (1<<30) + 0.5 #calculate stop phase
-                phase_span = stop_phase - start_phase
-                    
-                if float(self.ui.inputData1.text()) <= 10000 and float(self.ui.inputData1.text()) > 0: 
+                                   
+                if float(self.ui.inputData1.text()) <= 20 and float(self.ui.inputData1.text()) > -20:
                     self.FPGA_config["param_b"] = self.FloatToFix(float(self.ui.inputData1.text()))
+
                 else:
                     logging.debug("Value out of Range")
                     self.FPGA_config["param_b"] = 0
@@ -303,30 +313,43 @@ class Window(QtWidgets.QMainWindow):
                     # Calculate interval from start/stop values
                     astart = self.FloatToFix(float(self.ui.inputData1.text()))
                     astop = self.FloatToFix(float(self.ui.inputData2.text()))
-                    aspan = astop - astart
-                    ainterval = int(self.ui.inputData9.text())/int(self.ui.inputData10.text())*125.0e6 / aspan
-                    self.FPGA_config["param_d"] = ainterval
+                    logging.debug("Sweep: A start = {}, A stop = {}".format(astart,astop))
+                    if (astop != 0):
+                        aspan = astop - astart
+                        ainterval = int(self.ui.inputData9.text())/int(self.ui.inputData10.text())*125.0e6 / aspan
+                        logging.debug("A Interval: {}".format(ainterval))
+                        self.FPGA_config["param_d"] = int(ainterval)
+                    else:
+                        self.FPGA_config["param_d"] = 0
                 else:
-                    logging.debug("Value out of Range")
+                    logging.debug("No A sweep chosen")
                     self.FPGA_config["param_d"] = 0
                 if float(self.ui.inputData3.text()) <= 5000 and float(self.ui.inputData3.text()) > -5000: 
-                    self.FPGA_config["param_c"] = int(float(self.ui.inputData3.text())*8.192)
+                    self.FPGA_config["param_c"] = int(float(self.ui.inputData3.text())*8.192*32768)
                 else:
                     logging.debug("Value out of Range")
                     self.FPGA_config["param_c"] = 0
                     
                 if (self.ui.inputData4.text() != "0"):
                     # Calculate interval from start/stop values
-                    bstart = int(float(self.ui.inputData3.text())*8.192)
-                    bstop = int(float(self.ui.inputData4.text())*8.192)
-                    bspan = bstop - bstart
-                    binterval = int(self.ui.inputData9.text())/int(self.ui.inputData10.text())*125.0e6 / bspan
-                    self.FPGA_config["param_e"] = binterval
+                    bstart = int(float(self.ui.inputData3.text())*8.192 * 32768)
+                    bstop = int(float(self.ui.inputData4.text())*8.192 * 32768)
+                    if (bstop != 0):
+                        bspan = bstop - bstart
+                        binterval = int(self.ui.inputData9.text())/int(self.ui.inputData10.text())*125.0e6 / bspan
+                        self.FPGA_config["param_e"] = int(binterval)
+                    else:
+                        self.FPGA_config["param_e"] = 0
 
                 else:
-                    logging.debug("Value out of Range")
+                    logging.debug("No B sweep chosen")
                     self.FPGA_config["param_e"] = 0
                 
+                logging.debug("Offset start: {}, Offset interval: {}".format(self.FPGA_config["param_c"],self.FPGA_config["param_e"]))
+                self.FPGA_config["param_f"] = 0
+                self.FPGA_config["param_g"] = 0
+                self.FPGA_config["param_h"] = 0
+                
                 
             if self.ui.white_noise.isChecked():
                 if float(self.ui.inputData1.text()) <= 10000 and float(self.ui.inputData1.text()) > 0: 
@@ -336,12 +359,41 @@ class Window(QtWidgets.QMainWindow):
                     self.FPGA_config["param_c"] = 0
                     
                 if (self.ui.inputData2.text() != "0"): 
+                    self.FPGA_config["param_d"] = int(float(self.ui.inputData3.text())*8.192*32768)
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_d"] = 0
+                
+                self.FPGA_config["param_a"] = 0
+                self.FPGA_config["param_b"] = 0
+                self.FPGA_config["param_c"] = 0
+                self.FPGA_config["param_d"] = 0
+                self.FPGA_config["param_e"] = 0
+                self.FPGA_config["param_f"] = 0
+                self.FPGA_config["param_g"] = 0
+                self.FPGA_config["param_h"] = 0
+                    
+            if self.ui.polynomial.isChecked():
+                if float(self.ui.inputData1.text()) <= 10000 and float(self.ui.inputData1.text()) > 0: 
+                    self.FPGA_config["param_c"] = int(float(self.ui.inputData1.text())*8.192)
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_c"] = 0
+                    
+                if (self.ui.inputData2.text() != "0"): 
                     self.FPGA_config["param_d"] = int(float(self.ui.inputData3.text())*8.192)
                 else:
                     logging.debug("Value out of Range")
                     self.FPGA_config["param_d"] = 0
                 
-            if self.ui.white_noise.isChecked():
+                self.FPGA_config["param_a"] = 0
+                self.FPGA_config["param_b"] = 0
+                self.FPGA_config["param_e"] = 0
+                self.FPGA_config["param_f"] = 0
+                self.FPGA_config["param_g"] = 0
+                self.FPGA_config["param_h"] = 0
+                
+            if self.ui.CBC.isChecked():
                 if float(self.ui.inputData1.text()) <= 10000 and float(self.ui.inputData1.text()) > 0: 
                     self.FPGA_config["param_c"] = int(float(self.ui.inputData1.text())*8.192)
                 else:
@@ -353,32 +405,14 @@ class Window(QtWidgets.QMainWindow):
                 else:
                     logging.debug("Value out of Range")
                     self.FPGA_config["param_d"] = 0
+                
+                self.FPGA_config["param_a"] = 0
+                self.FPGA_config["param_b"] = 0
+                self.FPGA_config["param_e"] = 0
+                self.FPGA_config["param_f"] = 0
+                self.FPGA_config["param_g"] = 0
+                self.FPGA_config["param_h"] = 0
                     
-            if self.ui.white_noise.isChecked():
-                if float(self.ui.inputData1.text()) <= 10000 and float(self.ui.inputData1.text()) > 0: 
-                    self.FPGA_config["param_c"] = int(float(self.ui.inputData1.text())*8.192)
-                else:
-                    logging.debug("Value out of Range")
-                    self.FPGA_config["param_c"] = 0
-                    
-                if (self.ui.inputData2.text() != "0"): 
-                    self.FPGA_config["param_d"] = int(float(self.ui.inputData3.text())*8.192)
-                else:
-                    logging.debug("Value out of Range")
-                    self.FPGA_config["param_d"] = 0
-                    
-            if self.ui.white_noise.isChecked():
-                if float(self.ui.inputData1.text()) <= 10000 and float(self.ui.inputData1.text()) > 0: 
-                    self.FPGA_config["param_c"] = int(float(self.ui.inputData1.text())*8.192)
-                else:
-                    logging.debug("Value out of Range")
-                    self.FPGA_config["param_c"] = 0
-                    
-                if (self.ui.inputData2.text() != "0"): 
-                    self.FPGA_config["param_d"] = int(float(self.ui.inputData3.text())*8.192)
-                else:
-                    logging.debug("Value out of Range")
-                    self.FPGA_config["param_d"] = 0
             
 # =============================================================================
 #             
@@ -394,8 +428,12 @@ class Window(QtWidgets.QMainWindow):
 #                 self.FPGA_config["interval"] = 1
 # =============================================================================
             
-        except:
+        except Exception as e:
+            logging.debug(e)
+            logging.debug(format_exc())
             logging.debug("invalid config data")
+            logging.debug("Param B: {}".format(self.FPGA_config["param_b"]))
+
         # Send config data to server
         packet = [0, self.FPGA_config, True, [False,0]]
         try:
@@ -552,6 +590,7 @@ class Window(QtWidgets.QMainWindow):
             self.ui.labelData6.setText("Param6") # change button text
             self.ui.labelData7.setText("Param7") # change button text
             self.ui.labelData8.setText("Param8") # change button text
+            
 
 ## Main Loop
 
