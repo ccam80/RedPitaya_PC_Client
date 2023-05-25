@@ -42,7 +42,6 @@ class Window(QtWidgets.QMainWindow):
         self.ui.white_noise.released.connect(self.RadioButtonMode)
         self.ui.polynomial.released.connect(self.RadioButtonMode)
         self.ui.CBC.released.connect(self.RadioButtonMode)
-
         
         # Create data processing thread
         self.data = sp.dataThread()
@@ -168,7 +167,7 @@ class Window(QtWidgets.QMainWindow):
             # Mode dependent parameter calculation
             
             if self.ui.Fixed_Frequency.isChecked():
-                if float(self.ui.inputData1.text()) <= 1000 and int(self.ui.inputData1.text()) > 0:
+                if float(self.ui.inputData1.text()) <= 500000 and int(self.ui.inputData1.text()) > 0:
                     self.FPGA_config["param_a"] = int(float(self.ui.inputData1.text())/ 125.0e6 * (1<<30) + 0.5) #calculate fixed phase
                 else:
                     logging.debug("Value out of Range")
@@ -352,22 +351,20 @@ class Window(QtWidgets.QMainWindow):
                 
                 
             if self.ui.white_noise.isChecked():
-                if float(self.ui.inputData1.text()) <= 10000 and float(self.ui.inputData1.text()) > 0: 
+                if float(self.ui.inputData1.text()) <= 1000 and float(self.ui.inputData1.text()) > 0: 
                     self.FPGA_config["param_c"] = int(float(self.ui.inputData1.text())*8.192)
                 else:
                     logging.debug("Value out of Range")
                     self.FPGA_config["param_c"] = 0
                     
                 if (self.ui.inputData2.text() != "0"): 
-                    self.FPGA_config["param_d"] = int(float(self.ui.inputData3.text())*8.192*32768)
+                    self.FPGA_config["param_d"] = int(float(self.ui.inputData2.text())*8.192*32768)
                 else:
                     logging.debug("Value out of Range")
                     self.FPGA_config["param_d"] = 0
                 
                 self.FPGA_config["param_a"] = 0
                 self.FPGA_config["param_b"] = 0
-                self.FPGA_config["param_c"] = 0
-                self.FPGA_config["param_d"] = 0
                 self.FPGA_config["param_e"] = 0
                 self.FPGA_config["param_f"] = 0
                 self.FPGA_config["param_g"] = 0
@@ -375,20 +372,32 @@ class Window(QtWidgets.QMainWindow):
                     
             if self.ui.polynomial.isChecked():
                 if float(self.ui.inputData1.text()) <= 10000 and float(self.ui.inputData1.text()) > 0: 
-                    self.FPGA_config["param_c"] = int(float(self.ui.inputData1.text())*8.192)
+                    self.FPGA_config["param_e"] = int(float(self.ui.inputData1.text())*8.192*32768)
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_e"] = 0
+                    
+                if (self.ui.inputData2.text() != "0"): 
+                    self.FPGA_config["param_a"] = self.FloatToFix(float(self.ui.inputData2.text()) / 512)
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_a"] = 0
+                
+                if (self.ui.inputData3.text() != ""): 
+                    # 64 is the result of some bit shifting in the multiplication, 0.98631 is an empirically measured correction
+                    self.FPGA_config["param_b"] = self.FloatToFix(float(self.ui.inputData3.text())/(64*0.98631))
+                else:
+                    logging.debug("Value out of Range")
+                    self.FPGA_config["param_b"] = 0
+                    
+                if (self.ui.inputData4.text() != ""): 
+                    # 64 is the result of some bit shifting in the multiplication, 0.99659 is an empirically measured correction
+                    self.FPGA_config["param_c"] = self.FloatToFix(float(self.ui.inputData4.text())/(64*0.96659))
                 else:
                     logging.debug("Value out of Range")
                     self.FPGA_config["param_c"] = 0
-                    
-                if (self.ui.inputData2.text() != "0"): 
-                    self.FPGA_config["param_d"] = int(float(self.ui.inputData3.text())*8.192)
-                else:
-                    logging.debug("Value out of Range")
-                    self.FPGA_config["param_d"] = 0
-                
-                self.FPGA_config["param_a"] = 0
-                self.FPGA_config["param_b"] = 0
-                self.FPGA_config["param_e"] = 0
+
+                self.FPGA_config["param_d"] = 0
                 self.FPGA_config["param_f"] = 0
                 self.FPGA_config["param_g"] = 0
                 self.FPGA_config["param_h"] = 0
@@ -401,7 +410,7 @@ class Window(QtWidgets.QMainWindow):
                     self.FPGA_config["param_c"] = 0
                     
                 if (self.ui.inputData2.text() != "0"): 
-                    self.FPGA_config["param_d"] = int(float(self.ui.inputData3.text())*8.192)
+                    self.FPGA_config["param_d"] = int(float(self.ui.inputData2.text())*8.192)
                 else:
                     logging.debug("Value out of Range")
                     self.FPGA_config["param_d"] = 0
