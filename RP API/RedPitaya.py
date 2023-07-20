@@ -26,6 +26,7 @@ default_CH1_example = {"mode": "fixed_frequency",
                        "artificial_nonlinearity_gain1": 0,
                        "input_channel": 1}
 
+
 system_settings_start = {'continuous_output': 0,
                          'ip_address': "192.168.1.3",
                          'sampling_rate': 'slow'}
@@ -65,6 +66,7 @@ class RedPitaya():
                 self.CH2.frequency_sweep = False
 
 
+
         elif isinstance(frequency, (list, tuple)):
             if len(frequency) > 2:
                 print("Warning: 'frequency' list or tuple should contain at most two elements. Extra elements will be ignored.")
@@ -80,6 +82,7 @@ class RedPitaya():
                 self.CBC.f_start = frequency[0]
                 self.CBC.f_stop = frequency[1]
                 self.CBC.f_sweep = True
+
 
         else:
             raise TypeError("'frequency' must be a single float or a list/tuple of two floats.")

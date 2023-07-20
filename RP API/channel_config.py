@@ -77,6 +77,7 @@ limits = {"mode": channel_modes,
           "artificial_nonlinearity_gain1":  [-1000,1000],
           "input_channel": [1,2]}
 
+
 class channel_config(dict):
 
     def __init__(self, default_values=None):
