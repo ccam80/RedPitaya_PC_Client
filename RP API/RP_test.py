@@ -14,6 +14,6 @@ RP.set_frequency(1, [1000,200000])
 RP.CH1.frequency_sweep
 
 RP.CBC.polynomial_target = "displacement"
-RP.CBC.polynomial_target = "blargh"
+# RP.CBC.polynomial_target = "blargh"
 RP.CH1.mode = "linear_feedback"
-RP.CH1.mode = "blarg"
+# RP.CH1.mode = "blarg"
