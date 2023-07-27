@@ -12,6 +12,7 @@ called as an attribute, for convenience in API calls.
 Overrides __setitem__ to not allow any non-specified keys to be added.
 
 """
+from shared_config import *
 
 CBC_keys = ["CBC_enabled",
             "input_order",
@@ -21,9 +22,9 @@ CBC_keys = ["CBC_enabled",
             "r_hat_start",
             "r_hat_stop",
             "r_hat_sweep",
-            "f_start",
-            "f_stop",
-            "f_sweep",
+            "frequency_start",
+            "frequency_stop",
+            "frequency_sweep",
             "A_start",
             "A_stop",
             "A_sweep",
@@ -36,6 +37,13 @@ CBC_keys = ["CBC_enabled",
             "D_start",
             "D_stop",
             "D_sweep"]
+
+CBC_sweepable = ["r_hat",
+              "f",
+              "A",
+             "B",
+             "C",
+             "D"]
 
 datatypes = {"CBC_enabled": bool,
              "input_order": int,
@@ -60,6 +68,8 @@ datatypes = {"CBC_enabled": bool,
              "D_start": float,
              "D_stop": float,
              "D_sweep": bool}
+
+
 
 limits = {"CBC_enabled": [0, 1],
           "input_order": [1, 2],
@@ -113,7 +123,8 @@ class CBC_config(dict):
         value checks before setting any items. """
 
         if key in CBC_keys:
-
+            self.choose_external_input_type(key, value)    
+    
             if type(value) == datatypes[key]:
                 if self.is_within_limits(value, limits[key]):
                     super().__setitem__(key, value)
@@ -140,7 +151,22 @@ class CBC_config(dict):
         else:
             if len(limits) != 2:
                 raise ValueError("Limits list must contain exactly two items.")
-
             lower_limit, upper_limit = sorted(limits)
-
             return lower_limit <= value <= upper_limit
+    
+    def choose_external_input_type(self, key, value):
+        if key == "velocity_external" and value == True:
+            self["displacement_external"] = False
+            print("Warning: key '*displacement_external' set to 'False'.")
+        elif key == "displacement_external" and value == True:
+            self["velocity_external"] = False
+            print("Warning: key '*velocity_external' set to 'False'.")
+    
+    def set_param(self, param_name, param_val):
+        if param_name in CBC_sweepable:
+            set_value_or_sweep(self, param_name, param_val, CBC_sweepable)
+        else:
+            self[param_name] = param_val
+
+    
+    

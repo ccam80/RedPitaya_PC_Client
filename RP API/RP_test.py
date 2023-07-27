@@ -16,4 +16,18 @@ RP.CH1.frequency_sweep
 RP.CBC.polynomial_target = "displacement"
 # RP.CBC.polynomial_target = "blargh"
 RP.CH1.mode = "linear_feedback"
-# RP.CH1.mode = "blarg"
+
+
+
+
+### Typical go-through of a sweep
+# Set measurement controls (Sampling rate, sampling period, etc)
+# Choose channels (turn off CBC)                                    RP.set_output(output_type, optional: mode)
+# Set the input channels                                            RP.CH1.set_input_channel(input_num)
+# Set the output mode(s)                                            RP.CH1.set_mode(mode_type, optional: parameters)
+# Set the parameters for corresponding output(s)                    RP.CH1.set_params(parameter_name, value)
+
+# Send config to FPGA
+# Conduct experiment/save measurements
+# Update parameters, repeat
+
