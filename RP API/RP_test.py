@@ -23,7 +23,7 @@ Created on Thu Jul 20 21:55:49 2023
 # RP.set_output("CBC")                                          # Choose channels (turn off CBC)
 # RP.CBC.set_params_CBC(A=5, B=[4,10])                          # Set the parameters for corresponding output(s)
 # for val in range(10):
-#     RP.CH1.set_params_linear(rhat=val)                        # Set the parameters for corresponding output(s)
+#     RP.CBC.set_params_linear(rhat=val)                        # Set the parameters for corresponding output(s)
 #     ...                                                       # Send configuration to FPGA 
 #     ...                                                       # Conduct/save experiments
 #     ...                                                       # Post-analysis (if required)
