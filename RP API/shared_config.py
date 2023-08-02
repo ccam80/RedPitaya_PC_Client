@@ -10,70 +10,44 @@ for more efficient usage of various methods, similar in functionality for both
 classes. 
 """
 
-def myFunc(x):
-    return 2*x + 1
-
-# def set_sweep(self, channel, param, sweep_range):
-#     # TODO: "f" and "frequency" used for CBC and channel respectively. 
-#     # Should be unified into just "f" for simplicity.
-    
-    
-#     if channel not in [1, 2, "CBC", "Both"]:
-#         raise ValueError("Invalid 'channel' value. It must be 1, 2, or 'Both'.")
-#     elif channel in [1, 2, "Both"] and param not in sweep_CHx:
-#         raise ValueError("Invalid 'param' value. It must be 'A', 'B', or 'frequency'")
-#     elif channel == "CBC" and param not in sweep_CBC:
-#         raise ValueError("Invalid 'param' value. It must be 'A', 'B', 'C', 'D', 'frequency', or 'r_hat.")
-#     else:
-#         p_start = param + "_start"
-#         p_stop = param + "_stop"
-#         p_sweep = param + "_sweep"
-      
-    
-#     if isinstance(sweep_range, (float, int)):
-#         print("Warning: Only one value found within 'sweep_range'. Parameter to be held constant and sweep turned off.")
-#         start = sweep_range
-#         stop = 0
-#         sweep = False
-        
-#     if isinstance(sweep_range, (list, tuple)):
-#         if len(sweep_range) > 2:
-#             print("Warning: 'sweep_range' list or tuple should contain at most two elements. Extra elements will be ignored.")
-#             sweep_range = sweep_range[0:2]
-#         if len(sweep_range) == 1 or len(set(sweep_range)) == 1:
-#             print("Warning: Only one unique value found within 'sweep_range'. Parameter to be held constant and sweep turned off.")
-#             start = sweep_range[0]
-#             stop = 0
-#             sweep = False
-#         else:
-#             start = sweep_range[0]
-#             stop = sweep_range[1]
-#             sweep = True
-                    
-
-#     if channel == "Both":
-#         self.CH1[p_start] = start
-#         self.CH1[p_stop] = stop
-#         self.CH1[p_sweep] = sweep
-#         self.CH2[p_start] = start
-#         self.CH2[p_stop] = stop
-#         self.CH2[p_sweep] = sweep
-#     elif channel == 1:
-#         self.CH1[p_start] = start
-#         self.CH1[p_stop] = stop
-#         self.CH1[p_sweep] = sweep
-#     elif channel == 2:
-#         self.CH2[p_start] = start
-#         self.CH2[p_stop] = stop
-#         self.CH2[p_sweep] = sweep
-#     elif channel == "CBC":
-#         self.CBC[p_start] = start
-#         self.CBC[p_stop] = stop
-#         self.CBC[p_sweep] = sweep
-
-
 
 def set_value_or_sweep(self, param, sweep_range, sweepable_params):
+    """
+    This is a function shared by the CBC_config.py and channel_config.py modules.
+    
+    If a certain parameter type has options for sweeps (i.e. frequency), this 
+    function will
+    1) Determine whether one, two, or more inputs are given
+    2) Sets logic to set the intital, final, and sweep values based off of input(s)
+    
+    The "param" argument should be given as the name of the variable to be 
+    changed. In the case of a sweepable parameter, you should use the parameter \
+    name without the "_start", etc. 
+    
+    
+    Usage:
+        RP.CH1.set_params_linear(A=1)
+            This will set the "A" pameter to be a constant of 1
+            -> A_start = 1
+            -> A_stop = 0
+            -> A_sweep = False
+        RP.CH1.set_params_linear(A=[1, 100])
+            This will set the "A" pameter to be swept from 1 to 100
+            -> A_start = 1
+            -> A_stop = 100
+            -> A_sweep = True
+        RP.CH1.set_params_linear(A=[1, 1])
+            Repeated entries are also assumed to be constant. 
+            -> A_start = 1
+            -> A_stop = 0
+            -> A_sweep = False
+        RP.CH1.set_params_linear(A=[1, 100, 200])
+            Entries past two elements are ignored. 
+            If the third (onward) entries are unique, these are still ignored. 
+            -> A_start = 1
+            -> A_stop = 100
+            -> A_sweep = True        
+    """
     if param not in sweepable_params:
         raise ValueError("Invalid 'param' value. Please check that the parameter selected is valid for the output type.")
     

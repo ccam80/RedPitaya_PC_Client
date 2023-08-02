@@ -195,6 +195,23 @@ class RedPitaya():
 
 
     def set_output(self, output_mode, *CHx_mode):
+        """
+        Determines whether the output channels are configured as "CBC" or as 
+        "Channels". Different operating modes will use different parameter 
+        structures. Turning on an output type will disable the other.
+        
+        If using the channel outputs, an optional mode can be given. 
+        
+        Usage:            
+            RP.set_output("CBC")
+                -> Sets the outputs to "CBC"
+                
+            RP.set_output("CHx")
+                -> Sets the outputs to "Channels"
+                
+            RP.set_output("CHx", "linear")
+                -> Sets the outputs to "Channels", using the linear feedback mode.
+        """
         if output_mode == "CHx":
             if len(CHx_mode) > 0:
                 if len(CHx_mode) == 1:

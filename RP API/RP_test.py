@@ -3,6 +3,31 @@
 Created on Thu Jul 20 21:55:49 2023
 
 @author: cca78
+
+############ Example of a typical experimental run-through ############
+# RP = RedPitaya()                                              # Intiialise RP object
+# ...                                                           # Set measurement controls (Sampling rate, sampling period, etc)
+# RP.set_output("CHx")                                          # Choose channels (turn off CBC)
+# RP.CH1.set_mode("linear")                                     # Set the output mode(s)
+# RP.CH1.set_params_linear(A=1, B=[2, 5], input_channel=1):     # Set the parameters for corresponding output(s)
+# for a in range(10):
+#     RP.CH1.set_params_linear(A=a)                             # Set the parameters for corresponding output(s)
+#     ...                                                       # Send configuration to FPGA 
+#     ...                                                       # Conduct/save experiments
+#     ...                                                       # Post-analysis (if required)
+############ End of example ############
+
+############ Example of a typical experimental run-through ############
+# RP = RedPitaya()                                              # Intiialise RP object
+# ...                                                           # Set measurement controls (Sampling rate, sampling period, etc)
+# RP.set_output("CBC")                                          # Choose channels (turn off CBC)
+# RP.CBC.set_params_CBC(A=5, B=[4,10])                          # Set the parameters for corresponding output(s)
+# for val in range(10):
+#     RP.CH1.set_params_linear(rhat=val)                        # Set the parameters for corresponding output(s)
+#     ...                                                       # Send configuration to FPGA 
+#     ...                                                       # Conduct/save experiments
+#     ...                                                       # Post-analysis (if required)
+############ End of example ############
 """
 
 from RedPitaya import RedPitaya
@@ -17,17 +42,4 @@ RP.CBC.polynomial_target = "displacement"
 # RP.CBC.polynomial_target = "blargh"
 RP.CH1.mode = "linear_feedback"
 
-
-
-
-### Typical go-through of a sweep
-# Set measurement controls (Sampling rate, sampling period, etc)
-# Choose channels (turn off CBC)                                    RP.set_output(output_type, optional: mode)
-# Set the input channels                                            RP.CH1.set_input_channel(input_num)
-# Set the output mode(s)                                            RP.CH1.set_mode(mode_type, optional: parameters)
-# Set the parameters for corresponding output(s)                    RP.CH1.set_params(parameter_name, value)
-
-# Send config to FPGA
-# Conduct experiment/save measurements
-# Update parameters, repeat
-
+RP.CH1.set_params_cubic()
