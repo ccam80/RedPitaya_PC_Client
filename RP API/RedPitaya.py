@@ -4,9 +4,9 @@ Created on Thu Jul 20 16:50:13 2023
 
 @author: cca78
 """
-from channel_config import channel_config
-from CBC_config import CBC_config
-from system_config import system_config
+from channel import channel
+from CBC import CBC
+from system import system
 
 default_CH1_example = {"mode": "fixed_frequency",
                        "frequency_start": 100,
@@ -51,12 +51,13 @@ class RedPitaya():
 
     def __init__(self):
 
-        self.CH1 = channel_config(default_CH1_example)
-        self.CH2 = channel_config()
-        self.CBC = CBC_config()
+        self.CH1 = channel(default_CH1_example)
+        self.CH2 = channel()
+        self.CBC = CBC()
+        self.system = system()
 
         # Chris to insert connection to network stuff here
-        
+
     def set_frequency(self, channel, frequency):
         """Assume a fixed frequency if someone is calling "set_frequency" with
         only one frequency argument. If argument is a tuple or list of 2,
@@ -98,17 +99,17 @@ class RedPitaya():
 
         else:
             raise TypeError("'frequency' must be a single float or a list/tuple of two floats.")
-            
+
     ### set_mode - made redundant through channel_config functions.
     # def set_mode(self, channel, mode, params=None):
-    #     """ 
-    #     Sets an output mode for a determined channel. 
+    #     """
+    #     Sets an output mode for a determined channel.
     #     """
     #     if channel not in [1, 2, "CBC", "Both"]:
     #         raise ValueError("Invalid 'channel' value. It must be 1, 2, or 'Both'.")
     #     if channel == "CBC":
     #         raise ValueError("Output mode cannot be set for CBC. It must be 1, 2, or 'Both'.")
-        
+
     #     if channel == "Both":
     #         self.CH1.mode = mode
     #         self.CH2.mode = mode
@@ -116,13 +117,13 @@ class RedPitaya():
     #         self.CH1.mode = mode
     #     elif channel == 2:
     #         self.CH2.mode = mode
-                  
+
     ### set_sweep - made redundant through shared_config functions.
     # def set_sweep(self, channel, param, sweep_range):
-    #     # TODO: "f" and "frequency" used for CBC and channel respectively. 
+    #     # TODO: "f" and "frequency" used for CBC and channel respectively.
     #     # Should be unified into just "f" for simplicity.
-        
-        
+
+
     #     if channel not in [1, 2, "CBC", "Both"]:
     #         raise ValueError("Invalid 'channel' value. It must be 1, 2, or 'Both'.")
     #     elif channel in [1, 2, "Both"] and param not in sweep_CHx:
@@ -133,14 +134,14 @@ class RedPitaya():
     #         p_start = param + "_start"
     #         p_stop = param + "_stop"
     #         p_sweep = param + "_sweep"
-          
-        
+
+
     #     if isinstance(sweep_range, (float, int)):
     #         print("Warning: Only one value found within 'sweep_range'. Parameter to be held constant and sweep turned off.")
     #         start = sweep_range
     #         stop = 0
     #         sweep = False
-            
+
     #     if isinstance(sweep_range, (list, tuple)):
     #         if len(sweep_range) > 2:
     #             print("Warning: 'sweep_range' list or tuple should contain at most two elements. Extra elements will be ignored.")
@@ -154,8 +155,8 @@ class RedPitaya():
     #             start = sweep_range[0]
     #             stop = sweep_range[1]
     #             sweep = True
-                        
-    
+
+
     #     if channel == "Both":
     #         self.CH1[p_start] = start
     #         self.CH1[p_stop] = stop
@@ -175,13 +176,13 @@ class RedPitaya():
     #         self.CBC[p_start] = start
     #         self.CBC[p_stop] = stop
     #         self.CBC[p_sweep] = sweep
-            
-    
+
+
     def choose_external_input_type(self, target):
         """
-        Determines whether the external input is given as a displacement or 
-        velocity signal. This function should be used to protect against 
-        setting both to "True" at any given time. 
+        Determines whether the external input is given as a displacement or
+        velocity signal. This function should be used to protect against
+        setting both to "True" at any given time.
         """
         if target in ["displacement", "disp"]:
             self.CBC["velocity_external"] = False
@@ -196,19 +197,19 @@ class RedPitaya():
 
     def set_output(self, output_mode, *CHx_mode):
         """
-        Determines whether the output channels are configured as "CBC" or as 
-        "Channels". Different operating modes will use different parameter 
+        Determines whether the output channels are configured as "CBC" or as
+        "Channels". Different operating modes will use different parameter
         structures. Turning on an output type will disable the other.
-        
-        If using the channel outputs, an optional mode can be given. 
-        
-        Usage:            
+
+        If using the channel outputs, an optional mode can be given.
+
+        Usage:
             RP.set_output("CBC")
                 -> Sets the outputs to "CBC"
-                
+
             RP.set_output("CHx")
                 -> Sets the outputs to "Channels"
-                
+
             RP.set_output("CHx", "linear")
                 -> Sets the outputs to "Channels", using the linear feedback mode.
         """
@@ -223,10 +224,10 @@ class RedPitaya():
                 elif len(CHx_mode) > 2:
                     print("Warning: Only first two '*CHx_mode' arguments are considered. Additional arguments will be ignored.")
                     CH1_mode = CHx_mode[0]
-                    CH2_mode = CHx_mode[1]   
+                    CH2_mode = CHx_mode[1]
                 self.CH1["mode"] = CH1_mode
                 self.CH2["mode"] = CH2_mode
-            self.CBC["CBC_enabled"] = False            
+            self.CBC["CBC_enabled"] = False
         elif output_mode =="CBC":
             if len(CHx_mode) > 0:
                 print("Warning: '*CHx_mode' arguments are not used in CBC mode, and will be ignored.")
@@ -235,16 +236,3 @@ class RedPitaya():
             self.CBC["CBC_enabled"] = True
         else:
             raise ValueError("'output_mode' must be either 'CHx' or 'CBC'.")
-    
-    
-    
-    
-
-        
-    
-
-   
-            
-    
-    
-    

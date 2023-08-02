@@ -12,7 +12,7 @@ Created on Thu Jul 20 21:55:49 2023
 # RP.CH1.set_params_linear(A=1, B=[2, 5], input_channel=1):     # Set the parameters for corresponding output(s)
 # for a in range(10):
 #     RP.CH1.set_params_linear(A=a)                             # Set the parameters for corresponding output(s)
-#     ...                                                       # Send configuration to FPGA 
+#     ...                                                       # Send configuration to FPGA
 #     ...                                                       # Conduct/save experiments
 #     ...                                                       # Post-analysis (if required)
 ############ End of example ############
@@ -24,7 +24,7 @@ Created on Thu Jul 20 21:55:49 2023
 # RP.CBC.set_params_CBC(A=5, B=[4,10])                          # Set the parameters for corresponding output(s)
 # for val in range(10):
 #     RP.CBC.set_params_linear(rhat=val)                        # Set the parameters for corresponding output(s)
-#     ...                                                       # Send configuration to FPGA 
+#     ...                                                       # Send configuration to FPGA
 #     ...                                                       # Conduct/save experiments
 #     ...                                                       # Post-analysis (if required)
 ############ End of example ############
