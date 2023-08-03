@@ -51,13 +51,23 @@ class RedPitaya():
 
     def __init__(self):
 
-        self.CH1 = channel(default_CH1_example)
+        # self.CH1 = channel(default_CH1_example)
+        self.CH1 = channel()
         self.CH2 = channel()
         self.CBC = CBC()
         self.system = system()
 
         # Chris to insert connection to network stuff here
-
+        
+        
+    def reset_config(self, channel):
+        if channel == "CBC":
+            self.CBC = CBC()
+        elif channel == "CH1":
+            self.CH1 = channel()
+        elif channel == "CH1":
+            self.CH2 = channel()
+    
     def set_frequency(self, channel, frequency):
         """Assume a fixed frequency if someone is calling "set_frequency" with
         only one frequency argument. If argument is a tuple or list of 2,
@@ -177,7 +187,7 @@ class RedPitaya():
     #         self.CBC[p_stop] = stop
     #         self.CBC[p_sweep] = sweep
 
-
+    # TODO: probably redundannt.
     def choose_external_input_type(self, target):
         """
         Determines whether the external input is given as a displacement or
@@ -194,7 +204,7 @@ class RedPitaya():
             raise ValueError("'target' must be either 'displacement' or 'velocity'.")
 
 
-
+    # TODO: probably redundannt.
     def set_output(self, output_mode, *CHx_mode):
         """
         Determines whether the output channels are configured as "CBC" or as
@@ -236,3 +246,32 @@ class RedPitaya():
             self.CBC["CBC_enabled"] = True
         else:
             raise ValueError("'output_mode' must be either 'CHx' or 'CBC'.")
+            
+            
+   
+    def set_params_from_dict(self, channel, dicts):
+        """
+        Takes a dictionary of {key: value} corresponding to parameter values for
+        a given channel, and sets them in the relevant %%%_config dictionaries. 
+        The intended usage of this function is to take parameter values from the GUI .
+        """
+        # TODO: @Chris - Would we need a function that takes GUI elements and 
+        # saves them within a dictionary for this function? 
+        # Additionally, for two output channels the function would need to know
+        # to update both CH1 and CH2.
+        
+        if not dicts:
+            raise ValueError("'dicts' is empty, meaning no parameters have been set.")
+        
+        
+        if channel == "CH1":
+            for key, value in dicts.items():
+                self.CH1.config[key] = value
+        elif channel == "CH2":
+            for key, value in dicts.items():
+                self.CH2.config[key] = value  
+        elif channel == "CBC":
+            for key, value in dicts.items():
+                self.CBC.config[key] = value  
+        else:
+            raise KeyError("'channel' must be either 'CH1', 'CH2' or 'CBC'.")

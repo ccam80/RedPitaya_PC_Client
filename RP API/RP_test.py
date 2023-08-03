@@ -34,12 +34,18 @@ from RedPitaya import RedPitaya
 
 RP = RedPitaya()
 
-RP.set_frequency('CBC', 1000)
-RP.set_frequency(1, [1000,200000])
-RP.CH1.frequency_sweep
 
-RP.CBC.polynomial_target = "displacement"
-# RP.CBC.polynomial_target = "blargh"
-RP.CH1.mode = "linear_feedback"
+# RP.set_frequency('CBC', 1000)
+# RP.set_frequency(1, [1000,200000])
+# RP.CH1.frequency_sweep
 
-RP.CH1.set_params_cubic()
+# RP.CBC.polynomial_target = "displacement"
+# # RP.CBC.polynomial_target = "blargh"
+# RP.CH1.mode = "linear_feedback"
+
+# RP.CH1.set_params_cubic()
+
+
+
+RP.CBC.set_params_CBC(A=5, B=[5,3], kp=5, C=21)
+RP.CBC.set_params_CBC(A=None, B=[5,3], kp=5, C=21)

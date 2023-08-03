@@ -10,12 +10,34 @@ Under-the-hood functions which take user inputs from RedPitaya.py and modify the
 CBC_config dictionary values accordingly
 """
 from CBC_config import CBC_config
+from utils import fixed_or_sweep
+
+CBC_sweepable = ["r_hat",
+              "f",
+              "A",
+             "B",
+             "C",
+             "D"]
 
 class CBC:
 
     def __init__(self):
-        config = CBC_config()
-
+        self.config = CBC_config()
+        
+    def print_config(self):
+        for key, value in self.config.items():
+            print(key,":", value)
+            
+    # def reset_config(self):
+    #     for key in self.config.keys():            
+    #         if isinstance(self.config[key], bool):
+    #             self.config[key] = False
+    #         elif isinstance(self.config[key], (float, int)):
+    #             self.config[key] = 0
+    #         elif isinstance(self.config[key], str):
+    #             self.config[key] = ""
+            
+            
     def choose_external_input_type(self, key, value):
         """
         This function configures whether the input to the RP is of a certain type.
@@ -59,11 +81,28 @@ class CBC:
         updated.
         """
         if param_name in CBC_sweepable:
-            set_value_or_sweep(self, param_name, param_val, CBC_sweepable)
+            start, stop, sweep = fixed_or_sweep(param_name, param_val, CBC_sweepable)
+            self.config[param_name + "_start"] = start
+            self.config[param_name + "_stop"] = stop
+            self.config[param_name + "_sweep"] = sweep
         else:
-            self[param_name] = param_val
+            self.config[param_name] = param_val
+            
+            
+            
+    def set_external(self, external_input):
+        if external_input == "displacement":
+            self.config["displacement_external"] = True
+            self.config["velocity_external"] = False            
+        elif external_input == "velocity":
+            self.config["displacement_external"] = False
+            self.config["velocity_external"] = True
+        else:
+            raise ValueError("input type '%s' is invalid. Use either 'displacement' or 'velocity'")
 
-    def set_params_CBC(self, **kwargs):
+
+
+    def set_params_CBC(self, A=None, B=None, C=None, D=None, rhat=None, kp=None, kd=None, frequency=None, polynomial_target=None, external=None, input_order=None):
         """
         Sets the parameters for the CBC output type
         Coefficients are of the mathematical form of:
@@ -102,24 +141,27 @@ class CBC:
                 -> displacement_external = True
                 -> velocity_external = False
                 -> All other parameters are ignored
-        """
-        CBC_keys = {"A", "B", "C", "D", "rhat", "frequency", "polynomial_target", "external", "input_order"}
-        for key, value in kwargs.items():
-            if key == "external":
-                if value == "displacement":
-                    self.set_param("displacement_external", True)
-                    CBC_keys.remove(key)
-                elif value == "velocity":
-                    self.set_param("velocity_external", True)
-                    CBC_keys.remove(key)
-                else:
-                    print("Warning: value '%s' is not valid for key '%s', and will be ignored." % (value, key))
-            elif key in CBC_keys:
-                self.set_param(key, value)
-                CBC_keys.remove(key)
-            else:
-                # TODO: Could throw a KeyError(?) telling that this key is not used for the linear mode
-                print("Warning: key '%s' is not used in CBC, and will be ignored." % key)
-
-        for key in CBC_keys:
-            print("Warning: key '%s' not found. Value will remain unchanged" % key)
+        """            
+        if A:
+            self.set_param("A", A)
+        if B:
+            self.set_param("B", B)
+        if C:
+            self.set_param("C", C)
+        if D:
+            self.set_param("D", D)
+        if rhat:
+            self.set_param("rhat", rhat)
+        if frequency:
+            self.set_param("frequency", frequency)
+        if kp:
+            self.set_param("kp", kp)
+        if kd:
+            self.set_param("kd", kd)
+        if polynomial_target:
+            self.set_param("polynomial_target", polynomial_target)
+        if external:
+            self.set_external(external)
+        if input_order:
+            self.set_param("input_order", input_order)
+        

@@ -6,13 +6,23 @@ Created on Thu Aug  3 10:11:23 2023
 """
 
 from channel_config import channel_config
-from utils import
+from utils import fixed_or_sweep
+
+channel_sweepable = ["frequency",
+                      "a",
+                     "b"]
 
 class channel:
 
-    def __init__(self):
-        config = channel_config()
-
+    def __init__(self, default_values=None):
+        self.config = channel_config(default_values)
+        self.sweepable = channel_sweepable
+    
+    def print_config(self):
+        for key, value in self.config.items():
+            print(key,":", value)
+    
+    
     def set_mode(self, mode, **kwargs):
         """
         Sets an output mode for a determined channel.
@@ -54,7 +64,7 @@ class channel:
             # If there are any keyword-argument inputs, then the relevant
             # set_param_(mode) function is called to set these parameters.
             if mode == "linear_feedback":
-                self.set_params_linear(**kwargs)
+                self.set_params_linear(a=kwargs["a"], b=kwargs["b"], input_channel=kwargs["input_channel"])
             elif mode == "cubic":
                 self.set_params_cubic(**kwargs)
             elif mode == "white_noise":
@@ -101,12 +111,15 @@ class channel:
                 -> A_sweep = True
         """
         if param_name in channel_sweepable:
-            set_value_or_sweep(self, param_name, param_val, channel_sweepable)
+            start, stop, sweep = fixed_or_sweep(param_name, param_val, channel_sweepable)
+            self.config[param_name + "_start"] = start
+            self.config[param_name + "_stop"] = stop
+            self.config[param_name + "_sweep"] = sweep
         else:
-            self[param_name] = param_val
+            self.config[param_name] = param_val
 
 
-    def set_params_linear(self, **kwargs):
+    def set_params_linear(self, a=None, b=None, input_channel=None):
         """
         Sets the parameters for the linear output type
         Coefficients are of the mathematical form of:
@@ -121,23 +134,23 @@ class channel:
         Irrelevant arguments outside of the possible keys will be ignored.
 
         Usage:
-            RP.CH1.set_params_linear(A=1)
-                -> A_start = 1
-                -> A_stop = 0
-                -> A_sweep = False
+            RP.CH1.set_params_linear(a=1)
+                -> a_start = 1
+                -> a_stop = 0
+                -> a_sweep = False
                 -> All other parameters are ignored.
 
-            RP.CH1.set_params_linear(A=[1, 5])
-                -> A_start = 1
-                -> A_stop = 5
-                -> A_sweep = True
+            RP.CH1.set_params_linear(a=[1, 5])
+                -> a_start = 1
+                -> a_stop = 5
+                -> a_sweep = True
                 -> All other parameters are ignored.
 
-            RP.CH1.set_params_linear(A=1, B=5)
-                -> A_start = 1
-                -> B_start = 5
-                -> A_stop, B_stop = 0
-                -> A_sweep, B_sweep = False
+            RP.CH1.set_params_linear(a=1, b=5)
+                -> a_start = 1
+                -> b_start = 5
+                -> a_stop, b_stop = 0
+                -> b_sweep, b_sweep = False
                 -> All other parameters are ignored.
 
             RP.CH1.set_params_linear(input_channel=2)
@@ -146,172 +159,138 @@ class channel:
         """
 
         lin_keys = {"A", "B", "input_channel"}
-        for key, value in kwargs.items():
-            if key in lin_keys:
-                self.set_param(key, value)
-                lin_keys.remove(key)
-            else:
-                # TODO: Could throw a KeyError(?) telling that this key is not used for the linear mode
-                print("Warning: key '%s' is not used in linear mode, and will be ignored." % key)
+        if a:
+            self.set_param("a", a)
+        if b:
+            self.set_param("b", b)
+        if input_channel:
+            self.set_param("input_channel", input_channel)
+        
+        # for key, value in kwargs.items():
+        #     if key in lin_keys:
+        #         self.set_param(key, value)
+        #         lin_keys.remove(key)
+        #     else:
+        #         # TODO: Could throw a KeyError(?) telling that this key is not used for the linear mode
+        #         print("Warning: key '%s' is not used in linear mode, and will be ignored." % key)
 
-        for key in lin_keys:
-            print("Warning: key '%s' not found. Value will remain unchanged" % key)
+        # for key in lin_keys:
+        #     print("Warning: key '%s' not found. Value will remain unchanged" % key)
 
 
-    def set_params_cubic(self, **kwargs):
+    def set_params_cubic(self, A=None, B=None, C=None, D=None, input_channel=None):
         """
         Sets the parameters for the linear output type
         Coefficients are of the mathematical form of:
             y = Ax^3 + Bx^2 + Cx + D
-                where:
-                    A := fixed_x3_coeff
-                    B := fixed_x2_coeff
-                    C := fixed_offset
-                    D := fixed_offset
 
         Possible key/arguments
-            1) fixed_x3_coeff, A - int, float, list, tuple
-            2) fixed_x2_coeff, B - int, float, list, tuple
-            3) fixed_x_coeff, C - int, float, list, tuple
-            4) fixed_offset, D - int, float, list, tuple
+            1) A - int, float
+            2) B - int, float
+            3) C - int, float
+            4) D - int
             5) input_channel - int (1 or 2)
 
         Empty/non-assigned arguments will be ignored/left unchanged.
         Irrelevant arguments outside of the possible keys will be ignored.
 
         Usgae:
-            RP.CH1.set_params_cubic(fixed_x3_coeff=1)
-                -> fixed_x3_coeff = 1
+            RP.CH1.set_params_cubic(A=1)
+                -> A = 1
                 -> All other parameters are ignored.
 
-            RP.CH1.set_params_cubic(fixed_x3_coeff=1, fixed_x2_coeff=4)
-                -> fixed_x3_coeff = 1
-                -> fixed_x2_coeff = 4
-                -> All other parameters are ignored.
-
-            RP.CH1.set_params_cubic(A=10, D=4)
-                -> fixed_x3_coeff = 10
-                -> fixed_offset = 4
+            RP.CH1.set_params_cubic(A=1, B=4)
+                -> A = 1
+                -> B = 4
                 -> All other parameters are ignored.
         """
+        if A:
+            self.set_param("A", A)
+        if B:
+            self.set_param("B", B)
+        if C:
+            self.set_param("C", C)
+        if D:
+            self.set_param("D", D)
+        if input_channel:
+            self.set_param("input_channel", input_channel)
+        
 
-        cubic_keys = {"fixed_x3_coeff", "fixed_x2_coeff", "fixed_x_coeff", "fixed_offset", "input_channel"}
-        for key, value in kwargs.items():
-            if key == "A":
-                self.set_param("fixed_x3_coeff", value)
-                cubic_keys.remove("fixed_x3_coeff")
-            elif key == "B":
-                self.set_param("fixed_x2_coeff", value)
-                cubic_keys.remove("fixed_x2_coeff")
-            elif key == "C":
-                self.set_param("fixed_x_coeff", value)
-                cubic_keys.remove("fixed_x_coeff")
-            elif key == "D":
-                self.set_param("fixed_offset", value)
-                cubic_keys.remove("fixed_offset")
-            elif key in cubic_keys:
-                self.set_param(key, value)
-                cubic_keys.remove(key)
-            else:
-                # TODO: Could throw a KeyError(?) telling that this key is not used for the linear mode
-                print("Warning: key '%s' is not used in cubic mode, and will be ignored." % key)
-
-        for key in cubic_keys:
-            print("Warning: key '%s' not found. Value will remain unchanged" % key)
-
-
-    def set_params_noise(self, **kwargs):
+    def set_params_noise(self, A=None, D=None):
         """
          Sets the parameters for the white noise output type
          Coefficients are of the mathematical form of:
-            Y = fixed_amplitude*Z + fixed_offset
+            Y = A*Z + D
                 where:
                     Z ~ normal distribution w/ E(Z)=0, Var(Z)=?
 
         Possible key/arguments
-            1) fixed_amplitude - int, float
-            2) fixed_offset - int, float
+            1) A - int, float
+            2) D - int
 
         Empty/non-assigned arguments will be ignored/left unchanged.
         Irrelevant arguments outside of the possible keys will be ignored.
 
         Usgae:
-            RP.CH1.set_params_noise(fixed_amplitude=1)
-                -> fixed_amplitude = 1
-                -> fixed_offset is ignored.
+            RP.CH1.set_params_noise(A=1)
+                -> A = 1
+                -> D is ignored.
 
-            RP.CH1.set_params_noise(fixed_amplitude=1, fixed_offset=4)
-                -> fixed_amplitude = 1
-                -> fixed_offset = 4
+            RP.CH1.set_params_noise(A=1, D=4)
+                -> A = 1
+                -> D = 4
         """
-        noise_keys = {"fixed_amplitude", "fixed_offset"}
+        if A:
+            self.set_param("A", A)
+        if D:
+            self.set_param("D", D)
 
-        for key, value in kwargs.items():
-            if key in noise_keys:
-                self.set_param(key, value)
-                noise_keys.remove(key)
-            else:
-                # TODO: Could throw a KeyError(?) telling that this key is not used for the linear mode
-                print("Warning: key '%s' is not used in white noise mode, and will be ignored." % key)
-
-        for key in noise_keys:
-            print("Warning: key '%s' not found. Value will remain unchanged" % key)
-
-    def set_params_freq(self, **kwargs):
+    def set_params_freq(self, A=None, D=None, frequency=None):
         """
         Sets the parameters for the white noise output type
          Coefficients are of the mathematical form of:
-            y = a sin(2*pi*f0*t) + c              or
-            y = a sin(2*pi*f(t)*t) + c
+            y = A sin(2*pi*f0*t) + D              or
+            y = A sin(2*pi*f(t)*t) + D
                     where:
                         f(t) = (f1-f0)*t/2/T + f0 (linear chirp)
-                        a := fixed_amplitude
-                        c := fixed_offset
 
         Possible key/arguments
             1) frequency - int, float, list, tuple
-                TODO: there is currently no logic between "fixed" and "swept" modes
-            2) fixed_amplitude - int, float
-            3) fixed_offset - int, float
+            2) A - int, float
+            3) D - int
 
         Empty/non-assigned arguments will be ignored/left unchanged.
         Irrelevant arguments outside of the possible keys will be ignored.
 
         Usgae:
-            RP.CH1.set_params_freq(fixed_amplitude=1)
-                -> fixed_amplitude = 1
+            RP.CH1.set_params_freq(A=1)
+                -> A = 1
                 -> All other parameters are ignored.
 
-            RP.CH1.set_params_freq(fixed_offset=1, frequency=4)
+            RP.CH1.set_params_freq(D=1, frequency=4)
                 -> fixed_offset = 1
-                -> frequency_start = 4
+                -> D = 4
                 -> frequency_stop = 0
                 -> frequency_sweep = False
-                -> All other parameters are ignored.
+                -> A is ignored.
 
-            RP.CH1.set_params_freq(fixed_amplitude=1, frequency=[40, 400])
-                -> fixed_amplitude = 1
+            RP.CH1.set_params_freq(A=1, frequency=[40, 400])
+                -> A = 1
                 -> frequency_start = 40
                 -> frequency_stop = 400
                 -> frequency_sweep = True
-                -> All other parameters are ignored.
+                -> D is ignored.
         """
 
-        freq_keys = {"fixed_amplitude", "fixed_offset", "frequency"}
-        for key, value in kwargs.items():
-            if key in freq_keys:
-                self.set_param(key, value)
-                freq_keys.remove(key)
-            else:
-                # TODO: Could throw a KeyError(?) telling that this key is not used for the linear mode
-                print("Warning: key '%s' is not used in frequency mode, and will be ignored." % key)
-
-        for key in freq_keys:
-            if key not in kwargs.keys():
-                print("Warning: key '%s' not found. Value will remain unchanged" % key)
+        if A:
+            self.set_param("A", A)
+        if D:
+            self.set_param("D", D)
+        if frequency:
+            self.set_param("frequency", frequency)
 
 
-    def set_params_artificial(self, **kwargs):
+    def set_params_artificial(self, A=None, B=None, C=None, D=None, frequency=None):
         """
         Sets the parameters for the white noise output type
         Coefficients are of the mathematical form of:
@@ -352,35 +331,13 @@ class channel:
                 -> fixed_x2_coeff = 2
                 -> All other parameters are ignored.
         """
-        artificial_keys = {"fixed_x_coeff", "fixed_x2_coeff", "fixed_x3_coeff", "fixed_offset", "frequency"}
-
-        if self["mode"] != "artificial_nonlinearity_parametric":
-            artificial_keys.remove("frequency_start")
-
-
-        for key, value in kwargs.items():
-            if key == "A":
-                self.set_param("fixed_x3_coeff", value)
-                artificial_keys.remove("fixed_x3_coeff")
-            elif key == "B":
-                self.set_param("fixed_x2_coeff", value)
-                artificial_keys.remove("fixed_x2_coeff")
-            elif key == "C":
-                self.set_param("fixed_x_coeff", value)
-                artificial_keys.remove("fixed_x_coeff")
-            elif key == "D":
-                self.set_param("fixed_offset", value)
-                artificial_keys.remove("fixed_offset")
-            elif key == "frequency" and self["mode"] == "artificial_nonlinearity_parametric":
-                self.set_param("frequency", value)
-                artificial_keys.remove("frequency")
-            elif key in artificial_keys:
-                self.set_param(key, value)
-                artificial_keys.remove(key)
-            else:
-                # TODO: Could throw a KeyError(?) telling that this key is not used for the artificial mode
-                print("Warning: key '%s' is not used in artificial nonlinearity mode, and will be ignored." % key)
-
-        for key in artificial_keys:
-            if key not in kwargs.keys():
-                print("Warning: key '%s' not found. Value will remain unchanged" % key)
+        if A:
+            self.set_param("A", A)
+        if B:
+            self.set_param("B", B)
+        if C:
+            self.set_param("C", C)
+        if D:
+            self.set_param("D", D)
+        if frequency:
+            self.set_param("frequency", frequency)

@@ -12,29 +12,45 @@ called as an attribute, for convenience in API calls.
 Overrides __setitem__ to not allow any non-specified keys to be added.
 
 """
-from shared_config import *
+
+## Old channel keys
+# channel_keys = ["mode",
+#                 "frequency_start",
+#                 "frequency_stop",
+#                 "frequency_sweep",
+#                 "fixed_amplitude",
+#                 "fixed_offset",
+#                 "A_start",
+#                 "A_stop",
+#                 "A_sweep",
+#                 "B_start",
+#                 "B_stop",
+#                 "B_sweep",
+#                 "fixed_x_coeff",
+#                 "fixed_x2_coeff",
+#                 "fixed_x3_coeff",
+#                 "artificial_nonlinearity_gain1",
+#                 "input_channel"]
 
 channel_keys = ["mode",
+                "input_channel",                
                 "frequency_start",
                 "frequency_stop",
                 "frequency_sweep",
-                "fixed_amplitude",
-                "fixed_offset",
-                "A_start",
-                "A_stop",
-                "A_sweep",
-                "B_start",
-                "B_stop",
-                "B_sweep",
-                "fixed_x_coeff",
-                "fixed_x2_coeff",
-                "fixed_x3_coeff",
-                "artificial_nonlinearity_gain1",
-                "input_channel"]
+                "a_start",
+                "a_stop",
+                "a_sweep",
+                "b_start",
+                "b_stop",
+                "b_sweep",                
+                "A",
+                "B", 
+                "C",
+                "D"]
 
 channel_sweepable = ["frequency",
-                      "A",
-                     "B"]
+                      "a",
+                     "b"]
 
 channel_modes = ["fixed_frequency",
                  "frequency_sweep",
@@ -45,44 +61,80 @@ channel_modes = ["fixed_frequency",
                  "white_noise",
                  "off"]
 
+## Old atatypes 
+# datatypes = {"mode": str,
+#              "input_channel": int,             
+#             "frequency_start": float,
+#             "frequency_stop": float,
+#             "frequency_sweep": bool,            
+#             "fixed_amplitude": float,
+#             "fixed_offset": int,
+#             "A_start": float,
+#             "A_stop": float,
+#             "A_sweep": bool,
+#             "B_start": int,
+#             "B_stop": int,
+#             "B_sweep": bool,
+#             "fixed_x_coeff": float,
+#             "fixed_x2_coeff": float,
+#             "fixed_x3_coeff": float,
+#             "artificial_nonlinearity_gain1": float            
+#             }
 datatypes = {"mode": str,
+            "input_channel": int,    
+            
             "frequency_start": float,
             "frequency_stop": float,
-            "frequency_sweep": bool,
-            "fixed_amplitude": float,
-            "fixed_offset": int,
-            "A_start": float,
-            "A_stop": float,
-            "A_sweep": bool,
-            "B_start": int,
-            "B_stop": int,
-            "B_sweep": bool,
-            "fixed_x_coeff": float,
-            "fixed_x2_coeff": float,
-            "fixed_x3_coeff": float,
-            "artificial_nonlinearity_gain1": float,
-            "input_channel": int
+            "frequency_sweep": bool, 
+            "a_start": float,
+            "a_stop": float,
+            "a_sweep": bool,
+            "b_start": int,
+            "b_stop": int,
+            "b_sweep": bool,
+            
+            "A": float,
+            "B": float,
+            "C": float,
+            "D": int
             }
 
-
-
+## Old limits
+# limits = {"mode": channel_modes,
+#           "frequency_start": [0,2000000],
+#           "frequency_stop": [0,2000000],
+#           "frequency_sweep": [0,1],
+#           "fixed_amplitude": [-1000,1000],
+#           "fixed_offset": [-1000,1000],
+#           "A_start": [-1000,1000],
+#           "A_stop":  [-1000,1000],
+#           "A_sweep": [0,1],
+#           "B_start": [-1000,1000],
+#           "B_stop": [-1000,1000],
+#           "B_sweep": [0,1],
+#           "fixed_x_coeff": [-1000,1000],
+#           "fixed_x2_coeff": [-1000,1000],
+#           "fixed_x3_coeff": [-1000,1000],
+#           "artificial_nonlinearity_gain1":  [-1000,1000],
+#           "input_channel": [1,2]}
 limits = {"mode": channel_modes,
+          "input_channel": [1,2],
+          
           "frequency_start": [0,2000000],
           "frequency_stop": [0,2000000],
           "frequency_sweep": [0,1],
-          "fixed_amplitude": [-1000,1000],
-          "fixed_offset": [-1000,1000],
-          "A_start": [-1000,1000],
-          "A_stop":  [-1000,1000],
-          "A_sweep": [0,1],
-          "B_start": [-1000,1000],
-          "B_stop": [-1000,1000],
-          "B_sweep": [0,1],
-          "fixed_x_coeff": [-1000,1000],
-          "fixed_x2_coeff": [-1000,1000],
-          "fixed_x3_coeff": [-1000,1000],
-          "artificial_nonlinearity_gain1":  [-1000,1000],
-          "input_channel": [1,2]}
+          "a_start": [-1000,1000],
+          "a_stop":  [-1000,1000],
+          "a_sweep": [0,1],
+          "b_start": [-1000,1000],
+          "b_stop": [-1000,1000],
+          "b_sweep": [0,1],
+          
+          "A": [-1000,1000],
+          "B": [-1000,1000],
+          "C": [-1000,1000],
+          "D": [-1000,1000]
+          }
 
 
 class channel_config(dict):

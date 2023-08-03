@@ -18,6 +18,18 @@ system_keys = ["continuous_output",
                "sampling_rate"
                ]
 
+# TODO: To double-check
+# cont_output -> is or isnt
+# ip -> a string of 12:345:678
+# sample -> "fast" or "slow"
+datatypes = {"continuous_output": bool,
+            "ip_address": str,            
+            "sampling_rate": str}
+
+limits = {"continuous_output": [0, 1],
+          "ip_address": None,
+          "sampling_rate": ["fast", "slow"]
+          }
 
 class system_config(dict):
 

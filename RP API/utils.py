@@ -11,7 +11,7 @@ classes.
 """
 
 
-def fixed_or_sweep(self, param, sweep_range, sweepable_params):
+def fixed_or_sweep(param, sweep_range, sweepable_params):
     """
     This is a function shared by the CBC_config.py and channel_config.py modules.
 
@@ -71,6 +71,4 @@ def fixed_or_sweep(self, param, sweep_range, sweepable_params):
         stop = 0
         sweep = False
 
-    self[param + "_start"] = start
-    self[param + "_stop"] = stop
-    self[param + "_sweep"] = sweep
+    return start, stop, sweep

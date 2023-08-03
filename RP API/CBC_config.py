@@ -40,12 +40,7 @@ CBC_keys = ["CBC_enabled",
             "D_stop",
             "D_sweep"]
 
-CBC_sweepable = ["r_hat",
-              "f",
-              "A",
-             "B",
-             "C",
-             "D"]
+
 
 datatypes = {"CBC_enabled": bool,
              "input_order": int,
@@ -129,7 +124,7 @@ class CBC_config(dict):
         value checks before setting any items. """
 
         if key in CBC_keys:
-            self.choose_external_input_type(key, value)
+            #self.choose_external_input_type(key, value)
 
             if type(value) == datatypes[key]:
                 if self.is_within_limits(value, limits[key]):
