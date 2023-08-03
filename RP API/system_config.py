@@ -13,31 +13,35 @@ Overrides __setitem__ to not allow any non-specified keys to be added.
 
 """
 
-system_keys = ["continuous_output",
+_system_keys = ["continuous_output",
                "ip_address",
-               "sampling_rate"
+               "sampling_rate",
+               "recording_duration"
                ]
 
 # TODO: To double-check
 # cont_output -> is or isnt
 # ip -> a string of 12:345:678
 # sample -> "fast" or "slow"
-datatypes = {"continuous_output": bool,
-            "ip_address": str,            
-            "sampling_rate": str}
+_datatypes = {"continuous_output": bool,
+            "ip_address": str,
+            "sampling_rate": str,
+            "recording_duration": float
+            }
 
-limits = {"continuous_output": [0, 1],
+_limits = {"continuous_output": [0, 1],
           "ip_address": None,
-          "sampling_rate": ["fast", "slow"]
+          "sampling_rate": ["fast", "slow"],
+          "recording_duration": [0,60]
           }
 
 class system_config(dict):
 
     def __init__(self, default_values=None):
-        super().__init__({key: None for key in system_keys})
+        super().__init__({key: None for key in _system_keys})
         if default_values:
             for key, value in default_values.items():
-                if key in system_keys:
+                if key in _system_keys:
                     self[key] = value
                 else:
                     print(f"Warning: The key '{key}' is not included in System Config and has been discarded.")
@@ -53,7 +57,31 @@ class system_config(dict):
         self[key] = value
 
     def __setitem__(self, key, value):
-        if key in system_keys:
-            super().__setitem__(key, value)
+        if key in _system_keys:
+
+            if type(value) == _datatypes[key]:
+                if self.is_within_limits(value, _limits[key]):
+                    super().__setitem__(key, value)
+                else:
+                    raise ValueError(f"{value} is outside of _limits for {key}, which are {_limits[key]}")
+
+            elif _datatypes[key] == float and type(value) == int:
+                if self.is_within_limits(value, _limits[key]):
+                    super().__setitem__(key, float(value))
+                else:
+                    raise ValueError(f"{value} is outside of _limits for {key}, which are {_limits[key]}")
+
+            else:
+                raise TypeError(f"Parameter entered is of type '{type(value)}' whereas {key} expects a parameter of type {_datatypes[key]}")
         else:
             raise KeyError(f"'System Config' object does not support adding new keys")
+
+    def is_within_limits(self, value, _limits):
+        if type(_limits[0]) == str:
+            return value in _limits
+
+        else:
+            if len(_limits) != 2:
+                raise ValueError("_limits list must contain exactly two items.")
+            lower_limit, upper_limit = sorted(_limits)
+            return lower_limit <= value <= upper_limit
