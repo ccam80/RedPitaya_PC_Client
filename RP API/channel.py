@@ -8,19 +8,30 @@ Created on Thu Aug  3 10:11:23 2023
 from channel_config import channel_config
 from utils import fixed_or_sweep
 
-channel_sweepable = ["frequency",
+_channel_sweepable = ["frequency",
                       "a",
                      "b"]
+
+_channel_fixed = ["A",
+                 "B",
+                 "C",
+                 "D",
+                 "input_channel",
+                 "duration"]
+
+
 
 class channel:
 
     def __init__(self, default_values=None):
         self.config = channel_config(default_values)
-        self.sweepable = channel_sweepable
+        self.sweepable = _channel_sweepable
     
     def print_config(self):
-        for key, value in self.config.items():
-            print(key,":", value)
+        print ("{:<20} {:<20} ".format("Key", "Channel"))
+        for key in self.config.keys():
+            print ("{:<20} {:<20} ".format(key, str(self.config[key])))
+        print()
     
     
     def set_mode(self, mode, **kwargs):
@@ -59,20 +70,31 @@ class channel:
                 -> mode = "cubic"
                 -> fixed_offset = 5
         """
-        self.mode = mode
+        
+        self.config["mode"] = mode
         if kwargs:
             # If there are any keyword-argument inputs, then the relevant
             # set_param_(mode) function is called to set these parameters.
+            
+            # Sets any unsed parameters to "None"
+            for key in _channel_sweepable + _channel_fixed:
+                if key not in kwargs.keys():
+                    kwargs[key] = None
+                    
             if mode == "linear_feedback":
                 self.set_params_linear(a=kwargs["a"], b=kwargs["b"], input_channel=kwargs["input_channel"])
+                
             elif mode == "cubic":
-                self.set_params_cubic(**kwargs)
+                self.set_params_cubic(A=kwargs["A"], B=kwargs["B"], C=kwargs["C"], D=kwargs["D"], input_channel=kwargs["input_channel"])
+                
             elif mode == "white_noise":
-                self.set_params_noise(**kwargs)
+                self.set_params_noise(A=kwargs["A"], D=kwargs["D"])
+                
             elif mode in ["artificial_nonlinearity", "artificial_nonlinearity_parametric"]:
-                self.set_params_artificial(**kwargs)
+                self.set_params_artificial(A=kwargs["A"], B=kwargs["B"], C=kwargs["C"], D=kwargs["D"], frequency=kwargs["frequency"])
+                
             elif mode in ["fixed_frequency", "frequency_sweep"]:
-                self.set_params_freq(**kwargs)
+                self.set_params_freq(A=kwargs["A"], D=kwargs["D"], frequency=kwargs["frequency"])
 
 
 
@@ -110,8 +132,8 @@ class channel:
                 -> A_stop = 10
                 -> A_sweep = True
         """
-        if param_name in channel_sweepable:
-            start, stop, sweep = fixed_or_sweep(param_name, param_val, channel_sweepable)
+        if param_name in _channel_sweepable:
+            start, stop, sweep = fixed_or_sweep(param_name, param_val, _channel_sweepable)
             self.config[param_name + "_start"] = start
             self.config[param_name + "_stop"] = stop
             self.config[param_name + "_sweep"] = sweep

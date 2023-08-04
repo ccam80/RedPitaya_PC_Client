@@ -45,7 +45,6 @@ RP = RedPitaya()
 
 # RP.CH1.set_params_cubic()
 
+RP.set_param("CH1", "rhat", 5)
+RP.print_config("Both")
 
-
-RP.CBC.set_params_CBC(A=5, B=[5,3], kp=5, C=21)
-RP.CBC.set_params_CBC(A=None, B=[5,3], kp=5, C=21)

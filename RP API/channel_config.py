@@ -127,13 +127,13 @@ class channel_config(dict):
         """
         Determines whether the given input value(s) are within the limits specified
         """
-        if type(_limits[0]) == str:
+        if type(limits[0]) == str:
             return value in limits
 
         else:
-            if len(_limits) != 2:
+            if len(limits) != 2:
                 raise ValueError("Limits list must contain exactly two items.")
 
-            lower_limit, upper_limit = sorted(_limits)
+            lower_limit, upper_limit = sorted(limits)
 
             return lower_limit <= value <= upper_limit

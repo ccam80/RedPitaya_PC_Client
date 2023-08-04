@@ -25,8 +25,10 @@ class CBC:
         self.config = CBC_config()
         
     def print_config(self):
-        for key, value in self.config.items():
-            print(key,":", value)
+        print ("{:<25} {:<25} ".format("Key", "CBC"))
+        for key in self.config.keys():
+            print ("{:<25} {:<25} ".format(key, str(self.config[key])))
+        print()
             
     # def reset_config(self):
     #     for key in self.config.keys():            

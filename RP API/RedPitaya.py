@@ -65,8 +65,25 @@ class RedPitaya():
             self.CBC = CBC()
         elif channel == "CH1":
             self.CH1 = channel()
-        elif channel == "CH1":
+        elif channel == "CH2":
             self.CH2 = channel()
+            
+            
+    def print_config(self, channel):
+        if channel == "CH1":
+            self.CH1.print_config()
+        elif channel == "CH2":
+            self.CH2.print_config()
+        elif channel == "CBC":
+            self.CBC.print_config()
+        elif channel == "Both":
+            print ("{:<20} {:<20} {:<20} ".format("Key", "Channel 1", "Channel 2"))
+            for key in self.CH1.config.keys():
+                print ("{:<20} {:<20} {:<20} ".format(key, str(self.CH1.config[key]), str(self.CH2.config[key])))
+            print()
+        else:
+            raise ValueError("'channel' must be be either 'CH1', 'CH2' or 'Both', or 'CBC'.")
+        
     
     def set_frequency(self, channel, frequency):
         """Assume a fixed frequency if someone is calling "set_frequency" with
@@ -110,23 +127,23 @@ class RedPitaya():
         else:
             raise TypeError("'frequency' must be a single float or a list/tuple of two floats.")
 
-    ### set_mode - made redundant through channel_config functions.
-    # def set_mode(self, channel, mode, params=None):
-    #     """
-    #     Sets an output mode for a determined channel.
-    #     """
-    #     if channel not in [1, 2, "CBC", "Both"]:
-    #         raise ValueError("Invalid 'channel' value. It must be 1, 2, or 'Both'.")
-    #     if channel == "CBC":
-    #         raise ValueError("Output mode cannot be set for CBC. It must be 1, 2, or 'Both'.")
+    
+    def set_mode(self, channel, mode):
+        """
+        Sets an output mode for a determined channel.
+        """
+        if channel not in [1, 2, "CBC", "Both"]:
+            raise ValueError("Invalid 'channel' value. It must be 1, 2, or 'Both'.")
+        if channel == "CBC":
+            raise ValueError("Output mode cannot be set for CBC. It must be 1, 2, or 'Both'.")
 
-    #     if channel == "Both":
-    #         self.CH1.mode = mode
-    #         self.CH2.mode = mode
-    #     elif channel == 1:
-    #         self.CH1.mode = mode
-    #     elif channel == 2:
-    #         self.CH2.mode = mode
+        if channel == "Both":
+            self.CH1.set_mode(mode)
+            self.CH2.set_mode(mode)
+        elif channel == 1:
+            self.CH1.set_mode(mode)
+        elif channel == 2:
+            self.CH2.set_mode(mode)
 
     ### set_sweep - made redundant through shared_config functions.
     # def set_sweep(self, channel, param, sweep_range):
@@ -275,3 +292,31 @@ class RedPitaya():
                 self.CBC.config[key] = value  
         else:
             raise KeyError("'channel' must be either 'CH1', 'CH2' or 'CBC'.")
+            
+            
+    def set_param(self, channel, param, value):
+        if channel == "CH1":
+            self.CH1.set_param(param, value)
+        elif channel == "CH2":
+            self.CH1.set_param(param, value)
+        elif channel == "CBC":
+            self.CH1.set_param(param, value)
+        else:
+            raise ValueError("'channel' must be be either 'CH1', 'CH2' or 'CBC'.")
+            
+    def set_A(self, channel, value):
+        self.set_param(channel, "A", value)
+        
+    def set_B(self, channel, value):
+        self.set_param(channel, "B", value)
+        
+    def set_C(self, channel, value):
+        self.set_param(channel, "C", value)
+        
+    def set_D(self, channel, value):
+        self.set_param(channel, "D", value)
+        
+    def set_freq(self, channel, value):
+        self.set_param(channel, "frequency", value)
+        
+    
