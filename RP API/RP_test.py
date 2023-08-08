@@ -44,7 +44,8 @@ RP = RedPitaya()
 # RP.CH1.mode = "linear_feedback"
 
 # RP.CH1.set_params_cubic()
+RP.set_output("CBC")
 
-RP.set_param("CH1", "rhat", 5)
 RP.print_config("Both")
+RP.print_config("CBC")
 

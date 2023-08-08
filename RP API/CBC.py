@@ -14,10 +14,21 @@ from utils import fixed_or_sweep
 
 CBC_sweepable = ["r_hat",
               "f",
-              "A",
-             "B",
-             "C",
-             "D"]
+              "a",
+             "b",
+             "c",
+             "d"]
+
+CBC_static = ["CBC_enabled",
+             "input_order",
+             "velocity_external",
+             "displacement_external",
+             "polynomial_target",
+             "kp",
+             "kd",
+             "duration"  # Duration included in multiple places for ease of
+                         # mapping in the dict translation module.
+             ]
 
 class CBC:
 
@@ -29,6 +40,15 @@ class CBC:
         for key in self.config.keys():
             print ("{:<25} {:<25} ".format(key, str(self.config[key])))
         print()
+        
+        # print ("{:<25} {:<20} ".format("Key", "CBC"))
+        # for key in CBC_static:
+        #     print ("{:<25} {:<20} ".format(key, str(self.config[key])))
+        # print()
+        # print ("{:<25} {:<20} {:<20} {:<20}".format("Key", "start", "stop", "sweep"))
+        # for key in CBC_sweepable:
+        #     print ("{:<25} {:<20} {:<20} {:<20}".format(key, str(self.config[key + "_start"]), str(self.config[key + "_stop"]), str(self.config[key + "_sweep"])))
+        # print()
             
     # def reset_config(self):
     #     for key in self.config.keys():            

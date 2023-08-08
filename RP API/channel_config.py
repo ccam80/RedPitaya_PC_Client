@@ -24,10 +24,10 @@ _channel_keys = ["mode",
                  "b_start",
                  "b_stop",
                  "b_sweep",
-                 "A",
-                 "B",
-                 "C",
-                 "D",
+                 "p3",
+                 "p2",
+                 "p1",
+                 "p0",
                  "duration"  # Duration included in multiple places for ease of
                              # mapping in the dict translation module.
                  ]
@@ -53,10 +53,10 @@ _datatypes = {"mode": str,
               "b_start": int,
               "b_stop": int,
               "b_sweep": bool,
-              "A": float,
-              "B": float,
-              "C": float,
-              "D": int,
+              "p3": float,
+              "p2": float,
+              "p1": float,
+              "p0": int,
               "duration": float
               }
 
@@ -71,10 +71,10 @@ _limits = {"mode": _channel_modes,
            "b_start": [-1000, 1000],
            "b_stop": [-1000, 1000],
            "b_sweep": [0, 1],
-           "A": [-1000, 1000],
-           "B": [-1000, 1000],
-           "C": [-1000, 1000],
-           "D": [-1000, 1000],
+           "p3": [-1000, 1000],
+           "p2": [-1000, 1000],
+           "p1": [-1000, 1000],
+           "p0": [-1000, 1000],
            "duration": [0, 60]
            }
 
@@ -121,7 +121,7 @@ class channel_config(dict):
             else:
                 raise TypeError(f"Parameter entered is of type '{type(value)}' whereas {key} expects a parameter of type {_datatypes[key]}")
         else:
-            raise KeyError("'Channel Config' object does not support adding new keys")
+            raise KeyError(f"'Channel Config' object does not support adding new keys. Key '{key}' rejected")
 
     def is_within_limits(self, value, limits):
         """

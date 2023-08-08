@@ -85,6 +85,8 @@ class RedPitaya():
             raise ValueError("'channel' must be be either 'CH1', 'CH2' or 'Both', or 'CBC'.")
         
     
+    # I believe this function is somewhat redundant, as there is a "set_freq" 
+    # function that will allow the user to se 
     def set_frequency(self, channel, frequency):
         """Assume a fixed frequency if someone is calling "set_frequency" with
         only one frequency argument. If argument is a tuple or list of 2,
@@ -128,22 +130,7 @@ class RedPitaya():
             raise TypeError("'frequency' must be a single float or a list/tuple of two floats.")
 
     
-    def set_mode(self, channel, mode):
-        """
-        Sets an output mode for a determined channel.
-        """
-        if channel not in [1, 2, "CBC", "Both"]:
-            raise ValueError("Invalid 'channel' value. It must be 1, 2, or 'Both'.")
-        if channel == "CBC":
-            raise ValueError("Output mode cannot be set for CBC. It must be 1, 2, or 'Both'.")
-
-        if channel == "Both":
-            self.CH1.set_mode(mode)
-            self.CH2.set_mode(mode)
-        elif channel == 1:
-            self.CH1.set_mode(mode)
-        elif channel == 2:
-            self.CH2.set_mode(mode)
+    
 
     ### set_sweep - made redundant through shared_config functions.
     # def set_sweep(self, channel, param, sweep_range):
@@ -204,7 +191,20 @@ class RedPitaya():
     #         self.CBC[p_stop] = stop
     #         self.CBC[p_sweep] = sweep
 
-    # TODO: probably redundannt.
+    def choose_input_order(self, input_channel):
+        if input_channel in [1, 2]:
+            self.CBC.config["input_order"] = input_channel
+        else:
+            raise ValueError("'input_channel' must be either 1 or 2.")
+    
+    def choose_polynomial_target(self, target):        
+        if target in ["displacement", "velocity"]:
+            self.CBC.config["polynomial_target"] = target
+        else:
+            raise ValueError("'target' must be either 'displacement' or 'velocity'.")
+        
+        
+
     def choose_external_input_type(self, target):
         """
         Determines whether the external input is given as a displacement or
@@ -220,9 +220,8 @@ class RedPitaya():
         else:
             raise ValueError("'target' must be either 'displacement' or 'velocity'.")
 
-
-    # TODO: probably redundannt.
-    def set_output(self, output_mode, *CHx_mode):
+    
+    def choose_output(self, output_mode, CHx_mode=None):
         """
         Determines whether the output channels are configured as "CBC" or as
         "Channels". Different operating modes will use different parameter
@@ -241,29 +240,41 @@ class RedPitaya():
                 -> Sets the outputs to "Channels", using the linear feedback mode.
         """
         if output_mode == "CHx":
-            if len(CHx_mode) > 0:
-                if len(CHx_mode) == 1:
+            if isinstance(CHx_mode, str):
+                CH1_mode = CHx_mode
+                CH2_mode = CHx_mode
+            elif isinstance(CHx_mode, (list, tuple)):
+                if len(CHx_mode) < 2:
                     CH1_mode = CHx_mode[0]
                     CH2_mode = CHx_mode[0]
-                elif len(CHx_mode) == 2:
+                else:
                     CH1_mode = CHx_mode[0]
                     CH2_mode = CHx_mode[1]
-                elif len(CHx_mode) > 2:
+                if len(CHx_mode) > 2:
                     print("Warning: Only first two '*CHx_mode' arguments are considered. Additional arguments will be ignored.")
-                    CH1_mode = CHx_mode[0]
-                    CH2_mode = CHx_mode[1]
-                self.CH1["mode"] = CH1_mode
-                self.CH2["mode"] = CH2_mode
-            self.CBC["CBC_enabled"] = False
+                
+            self.CH1.config["mode"] = CH1_mode
+            self.CH2.config["mode"] = CH2_mode
+            self.CBC.config["CBC_enabled"] = False
         elif output_mode =="CBC":
-            if len(CHx_mode) > 0:
-                print("Warning: '*CHx_mode' arguments are not used in CBC mode, and will be ignored.")
-            self.CH1["mode"] = "off"
-            self.CH2["mode"] = "off"
-            self.CBC["CBC_enabled"] = True
+            if CHx_mode:
+                print("Warning: 'CHx_mode' arguments are not used in CBC mode, and will be ignored.")
+            self.CH1.config["mode"] = "off"
+            self.CH2.config["mode"] = "off"
+            self.CBC.config["CBC_enabled"] = True
         else:
             raise ValueError("'output_mode' must be either 'CHx' or 'CBC'.")
             
+            
+    def set_param(self, channel, param, value):
+        if channel == "CH1":
+            self.CH1.set_param(param, value)
+        elif channel == "CH2":
+            self.CH2.set_param(param, value)
+        elif channel == "CBC":
+            self.CBC.set_param(param, value)
+        else:
+            raise ValueError("'channel' must be be either 'CH1', 'CH2' or 'CBC'.")
             
    
     def set_params_from_dict(self, channel, dicts):
@@ -281,42 +292,88 @@ class RedPitaya():
             raise ValueError("'dicts' is empty, meaning no parameters have been set.")
         
         
-        if channel == "CH1":
-            for key, value in dicts.items():
-                self.CH1.config[key] = value
-        elif channel == "CH2":
-            for key, value in dicts.items():
-                self.CH2.config[key] = value  
-        elif channel == "CBC":
-            for key, value in dicts.items():
-                self.CBC.config[key] = value  
+        if channel in ["CH1", "CH2", "CBC"]:
+            for key, value in dicts.items():                
+                self.set_param(channel, key, value)
         else:
             raise KeyError("'channel' must be either 'CH1', 'CH2' or 'CBC'.")
             
             
-    def set_param(self, channel, param, value):
-        if channel == "CH1":
-            self.CH1.set_param(param, value)
-        elif channel == "CH2":
-            self.CH1.set_param(param, value)
-        elif channel == "CBC":
-            self.CH1.set_param(param, value)
-        else:
-            raise ValueError("'channel' must be be either 'CH1', 'CH2' or 'CBC'.")
             
-    def set_A(self, channel, value):
-        self.set_param(channel, "A", value)
+    def set_a(self, channel, value):
+        self.set_param(channel, "a", value)
         
-    def set_B(self, channel, value):
-        self.set_param(channel, "B", value)
+    def set_b(self, channel, value):
+        self.set_param(channel, "b", value)
         
-    def set_C(self, channel, value):
-        self.set_param(channel, "C", value)
+    def set_c(self, channel, value):
+        self.set_param(channel, "c", value)
         
-    def set_D(self, channel, value):
-        self.set_param(channel, "D", value)
+    def set_d(self, channel, value):
+        self.set_param(channel, "d", value)
+        
+    def set_p3(self, channel, value):
+        self.set_param(channel, "p3", value)
+        
+    def set_p2(self, channel, value):
+        self.set_param(channel, "p2", value)
+        
+    def set_p1(self, channel, value):
+        self.set_param(channel, "p1", value)
+        
+    def set_p0(self, channel, value):
+        self.set_param(channel, "p0", value)
         
     def set_freq(self, channel, value):
         self.set_param(channel, "frequency", value)
+    
+            
+        
+    def set_duration(self, channel, value):
+        self.set_param(channel, "duration", value)
+        
+    def set_gains(self, channel, Kp, Kd=0):
+        if channel == "CBC":
+            self.CBC.config["kp"] = Kp
+            self.CBC.config["kd"] = Kd
+        else:
+            raise ValueError("'channel' must be be 'CBC'.")
+    
+    def set_rhat(self, channel, values):
+        if channel == "CBC":
+            self.set_param(channel, "r_hat", values)
+        else:
+            raise ValueError("'channel' must be be 'CBC'.")
+            
+    def set_input_channel(self, channel, input_channel):
+        if channel in ["CH1", "CH2"]:
+            self.set_param(channel, "input_channel", input_channel)
+        else:
+            raise ValueError("'channel' must be be 'CH1' or 'CH2'.")
+            
+    def set_mode(self, channel, mode, **kwargs):
+        """
+        Sets an output mode for a determined channel.
+        """
+        if channel not in ["CH1", "CH2", "CBC", "Both"]:
+            raise ValueError("Invalid 'channel' value. It must be 'CH1', 'CH2', or 'Both'.")
+        if channel == "CBC":
+            raise ValueError("Output mode cannot be set for CBC. It must be 1, 2, or 'Both'.")
+
+        if channel == "Both":
+            self.CH1.set_mode(mode)
+            self.CH2.set_mode(mode)
+        elif channel == "CH1":
+            self.CH1.set_mode(mode, **kwargs)
+        elif channel == "CH2":
+            self.CH2.set_mode(mode)
+            
+    
+        
+            
+            
+        
+            
+            
         
     
