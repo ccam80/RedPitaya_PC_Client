@@ -74,7 +74,7 @@ class system_config(dict):
             else:
                 raise TypeError(f"Parameter entered is of type '{type(value)}' whereas {key} expects a parameter of type {_datatypes[key]}")
         else:
-            raise KeyError(f"'System Config' object does not support adding new keys")
+            raise KeyError("'System Config' object does not support adding new keys")
 
     def is_within_limits(self, value, _limits):
         if type(_limits[0]) == str:
