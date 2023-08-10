@@ -6,7 +6,7 @@ Created on Thu Aug  3 11:52:43 2023
 
 mem_mapping.py contains the per-mode mappings from the physical mode settings
 (frequency, amplitude, etc) to the FPGA's memory representation. This requires
-both a mapping of each physical mparameter to a different place in memory
+both a mapping of each physical parameter to a different place in memory
 per mode, but also some conversion, for example from a start-stop-sweep triplet
 to a start-interval pair for swept values, and from frequency to phase increment.
 
@@ -14,7 +14,8 @@ This is a translation from human to hardware, so the output is not intended to
 be particularly human-readable, however the mapping should be readable.
 """
 
-from numpy import multiply
+from float_converter import NumpyFloatToFixConverter
+from functools import partial
 
 # Map mode names to their number representation on fabric
 _channel_modes = {"fixed_frequency": 0,
@@ -30,90 +31,14 @@ _channel_modes = {"fixed_frequency": 0,
 _channel_inputs = {1:1,
                    2:0}
 
+_CBC_input_orders = {1:1,
+                    2:0}
 
-_CH1_mode_mappings = {
-    "fixed_frequency": {
-        "CH1_settings": (channel_settings_to_byte, ("mode",
-                                                    "input_select")),
-        "Paramater_A": (frequency_to_phase, ("frequency_start")),
-        "Paramater_B": (interval_if_sweep, ("frequency_start",
-                                             "frequency_stop",
-                                             "frequency_sweep",
-                                             "duration")),
-        "Paramater_C": (scale_and_convert, ("A", 8.192)),
-        "Paramater_D": (scale_and_Convert, ("B", 8.192*32768)),
-        "Paramater_E": 0,
-        "Paramater_F": 0,
-    },
+_polynomial_targets = {'displacement': 0,
+                     'velocity': 1}
 
-    "frequency_sweep": {
-        "CH1_settings": (channel_settings_to_byte, ("mode",
-                                                    "input_select")),
-        "Paramater_A": (frequency_to_phase, ("frequency_start")),
-        "Paramater_B": (interval_if_sweep, ("frequency_start",
-                                             "frequency_stop",
-                                             "frequency_sweep",
-                                             "duration")),
-        "Paramater_C": (scale_and_convert, ("A", 8.192)),
-        "Paramater_D": (scale_and_Convert, ("B", 8.192*32768)),
-        "Paramater_E": 0,
-        "Paramater_F": 0,
-    },
-    "artificial_nonlinearity": {
-       "CH1_settings": ("CH1", "ampl"),
-       "Paramater_A": ("CH2", "freq"),
-       "Paramater_B": ("CBC", "kp"),
-       "Paramater_C": ("CBC", "kd"),
-       "Paramater_D": ("CH2", "ampl"),
-       "Paramater_E": ("CH2", "freq"),
-       "Paramater_F": ("CH1", "ampl"),
-    },
-    "artificial_nonlinearity_parametric": {
-       "CH1_settings": ("CH1", "ampl"),
-       "Paramater_A": ("CH2", "freq"),
-       "Paramater_B": ("CBC", "kp"),
-       "Paramater_C": ("CBC", "kd"),
-       "Paramater_D": ("CH2", "ampl"),
-       "Paramater_E": ("CH2", "freq"),
-       "Paramater_F": ("CH1", "ampl"),
-    },
-    "cubic": {
-        "CH1_settings": ("CH1", "ampl"),
-        "Paramater_A": ("CH2", "freq"),
-        "Paramater_B": ("CBC", "kp"),
-        "Paramater_C": ("CBC", "kd"),
-        "Paramater_D": ("CH2", "ampl"),
-        "Paramater_E": ("CH2", "freq"),
-        "Paramater_F": ("CH1", "ampl"),
-    },
-    "linear_feedback": {
-        "CH1_settings": ("CH1", "ampl"),
-        "Paramater_A": ("CH2", "freq"),
-        "Paramater_B": ("CBC", "kp"),
-        "Paramater_C": ("CBC", "kd"),
-        "Paramater_D": ("CH2", "ampl"),
-        "Paramater_E": ("CH2", "freq"),
-        "Paramater_F": ("CH1", "ampl"),
-    },
-    "white_noise": {
-        "CH1_settings": ("CH1", "ampl"),
-        "Paramater_A": ("CH2", "freq"),
-        "Paramater_B": ("CBC", "kp"),
-        "Paramater_C": ("CBC", "kd"),
-        "Paramater_D": ("CH2", "ampl"),
-        "Paramater_E": ("CH2", "freq"),
-        "Paramater_F": ("CH1", "ampl"),
-    },
-    "off": {
-        "CH1_settings": ("CH1", "ampl"),
-        "Paramater_A": ("CH2", "freq"),
-        "Paramater_B": ("CBC", "kp"),
-        "Paramater_C": ("CBC", "kd"),
-        "Paramater_D": ("CH2", "ampl"),
-        "Paramater_E": ("CH2", "freq"),
-        "Paramater_F": ("CH1", "ampl"),
-    }
-}
+_float_to_fix = NumpyFloatToFixConverter(True, 16, 16)
+
 
 def range_to_interval(start, stop, duration):
     """Convert a sweep from a sensible format of  start:stop into the less
@@ -144,7 +69,7 @@ def range_to_interval(start, stop, duration):
         return int(duration * 125.0e6 / span)
 
     except ValueError:
-        raise TypeError(f"'range_to_interval' expects two float or int arguments, you have passed it a {type(start)} and {type(stop)} instead.")
+        raise TypeError(f"'range_to_interval' expects three float or int arguments, you have passed it a {type(start)}, {type(stop)}, {type(duration)} instead.")
 
 
 def freq_to_phase(frequency):
@@ -219,7 +144,8 @@ def channel_settings_to_byte(mode, input_select):
     in Onboard/interfaces.md.
 
     Arguments:
-        channel_dict (channel_config): Custom dictionary of config parameters
+        mode (string): Channel operating mode
+        input_select (int): input channel for output in question
 
     Returns:
         config_byte (int): an integer value corresponding to the bit pattern
@@ -236,7 +162,60 @@ def channel_settings_to_byte(mode, input_select):
     except:
         raise TypeError(f"The CH1 settings arguments (mode, input_select) are not valid!")
 
-def scale_and_convert(value, scale):
+def CBC_settings_to_byte(input_order,
+                         velocity_external,
+                         displacement_external,
+                         polynomial_target):
+    """Take CBC settings dictionary and manipulate the boolean options
+    into an integer value corresponding to their position in memory, outlined
+    in Onboard/interfaces.md. velocity_external and displacement_internal's
+    logical clash is covered in higher-level logic - don't call both True.'
+
+    Arguments:
+        input_order (string): Choose which input is displacement
+        velocity_external (bool): velocity external or internal
+        displacement_external (bool): displacement external or internal
+        polynomial_target (string): is the cubic acting on displacement or vel?
+
+    Returns:
+        config_byte (int): an integer value corresponding to the bit pattern
+            of the boolean toggles according to Onboard/interfaces.md
+
+    e.g.
+
+    CBC_settings_to_byte(1, True, False, 'displacement')
+    >> 3
+    """
+    try:
+        input_order = _CBC_input_orders[input_order]
+        velocity = int(velocity_external) << 1
+        displacement = int(displacement_external) << 2
+        poly = _polynomial_targets[polynomial_target] <<3
+        return (input_order | velocity | displacement | poly)
+    except:
+        raise TypeError(f"The CBC settings arguments (mode, input_select) are not valid!")
+
+
+def FPGA_config_to_byte(system_dict):
+    """Take system settings dictionary and manipulate the boolean options
+    into an integer value corresponding to their position in memory, outlined
+    in Onboard/interfaces.md.
+
+    Arguments:
+        system_dict (system_config): Custom dictionary of config parameters
+
+    Returns:
+        config_byte (int): an integer value corresponding to the bit pattern
+            of the boolean toggles according to Onboard/interfaces.md
+
+    e.g.
+
+    FPGA_config_to_byte("linear_feedback", 2)
+    >>
+    """
+    pass
+
+def scale_and_convert(scale, value, conversion=None):
     """Multiplies value by a constant, then converts to an int for storage.
 
     Arguments:
@@ -250,20 +229,297 @@ def scale_and_convert(value, scale):
     scale_and_convert(1, 2.5)
     >> 2
     """
+    if callable(conversion):
+        result = conversion(value * scale)
+    elif conversion == None:
+        result = int(float(value)*float(scale))
+    else:
+        raise TypeError("You have given a non-callable conversion function handle")
+        return 0
 
-    return int(float(value)*float(scale))
+    return result
 
 
 
 # Function to apply mappings based on the mode with bitwise combination. Work required
-def apply_mode_mapping(mode, memory, channel_settings):
-    mappings = mode_mappings.get(mode)
-    if mappings:
-        for mem_param, (config_key, manipulation_func, *params) in mappings.items():
-            if callable(config_key):  # Check if the mapping involves a function
-                config_values = [channel_settings[param][param_key] for param_key in params]
-                value = config_key(*config_values, *params)
-            else:
-                value = channel_settings[config_key][param_key]
-            if isinstance(value, int):  # Ensure the value is an integer (if it's a bitwise combination)
-                memory[mem_param] = value
+def update_FPGA_channel(channel, settings_dict, FPGA):
+    """Converts settings dictionaries into FPGA config values ready for sending
+    to the c server. Calling this without zeroing the other mode (CBC/channel)
+    will result in undefined behaviour, so do not call this function directly.
+    Used by update_FPGA().
+
+    Arguments:
+        channel (int or string): 1, 2, or 'CBC'. This setting picks a mapping.
+        settings_dict (channel_config or FPGA_config)
+    """
+
+    if channel == 1:
+        mapping = _CH1_mappings[settings_dict['mode']]
+    # elif channel == 2:
+    #     mapping = _CH2_mappings['mode']
+    # elif channel == 'CBC':
+    #     mapping = _CBC_mappings
+
+    for param, arguments in mapping.items():
+        if isinstance(arguments, (int, float)):
+            FPGA[param] = arguments
+        elif isinstance(arguments, (tuple, list)):
+            if callable(arguments[0]):
+                #in arguments tuple, use any strings as dict keys, and pass
+                #numeric inputs through untouched.
+                arguments_list = [settings_dict[arg] if isinstance(arg, str) else arg for arg in arguments[1]]
+
+                FPGA[param] = arguments[0](*arguments_list)
+
+
+"""Mapping dictionaries. One dictionary per mode. Each dictionary is keyed by
+the FPGA-memory parameter, with an entry that is either a number, a string, or
+a tuple of a function handle and a tuple or list of arguments.
+
+If a number, set parameter to this value (usually 0). If a string, set parameter
+to config[string]. If a tuple, call the first argument with config[second] as
+its arguments"""
+_CH1_mappings = {
+    "fixed_frequency": {
+        "CH1_settings": (channel_settings_to_byte, ("mode",
+                                                    "input_channel")),
+        "Parameter_A": (freq_to_phase, ("frequency_start",)),
+        "Parameter_B": (scale_and_convert, (8.192, "a_start",)),
+        "Parameter_C": (scale_and_convert, (8.192*32768, "b_start")),
+        "Parameter_D": 0,
+        "Parameter_E": 0,
+        "Parameter_F": 0,
+    },
+
+    "frequency_sweep": {
+        "CH1_settings": (channel_settings_to_byte, ("mode",
+                                                    "input_channel")),
+        "Parameter_A": (freq_to_phase, ("frequency_start", )),
+        "Parameter_B": (interval_if_sweep, ("frequency_start",
+                                             "frequency_stop",
+                                             "frequency_sweep",
+                                             "duration",
+                                             freq_to_phase)),
+        "Parameter_C": (scale_and_convert, (8.192, "a_start")),
+        "Parameter_D": (scale_and_convert, (8.192*32768, "b_start")),
+        "Parameter_E": 0,
+        "Parameter_F": 0,
+    },
+
+    "artificial_nonlinearity": {
+        "CH1_settings": (channel_settings_to_byte, ("mode",
+                                                    "input_channel")),
+        "Parameter_A": (scale_and_convert, (8.192, "p0")),
+        "Parameter_B": 0,
+        "Parameter_C": (scale_and_convert, (1, 'p1')),
+        "Parameter_D": (scale_and_convert, (1, 'p2')),
+        "Parameter_E": (scale_and_convert, (1, 'p3')),
+        "Parameter_F": 0,
+    },
+
+    "artificial_nonlinearity_parametric": {
+        "CH1_settings": (channel_settings_to_byte, ("mode",
+                                                    "input_channel")),
+        "Parameter_A": (scale_and_convert, (8.192, "p0")),
+        "Parameter_B": 0,
+        "Parameter_C": (scale_and_convert, (1, 'p1')),
+        "Parameter_D": (scale_and_convert, (1, 'p2')),
+        "Parameter_E": (scale_and_convert, (1, 'p3')),
+        "Parameter_F": (freq_to_phase, ('frequency_start', )),
+    },
+
+    "cubic": {
+        "CH1_settings": (channel_settings_to_byte, ("mode",
+                                                    "input_channel")),
+        "Parameter_A": (scale_and_convert, (1/512,
+                                            'p1',
+                                            _float_to_fix)),
+        "Parameter_B": (scale_and_convert, (64*0.98631, # 0.987 is a measured calibration constant
+                                            'p2',
+                                            _float_to_fix)),
+        "Parameter_C": (scale_and_convert, (64*0.96659, # 0.967 is a measured calibration constant
+                                            'p3',
+                                            _float_to_fix)),
+        "Parameter_D": 0,
+        "Parameter_E": (scale_and_convert, (8.192*32768, 'p0')),
+        "Parameter_F": 0,
+    },
+
+    "linear_feedback": {
+        "CH1_settings": (channel_settings_to_byte, ("mode",
+                                                    "input_channel")),
+        "Parameter_A": (_float_to_fix, ("a_start",)),
+        "Parameter_B": (_float_to_fix, ("a_start",)),
+        "Parameter_C": (scale_and_convert, (8.192*32768, "b_start")),
+        "Parameter_D": (interval_if_sweep, ("a_start",
+                                            "a_stop",
+                                            "a_sweep",
+                                            "duration",
+                                            _float_to_fix)),
+        "Parameter_E": (interval_if_sweep, ("b_start",
+                                            "b_stop",
+                                            "b_sweep",
+                                            "duration",
+                                            partial(scale_and_convert, 8.192*32768))),
+        "Parameter_F": 0,
+    },
+
+    "white_noise": {
+        "CH1_settings": (channel_settings_to_byte, ("mode",
+                                                    "input_channel")),
+        "Parameter_A": 0,
+        "Parameter_B": 0,
+        "Parameter_C": (scale_and_convert, (8.192, "a_start")),
+        "Parameter_D": (scale_and_convert, (8.192*32768, 'b_start')),
+        "Parameter_E": 0,
+        "Parameter_F": 0,
+    },
+
+    "off": {
+        "CH1_settings": (channel_settings_to_byte, ("mode",
+                                                    "input_channel")),
+        "Parameter_A": 0,
+        "Parameter_B": 0,
+        "Parameter_C": 0,
+        "Parameter_D": 0,
+        "Parameter_E": 0,
+        "Parameter_F": 0,
+    },
+}
+
+_CH2_mappings = {
+    "fixed_frequency": {
+        "CH2_settings": (channel_settings_to_byte, ("mode",
+                                                    "input_channel")),
+        "Parameter_G": (freq_to_phase, ("frequency_start",)),
+        "Parameter_H": (scale_and_convert, (8.192, "a_start",)),
+        "Parameter_I": (scale_and_convert, (8.192*32768, "b_start")),
+        "Parameter_J": 0,
+        "Parameter_K": 0,
+        "Parameter_L": 0,
+    },
+
+    "frequency_sweep": {
+        "CH2_settings": (channel_settings_to_byte, ("mode",
+                                                    "input_channel")),
+        "Parameter_G": (freq_to_phase, ("frequency_start", )),
+        "Parameter_H": (interval_if_sweep, ("frequency_start",
+                                             "frequency_stop",
+                                             "frequency_sweep",
+                                             "duration",
+                                             freq_to_phase)),
+        "Parameter_I": (scale_and_convert, (8.192, "a_start")),
+        "Parameter_J": (scale_and_convert, (8.192*32768, "b_start")),
+        "Parameter_K": 0,
+        "Parameter_L": 0,
+    },
+
+    "artificial_nonlinearity": {
+        "CH2_settings": (channel_settings_to_byte, ("mode",
+                                                    "input_channel")),
+        "Parameter_G": (scale_and_convert, (8.192, "p0")),
+        "Parameter_H": 0,
+        "Parameter_I": (scale_and_convert, (1, 'p1')),
+        "Parameter_J": (scale_and_convert, (1, 'p2')),
+        "Parameter_K": (scale_and_convert, (1, 'p3')),
+        "Parameter_L": 0,
+    },
+
+    "artificial_nonlinearity_parametric": {
+        "CH2_settings": (channel_settings_to_byte, ("mode",
+                                                    "input_channel")),
+        "Parameter_G": (scale_and_convert, (8.192, "p0")),
+        "Parameter_H": 0,
+        "Parameter_I": (scale_and_convert, (1, 'p1')),
+        "Parameter_J": (scale_and_convert, (1, 'p2')),
+        "Parameter_K": (scale_and_convert, (1, 'p3')),
+        "Parameter_L": (freq_to_phase, ('frequency_start', )),
+    },
+
+    "cubic": {
+        "CH2_settings": (channel_settings_to_byte, ("mode",
+                                                    "input_channel")),
+        "Parameter_G": (scale_and_convert, (1/512,
+                                            'p1',
+                                            _float_to_fix)),
+        "Parameter_H": (scale_and_convert, (64*0.98631, # 0.987 is a measured calibration constant
+                                            'p2',
+                                            _float_to_fix)),
+        "Parameter_I": (scale_and_convert, (64*0.96659, # 0.967 is a measured calibration constant
+                                            'p3',
+                                            _float_to_fix)),
+        "Parameter_J": 0,
+        "Parameter_K": (scale_and_convert, (8.192*32768, 'p0')),
+        "Parameter_L": 0,
+    },
+
+    "linear_feedback": {
+        "CH2_settings": (channel_settings_to_byte, ("mode",
+                                                    "input_channel")),
+        "Parameter_G": (_float_to_fix, ("a_start",)),
+        "Parameter_H": (_float_to_fix, ("a_start",)),
+        "Parameter_I": (scale_and_convert, (8.192*32768, "b_start")),
+        "Parameter_J": (interval_if_sweep, ("a_start",
+                                            "a_stop",
+                                            "a_sweep",
+                                            "duration",
+                                            _float_to_fix)),
+        "Parameter_K": (interval_if_sweep, ("b_start",
+                                            "b_stop",
+                                            "b_sweep",
+                                            "duration",
+                                            partial(scale_and_convert, 8.192*32768))),
+        "Parameter_L": 0,
+    },
+
+    "white_noise": {
+        "CH2_settings": (channel_settings_to_byte, ("mode",
+                                                    "input_channel")),
+        "Parameter_G": 0,
+        "Parameter_H": 0,
+        "Parameter_I": (scale_and_convert, (8.192, "a_start")),
+        "Parameter_J": (scale_and_convert, (8.192*32768, 'b_start')),
+        "Parameter_K": 0,
+        "Parameter_L": 0,
+    },
+
+    "off": {
+        "CH2_settings": (channel_settings_to_byte, ("mode",
+                                                    "input_channel")),
+        "Parameter_G": 0,
+        "Parameter_H": 0,
+        "Parameter_I": 0,
+        "Parameter_J": 0,
+        "Parameter_K": 0,
+        "Parameter_L": 0,
+    },
+}
+
+_CBC_mappings = {
+    "CBC": {
+        "CBC_settings": (CBC_settings_to_byte, ("input_order",
+                                                "velocity_external",
+                                                "displacement_external",
+                                                "polynomial_target")),
+        "Parameter_A": 0,
+        "Parameter_B": 0,
+        "Parameter_C": 0,
+        "Parameter_D": 0,
+        "Parameter_E": 0,
+        "Parameter_F": 0,
+        "Parameter_G": (scale_and_convert, (64*0.96659, # 0.967 is a measured calibration constant
+                                            'a_start',
+                                            _float_to_fix)),
+        "Parameter_H": 0,
+        "Parameter_I":(scale_and_convert, (64*0.98631, # 0.987 is a measured calibration constant
+                                            'b_start',
+                                            _float_to_fix)),
+        "Parameter_J": 0,
+        "Parameter_K": (scale_and_convert, (1/512,
+                                            'c_start',
+                                            _float_to_fix)),
+        "Parameter_L": 0,
+        "Parameter_M": (scale_and_convert, (8.192*32768, 'd_start')),
+        "Parameter_N": 0
+}
+    },

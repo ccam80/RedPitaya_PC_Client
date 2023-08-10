@@ -31,8 +31,28 @@ Created on Thu Jul 20 21:55:49 2023
 """
 
 from RedPitaya import RedPitaya
+from mem_mapping import update_FPGA_channel
+from channel_config import _channel_modes
 
-RP = RedPitaya()
+default_CH1_example = {"mode": 'fixed_frequency',
+                       "input_channel": 1,
+                       "frequency_start": 100,
+                       "frequency_stop": 1000,
+                       "frequency_sweep": True,
+                       "a_start": 0,
+                       "a_stop": 1,
+                       "a_sweep": True,
+                       "b_start": 100,
+                       "b_stop": 200,
+                       "b_sweep": True,
+                       "p3": 0.5,
+                       "p2": 0.5,
+                       "p1": 0.5,
+                       "p0": 200,
+                       "duration": 1.1
+                       }
+
+RP = RedPitaya(CH1_init=default_CH1_example)
 
 
 # RP.set_frequency('CBC', 1000)
@@ -44,8 +64,14 @@ RP = RedPitaya()
 # RP.CH1.mode = "linear_feedback"
 
 # RP.CH1.set_params_cubic()
-RP.set_output("CBC")
+# RP.choose_output("CHx")
 
 RP.print_config("Both")
 RP.print_config("CBC")
-
+for mode in _channel_modes:
+    RP.set_mode(1, mode)
+    update_FPGA_channel(1, RP.CH1.config, RP.system.FPGA)
+    print(mode)
+    for key, item in RP.system.FPGA.items():
+        print(f'{key}: {item}')
+    print("")

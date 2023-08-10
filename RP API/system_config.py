@@ -38,7 +38,7 @@ _limits = {"continuous_output": [0, 1],
 class system_config(dict):
 
     def __init__(self, default_values=None):
-        super().__init__({key: None for key in _system_keys})
+        super().__init__({key: 0 for key in _system_keys})
         if default_values:
             for key, value in default_values.items():
                 if key in _system_keys:
