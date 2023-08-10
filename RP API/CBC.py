@@ -109,7 +109,7 @@ class CBC:
             self.config[param_name + "_sweep"] = sweep
         else:
             self.config[param_name] = param_val
-<<<<<<< HEAD
+#<<<<<<< HEAD
     
     
     def set_input_order(self, input_channel):        
@@ -121,11 +121,11 @@ class CBC:
             raise ValueError("'input_channel' must be either 1 or 2.")
             
     
-=======
+#=======
 
 
 
->>>>>>> remotes/origin/chris_working
+#>>>>>>> remotes/origin/chris_working
     def set_external(self, external_input):
         if external_input == "displacement":
             self.config["displacement_external"] = True

@@ -74,43 +74,6 @@ class RedPitaya():
         else:
             raise ValueError("'channel' must be be either 'CH1', 'CH2' or 'Both', or 'CBC'.")
 
-        # Sanitise channel input
-        if channel not in [1, 2, "CBC"]:
-            raise ValueError("Invalid 'channel' value. It must be 1, 2, or 'CBC'.")
-
-        if isinstance(frequency, (float, int)):
-            if channel == 1:
-                self.CH1.frequency_start = frequency
-                self.CH2.frequency_sweep = False
-            elif channel == 2:
-                self.CH2.frequency_start = frequency
-                self.CH2.frequency_sweep = False
-            elif channel == 'CBC':
-                self.CH2.frequency_start = frequency
-                self.CH2.frequency_sweep = False
-
-
-
-        elif isinstance(frequency, (list, tuple)):
-            if len(frequency) > 2:
-                print("Warning: 'frequency' list or tuple should contain at most two elements. Extra elements will be ignored.")
-            if channel == 1:
-                self.CH1.frequency_start = frequency[0]
-                self.CH1.frequency_stop = frequency[1]
-                self.CH1.frequency_sweep = True
-            elif channel == 2:
-                self.CH2.frequency_start = frequency[0]
-                self.CH2.frequency_stop = frequency[1]
-                self.CH2.frequency_sweep = True
-            elif channel == 'CBC':
-                self.CBC.f_start = frequency[0]
-                self.CBC.f_stop = frequency[1]
-                self.CBC.f_sweep = True
-
-
-        else:
-            raise TypeError("'frequency' must be a single float or a list/tuple of two floats.")
-
     
     def choose_input_channel(self, channel, input_channel):
         if channel not in ["CH1", "CH2", "CBC", "Both"]:
@@ -268,29 +231,29 @@ class RedPitaya():
 
 
 
-    def set_a(self, channel, value):
-        self.set_param(channel, "a", value)
+    def set_linear_amplitude(self, channel, value):
+        self.set_param(channel, "linear_amplitude", value)
 
-    def set_b(self, channel, value):
-        self.set_param(channel, "b", value)
+    def set_quadratic_amplitude(self, channel, value):
+        self.set_param(channel, "quadratic_amplitude", value)
 
-    def set_c(self, channel, value):
-        self.set_param(channel, "c", value)
+    def set_cubic_amplitude(self, channel, value):
+        self.set_param(channel, "cubic_amplitude", value)
 
-    def set_d(self, channel, value):
-        self.set_param(channel, "d", value)
+    def set_offset(self, channel, value):
+        self.set_param(channel, "offset", value)
 
-    def set_p3(self, channel, value):
-        self.set_param(channel, "p3", value)
+    # def set_p3(self, channel, value):
+    #     self.set_param(channel, "p3", value)
 
-    def set_p2(self, channel, value):
-        self.set_param(channel, "p2", value)
+    # def set_p2(self, channel, value):
+    #     self.set_param(channel, "p2", value)
 
-    def set_p1(self, channel, value):
-        self.set_param(channel, "p1", value)
+    # def set_p1(self, channel, value):
+    #     self.set_param(channel, "p1", value)
 
-    def set_p0(self, channel, value):
-        self.set_param(channel, "p0", value)
+    # def set_p0(self, channel, value):
+    #     self.set_param(channel, "p0", value)
 
     def set_freq(self, channel, value):
         self.set_param(channel, "frequency", value)
@@ -314,9 +277,9 @@ class RedPitaya():
         else:
             raise ValueError("'channel' must be be 'CBC'.")
 
-    def set_rhat(self, channel, values):
+    def set_reference_amplitude(self, channel, values):
         if channel == "CBC":
-            self.set_param(channel, "r_hat", values)
+            self.set_param(channel, "reference_amplitude", values)
         else:
             raise ValueError("'channel' must be be 'CBC'.")
 

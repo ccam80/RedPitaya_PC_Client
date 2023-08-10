@@ -25,7 +25,7 @@ class channel:
 
     def __init__(self, default_values=None):
         self.config = channel_config(default_values)
-        self.sweepable = _channel_sweepable
+        #self.sweepable = _channel_sweepable
 
     def print_config(self):
         print ("{:<20} {:<20} ".format("Key", "Channel"))
@@ -82,19 +82,32 @@ class channel:
                     kwargs[key] = None
 
             if mode == "linear_feedback":
-                self.set_params_linear(a=kwargs["a"], b=kwargs["b"], input_channel=kwargs["input_channel"])
+                self.set_params_linear(linear_amplitude=kwargs["linear_amplitude"], 
+                                       offset=kwargs["offset"], 
+                                       input_channel=kwargs["input_channel"])
 
             elif mode == "cubic":
-                self.set_params_cubic(p3=kwargs["p3"], p2=kwargs["p2"], p1=kwargs["p1"], p0=kwargs["p0"], input_channel=kwargs["input_channel"])
+                self.set_params_cubic(cubic_amplitude=kwargs["cubic_amplitude"], 
+                                      quadratic_amplitude=kwargs["quadratic_amplitude"], 
+                                      linear_amplitude=kwargs["linear_amplitude"], 
+                                      offset=kwargs["offset"], 
+                                      input_channel=kwargs["input_channel"])
 
             elif mode == "white_noise":
-                self.set_params_noise(p1=kwargs["p1"], p0=kwargs["p0"])
+                self.set_params_noise(linear_amplitude=kwargs["linear_amplitude"], 
+                                      offset=kwargs["offset"])
 
             elif mode in ["artificial_nonlinearity", "artificial_nonlinearity_parametric"]:
-                self.set_params_artificial(p3=kwargs["p3"], p2=kwargs["p2"], p1=kwargs["p1"], p0=kwargs["p0"], frequency=kwargs["frequency"])
+                self.set_params_artificial(cubic_amplitude=kwargs["cubic_amplitude"], 
+                                           quadratic_amplitude=kwargs["quadratic_amplitude"], 
+                                           linear_amplitude=kwargs["linear_amplitude"], 
+                                           offset=kwargs["offset"], 
+                                           frequency=kwargs["frequency"])
 
             elif mode in ["fixed_frequency", "frequency_sweep"]:
-                self.set_params_freq(p1=kwargs["p1"], p0=kwargs["p0"], frequency=kwargs["frequency"])
+                self.set_params_freq(linear_amplitude=kwargs["linear_amplitude"], 
+                                     offset=kwargs["offset"], 
+                                     frequency=kwargs["frequency"])
 
 
 
@@ -141,7 +154,7 @@ class channel:
             self.config[param_name] = param_val
 
 
-    def set_params_linear(self, a=None, b=None, input_channel=None):
+    def set_params_linear(self, linear_amplitude=None, offset=None, input_channel=None):
         """
         Sets the parameters for the linear output type
         Coefficients are of the mathematical form of:
@@ -180,11 +193,11 @@ class channel:
                 -> All other parameters are ignored.
         """
 
-        lin_keys = {"A", "B", "input_channel"}
-        if a:
-            self.set_param("a", a)
-        if b:
-            self.set_param("b", b)
+        #lin_keys = {"A", "B", "input_channel"}
+        if linear_amplitude:
+            self.set_param("linear_amplitude", linear_amplitude)
+        if offset:
+            self.set_param("offset", offset)
         if input_channel:
             self.set_param("input_channel", input_channel)
 
@@ -200,7 +213,7 @@ class channel:
         #     print("Warning: key '%s' not found. Value will remain unchanged" % key)
 
 
-    def set_params_cubic(self, p3=None, p2=None, p1=None, p0=None, input_channel=None):
+    def set_params_cubic(self, cubic_amplitude=None, quadratic_amplitude=None, linear_amplitude=None, offset=None, input_channel=None):
         """
         Sets the parameters for the linear output type
         Coefficients are of the mathematical form of:
@@ -226,19 +239,19 @@ class channel:
                 -> B = 4
                 -> All other parameters are ignored.
         """
-        if p3:
-            self.set_param("p3", p3)
-        if p2:
-            self.set_param("p2", p2)
-        if p1:
-            self.set_param("p1", p1)
-        if p0:
-            self.set_param("p0", p0)
+        if cubic_amplitude:
+            self.set_param("cubic_amplitude", cubic_amplitude)
+        if quadratic_amplitude:
+            self.set_param("quadratic_amplitude", quadratic_amplitude)
+        if linear_amplitude:
+            self.set_param("linear_amplitude", linear_amplitude)
+        if offset:
+            self.set_param("offset", offset)
         if input_channel:
             self.set_param("input_channel", input_channel)
 
 
-    def set_params_noise(self, p1=None, p0=None):
+    def set_params_noise(self, linear_amplitude=None, offset=None):
         """
          Sets the parameters for the white noise output type
          Coefficients are of the mathematical form of:
@@ -262,12 +275,12 @@ class channel:
                 -> A = 1
                 -> D = 4
         """
-        if p1:
-            self.set_param("p1", p1)
-        if p0:
-            self.set_param("p0", p0)
+        if linear_amplitude:
+            self.set_param("linear_amplitude", linear_amplitude)
+        if offset:
+            self.set_param("offset", offset)
 
-    def set_params_freq(self, p1=None, p0=None, frequency=None):
+    def set_params_freq(self, linear_amplitude=None, offset=None, frequency=None):
         """
         Sets the parameters for the white noise output type
          Coefficients are of the mathematical form of:
@@ -304,15 +317,15 @@ class channel:
                 -> D is ignored.
         """
 
-        if p1:
-            self.set_param("p1", p1)
-        if p0:
-            self.set_param("p0", p0)
+        if linear_amplitude:
+            self.set_param("linear_amplitude", linear_amplitude)
+        if offset:
+            self.set_param("offset", offset)
         if frequency:
             self.set_param("frequency", frequency)
 
 
-    def set_params_artificial(self, p3=None, p2=None, p1=None, p0=None, frequency=None):
+    def set_params_artificial(self, cubic_amplitude=None, quadratic_amplitude=None, linear_amplitude=None, offset=None, frequency=None):
         """
         Sets the parameters for the white noise output type
         Coefficients are of the mathematical form of:
@@ -353,13 +366,13 @@ class channel:
                 -> fixed_x2_coeff = 2
                 -> All other parameters are ignored.
         """
-        if p3:
-            self.set_param("p3", p3)
-        if p2:
-            self.set_param("p2", p2)
-        if p1:
-            self.set_param("p1", p1)
-        if p0:
-            self.set_param("p0", p0)
+        if cubic_amplitude:
+            self.set_param("cubic_amplitude", cubic_amplitude)
+        if quadratic_amplitude:
+            self.set_param("quadratic_amplitude", quadratic_amplitude)
+        if linear_amplitude:
+            self.set_param("linear_amplitude", linear_amplitude)
+        if offset:
+            self.set_param("offset", offset)
         if frequency:
             self.set_param("frequency", frequency)
