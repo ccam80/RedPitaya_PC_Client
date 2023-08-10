@@ -39,16 +39,14 @@ default_CH1_example = {"mode": 'fixed_frequency',
                        "frequency_start": 100,
                        "frequency_stop": 1000,
                        "frequency_sweep": True,
-                       "a_start": 0,
-                       "a_stop": 1,
-                       "a_sweep": True,
-                       "b_start": 100,
-                       "b_stop": 200,
-                       "b_sweep": True,
-                       "p3": 0.5,
-                       "p2": 0.5,
-                       "p1": 0.5,
-                       "p0": 200,
+                       "linear_amplitude_start": 0,
+                       "linear_amplitude_stop": 1,
+                       "linear_amplitude_sweep": True,
+                       "offset_start": 100,
+                       "offset_stop": 200,
+                       "offset_sweep": True,
+                       "cubic_amplitude": 0,
+                       "quadratic_amplitude": 0,
                        "duration": 1.1
                        }
 
@@ -65,7 +63,8 @@ RP = RedPitaya(CH1_init=default_CH1_example)
 
 # RP.CH1.set_params_cubic()
 # RP.choose_output("CHx")
-RP.choose_polynomial_target("displacemasent")
+RP.set_mode("CH1", 'frequency_sweep')
+RP.CH1.set_param('linear_amplitude', [10, 100])
 
 RP.print_config("Both")
 RP.print_config("CBC")

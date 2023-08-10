@@ -67,9 +67,9 @@ class RedPitaya():
         elif channel == "CBC":
             self.CBC.print_config()
         elif channel == "Both":
-            print ("{:<20} {:<20} {:<20} ".format("Key", "Channel 1", "Channel 2"))
+            print ("{:<25} {:<20} {:<20} ".format("Key", "Channel 1", "Channel 2"))
             for key in self.CH1.config.keys():
-                print ("{:<20} {:<20} {:<20} ".format(key, str(self.CH1.config[key]), str(self.CH2.config[key])))
+                print ("{:<25} {:<20} {:<20} ".format(key, str(self.CH1.config[key]), str(self.CH2.config[key])))
             print()
         else:
             raise ValueError("'channel' must be be either 'CH1', 'CH2' or 'Both', or 'CBC'.")

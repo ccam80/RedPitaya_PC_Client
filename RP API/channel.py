@@ -145,13 +145,23 @@ class channel:
                 -> A_stop = 10
                 -> A_sweep = True
         """
-        if param_name in _channel_sweepable:
-            start, stop, sweep = fixed_or_sweep(param_name, param_val, _channel_sweepable)
-            self.config[param_name + "_start"] = start
-            self.config[param_name + "_stop"] = stop
-            self.config[param_name + "_sweep"] = sweep
-        else:
-            self.config[param_name] = param_val
+        # if param_name in _channel_sweepable:
+        #     start, stop, sweep = fixed_or_sweep(param_name, param_val, _channel_sweepable)
+        #     self.config[param_name + "_start"] = start
+        #     self.config[param_name + "_stop"] = stop
+        #     self.config[param_name + "_sweep"] = sweep
+        # else:
+        #     self.config[param_name] = param_val
+            
+        mode = self.config["mode"]
+        param_ranges = fixed_or_sweep(param_name, param_val, mode)
+        if len(param_ranges) == 3:
+            self.config[param_name + "_start"] = param_ranges[0]
+            self.config[param_name + "_stop"] = param_ranges[1]
+            self.config[param_name + "_sweep"] = param_ranges[2]
+        elif len(param_ranges) == 1:
+            self.config[param_name] = param_ranges[0]
+        
 
 
     def set_params_linear(self, linear_amplitude=None, offset=None, input_channel=None):
