@@ -52,8 +52,36 @@ default_CH1_example = {"mode": 'fixed_frequency',
                        "duration": 1.1
                        }
 
-RP = RedPitaya(CH1_init=default_CH1_example)
+default_CBC_example = {"CBC_enabled": True,
+                       "input_order": 1,
+                       "velocity_external": True,
+                       "displacement_external": False,
+                       "polynomial_target": 'displacement',
+                       "kp": 1.1,
+                       "kd": 1.2,
+                       "r_hat_start": 100,
+                       "r_hat_stop": 200,
+                       "r_hat_sweep": True,
+                       "f_start": 100,
+                       "f_stop": 10000,
+                       "f_sweep": True,
+                       "a_start": 0,
+                       "a_stop": 1,
+                       "a_sweep": True,
+                       "b_start": 0,
+                       "b_stop": 1,
+                       "b_sweep": True,
+                       "c_start": 0,
+                       "c_stop": 1,
+                       "c_sweep": True,
+                       "d_start": 0,
+                       "d_stop": 1,
+                       "d_sweep": False,
+                       "duration": 1.1}
 
+RP = RedPitaya(CH1_init=default_CH1_example,
+               CH2_init=default_CH1_example,
+               CBC_init=default_CBC_example)
 
 # RP.set_frequency('CBC', 1000)
 # RP.set_frequency(1, [1000,200000])
@@ -68,10 +96,19 @@ RP = RedPitaya(CH1_init=default_CH1_example)
 
 RP.print_config("Both")
 RP.print_config("CBC")
+
 for mode in _channel_modes:
     RP.set_mode(1, mode)
     update_FPGA_channel(1, RP.CH1.config, RP.system.FPGA)
+    update_FPGA_channel(2, RP.CH2.config, RP.system.FPGA)
     print(mode)
+    for key, item in RP.system.FPGA.items():
+        print(f'{key}: {item}')
+    print("")
+
+    update_FPGA_channel('CBC', RP.CBC.config, RP.system.FPGA)
+    RP.print_config("CBC")
+
     for key, item in RP.system.FPGA.items():
         print(f'{key}: {item}')
     print("")

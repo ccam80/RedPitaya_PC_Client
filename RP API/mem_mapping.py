@@ -255,10 +255,10 @@ def update_FPGA_channel(channel, settings_dict, FPGA):
 
     if channel == 1:
         mapping = _CH1_mappings[settings_dict['mode']]
-    # elif channel == 2:
-    #     mapping = _CH2_mappings['mode']
-    # elif channel == 'CBC':
-    #     mapping = _CBC_mappings
+    elif channel == 2:
+        mapping = _CH2_mappings[settings_dict['mode']]
+    elif channel == 'CBC':
+        mapping = _CBC_mappings
 
     for param, arguments in mapping.items():
         if isinstance(arguments, (int, float)):
@@ -496,30 +496,60 @@ _CH2_mappings = {
 }
 
 _CBC_mappings = {
-    "CBC": {
-        "CBC_settings": (CBC_settings_to_byte, ("input_order",
-                                                "velocity_external",
-                                                "displacement_external",
-                                                "polynomial_target")),
-        "Parameter_A": 0,
-        "Parameter_B": 0,
-        "Parameter_C": 0,
-        "Parameter_D": 0,
-        "Parameter_E": 0,
-        "Parameter_F": 0,
-        "Parameter_G": (scale_and_convert, (64*0.96659, # 0.967 is a measured calibration constant
-                                            'a_start',
-                                            _float_to_fix)),
-        "Parameter_H": 0,
-        "Parameter_I":(scale_and_convert, (64*0.98631, # 0.987 is a measured calibration constant
-                                            'b_start',
-                                            _float_to_fix)),
-        "Parameter_J": 0,
-        "Parameter_K": (scale_and_convert, (1/512,
-                                            'c_start',
-                                            _float_to_fix)),
-        "Parameter_L": 0,
-        "Parameter_M": (scale_and_convert, (8.192*32768, 'd_start')),
-        "Parameter_N": 0
+    "CBC_settings": (CBC_settings_to_byte, ("input_order",
+                                            "velocity_external",
+                                            "displacement_external",
+                                            "polynomial_target")),
+    "Parameter_A": (scale_and_convert, (1, 'r_hat_start')),
+    "Parameter_B": (interval_if_sweep, ("r_hat_start",
+                                        "r_hat_stop",
+                                        "r_hat_sweep",
+                                        "duration",
+                                        partial(scale_and_convert, 1))), #this may need to be multiplied up from 1000 max to ADC_max
+    "Parameter_C": (freq_to_phase, ("frequency_start", )),
+    "Parameter_D": (interval_if_sweep, ("frequency_start",
+                                         "frequency_stop",
+                                         "frequency_sweep",
+                                         "duration",
+                                         freq_to_phase)),
+    "Parameter_E": (_float_to_fix, ("kp",)),
+    "Parameter_F": (_float_to_fix, ("kd",)),
+    "Parameter_G": (scale_and_convert, (64*0.96659, # 0.967 is a measured calibration constant
+                                        'a_start',
+                                        _float_to_fix)),
+    "Parameter_H": (interval_if_sweep, ("a_start",
+                                        "a_stop",
+                                        "a_sweep",
+                                        "duration",
+                                        partial(scale_and_convert,
+                                                64*0.96659,
+                                                conversion=_float_to_fix))),
+    "Parameter_I":(scale_and_convert, (64*0.98631, # 0.987 is a measured calibration constant
+                                        'b_start',
+                                        _float_to_fix)),
+    "Parameter_J": (interval_if_sweep, ("b_start",
+                                        "b_stop",
+                                        "b_sweep",
+                                        "duration",
+                                        partial(scale_and_convert,
+                                                64*0.98631,
+                                                 conversion=_float_to_fix))),
+    "Parameter_K": (scale_and_convert, (1/512,
+                                        'c_start',
+                                        _float_to_fix)),
+    "Parameter_L": (interval_if_sweep, ("c_start",
+                                        "c_stop",
+                                        "c_sweep",
+                                        "duration",
+                                        partial(scale_and_convert,
+                                                1/512,
+                                                conversion=_float_to_fix))),
+    "Parameter_M": (scale_and_convert, (8.192*32768, 'd_start')),
+    "Parameter_N": (interval_if_sweep, ("d_start",
+                                        "d_stop",
+                                        "d_sweep",
+                                        "duration",
+                                        partial(scale_and_convert,
+                                                8.192*32768,
+                                                conversion=_float_to_fix)))
 }
-    },
