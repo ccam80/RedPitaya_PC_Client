@@ -93,6 +93,7 @@ RP = RedPitaya(CH1_init=default_CH1_example,
 
 # RP.CH1.set_params_cubic()
 # RP.choose_output("CHx")
+RP.choose_polynomial_target("displacemasent")
 
 RP.print_config("Both")
 RP.print_config("CBC")

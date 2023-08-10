@@ -109,9 +109,23 @@ class CBC:
             self.config[param_name + "_sweep"] = sweep
         else:
             self.config[param_name] = param_val
+#<<<<<<< HEAD
+    
+    
+    def set_input_order(self, input_channel):        
+        if input_channel == 1:
+            self.config["input_channel"] = 1
+        elif input_channel == 2:
+            self.config["input_channel"] = 2
+        else:
+            raise ValueError("'input_channel' must be either 1 or 2.")
+            
+    
+#=======
 
 
 
+#>>>>>>> remotes/origin/chris_working
     def set_external(self, external_input):
         if external_input == "displacement":
             self.config["displacement_external"] = True
@@ -121,7 +135,14 @@ class CBC:
             self.config["velocity_external"] = True
         else:
             raise ValueError("input type '%s' is invalid. Use either 'displacement' or 'velocity'")
-
+    
+    def set_polynomial_target(self, target):        
+        if target == "displacement":
+            self.config["polynomial_target"] = "displacement"
+        elif target == "velocity":
+            self.config["polynomial_target"] = "velocity"
+        else:
+            raise ValueError("'target' must be either 'displacement' or 'velocity'.")
 
 
     def set_params_CBC(self, A=None, B=None, C=None, D=None, rhat=None, kp=None, kd=None, frequency=None, polynomial_target=None, external=None, input_order=None):
