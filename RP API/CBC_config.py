@@ -102,7 +102,7 @@ _limits = {"CBC_enabled": [0, 1],
 class CBC_config(dict):
 
     def __init__(self, default_values=None):
-        super().__init__({key: None for key in _CBC_keys})
+        super().__init__({key: 0 for key in _CBC_keys})
         if default_values:
             for key, value in default_values.items():
                 if key in _CBC_keys:

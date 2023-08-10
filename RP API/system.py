@@ -10,6 +10,7 @@ Under-the-hood functions which take user inputs from RedPitaya.py and modify the
 system_config dictionary values accordingly
 """
 from system_config import system_config
+from FPGA_config import FPGA_config
 
 class system:
 # _datatypes = {"continuous_output": bool,
@@ -21,8 +22,7 @@ class system:
 
     def __init__(self):
         self.config = system_config()
-        
-        
+        self.FPGA = FPGA_config()
     def set_continuous_output(self, cont_output):
         if cont_output:
             self.config["continuous_output"] = True

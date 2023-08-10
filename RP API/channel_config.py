@@ -88,13 +88,13 @@ _limits = {"mode": _channel_modes,
 class channel_config(dict):
 
     def __init__(self, default_values=None):
-        super().__init__({key: None for key in _channel_keys})
+        super().__init__({key: 0 for key in _channel_keys})
         if default_values:
             for key, value in default_values.items():
                 if key in _channel_keys:
                     self[key] = value
                 else:
-                    print(f"Warning: The key '{key}' is not included in CBC settings and has been discarded.")
+                    print(f"Warning: The key '{key}' is not included in channel settings and has been discarded.")
 
 
     def __getattr__(self, item):

@@ -10,7 +10,7 @@ Under-the-hood functions which take user inputs from RedPitaya.py and modify the
 CBC_config dictionary values accordingly
 """
 from CBC_config import CBC_config
-from utils import fixed_or_sweep
+from _utils import fixed_or_sweep
 
 CBC_sweepable = ["r_hat",
               "f",
@@ -32,15 +32,15 @@ CBC_static = ["CBC_enabled",
 
 class CBC:
 
-    def __init__(self):
-        self.config = CBC_config()
-        
+    def __init__(self, default_values=None):
+        self.config = CBC_config(default_values)
+
     def print_config(self):
         print ("{:<25} {:<25} ".format("Key", "CBC"))
         for key in self.config.keys():
             print ("{:<25} {:<25} ".format(key, str(self.config[key])))
         print()
-        
+
         # print ("{:<25} {:<20} ".format("Key", "CBC"))
         # for key in CBC_static:
         #     print ("{:<25} {:<20} ".format(key, str(self.config[key])))
@@ -49,17 +49,17 @@ class CBC:
         # for key in CBC_sweepable:
         #     print ("{:<25} {:<20} {:<20} {:<20}".format(key, str(self.config[key + "_start"]), str(self.config[key + "_stop"]), str(self.config[key + "_sweep"])))
         # print()
-            
+
     # def reset_config(self):
-    #     for key in self.config.keys():            
+    #     for key in self.config.keys():
     #         if isinstance(self.config[key], bool):
     #             self.config[key] = False
     #         elif isinstance(self.config[key], (float, int)):
     #             self.config[key] = 0
     #         elif isinstance(self.config[key], str):
     #             self.config[key] = ""
-            
-            
+
+
     def choose_external_input_type(self, key, value):
         """
         This function configures whether the input to the RP is of a certain type.
@@ -109,6 +109,7 @@ class CBC:
             self.config[param_name + "_sweep"] = sweep
         else:
             self.config[param_name] = param_val
+<<<<<<< HEAD
     
     
     def set_input_order(self, input_channel):        
@@ -120,10 +121,15 @@ class CBC:
             raise ValueError("'input_channel' must be either 1 or 2.")
             
     
+=======
+
+
+
+>>>>>>> remotes/origin/chris_working
     def set_external(self, external_input):
         if external_input == "displacement":
             self.config["displacement_external"] = True
-            self.config["velocity_external"] = False            
+            self.config["velocity_external"] = False
         elif external_input == "velocity":
             self.config["displacement_external"] = False
             self.config["velocity_external"] = True
@@ -178,7 +184,7 @@ class CBC:
                 -> displacement_external = True
                 -> velocity_external = False
                 -> All other parameters are ignored
-        """            
+        """
         if A:
             self.set_param("A", A)
         if B:
@@ -201,4 +207,3 @@ class CBC:
             self.set_external(external)
         if input_order:
             self.set_param("input_order", input_order)
-        

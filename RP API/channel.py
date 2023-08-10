@@ -6,7 +6,7 @@ Created on Thu Aug  3 10:11:23 2023
 """
 
 from channel_config import channel_config
-from utils import fixed_or_sweep
+from _utils import fixed_or_sweep
 
 _channel_sweepable = ["frequency",
                       "a",
@@ -26,14 +26,14 @@ class channel:
     def __init__(self, default_values=None):
         self.config = channel_config(default_values)
         self.sweepable = _channel_sweepable
-    
+
     def print_config(self):
         print ("{:<20} {:<20} ".format("Key", "Channel"))
         for key in self.config.keys():
             print ("{:<20} {:<20} ".format(key, str(self.config[key])))
         print()
-    
-    
+
+
     def set_mode(self, mode, **kwargs):
         """
         Sets an output mode for a determined channel.
@@ -70,29 +70,29 @@ class channel:
                 -> mode = "cubic"
                 -> fixed_offset = 5
         """
-        
+
         self.config["mode"] = mode
         if kwargs:
             # If there are any keyword-argument inputs, then the relevant
             # set_param_(mode) function is called to set these parameters.
-            
+
             # Sets any unsed parameters to "None"
             for key in _channel_sweepable + _channel_fixed:
                 if key not in kwargs.keys():
                     kwargs[key] = None
-                    
+
             if mode == "linear_feedback":
                 self.set_params_linear(a=kwargs["a"], b=kwargs["b"], input_channel=kwargs["input_channel"])
-                
+
             elif mode == "cubic":
                 self.set_params_cubic(p3=kwargs["p3"], p2=kwargs["p2"], p1=kwargs["p1"], p0=kwargs["p0"], input_channel=kwargs["input_channel"])
-                
+
             elif mode == "white_noise":
                 self.set_params_noise(p1=kwargs["p1"], p0=kwargs["p0"])
-                
+
             elif mode in ["artificial_nonlinearity", "artificial_nonlinearity_parametric"]:
                 self.set_params_artificial(p3=kwargs["p3"], p2=kwargs["p2"], p1=kwargs["p1"], p0=kwargs["p0"], frequency=kwargs["frequency"])
-                
+
             elif mode in ["fixed_frequency", "frequency_sweep"]:
                 self.set_params_freq(p1=kwargs["p1"], p0=kwargs["p0"], frequency=kwargs["frequency"])
 
@@ -187,7 +187,7 @@ class channel:
             self.set_param("b", b)
         if input_channel:
             self.set_param("input_channel", input_channel)
-        
+
         # for key, value in kwargs.items():
         #     if key in lin_keys:
         #         self.set_param(key, value)
@@ -236,7 +236,7 @@ class channel:
             self.set_param("p0", p0)
         if input_channel:
             self.set_param("input_channel", input_channel)
-        
+
 
     def set_params_noise(self, p1=None, p0=None):
         """

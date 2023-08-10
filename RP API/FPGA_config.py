@@ -20,27 +20,27 @@ config_keys = ["system",
                "CH1_settings",
                "CH2_settings",
                "CBC_settings",
-               "Paramater_A",
-               "Paramater_B",
-               "Paramater_C",
-               "Paramater_D",
-               "Paramater_E",
-               "Paramater_F",
-               "Paramater_G",
-               "Paramater_H",
-               "Paramater_I",
-               "Paramater_J",
-               "Paramater_K",
-               "Paramater_L",
-               "Paramater_M",
-               "Paramater_N",
+               "Parameter_A",
+               "Parameter_B",
+               "Parameter_C",
+               "Parameter_D",
+               "Parameter_E",
+               "Parameter_F",
+               "Parameter_G",
+               "Parameter_H",
+               "Parameter_I",
+               "Parameter_J",
+               "Parameter_K",
+               "Parameter_L",
+               "Parameter_M",
+               "Parameter_N",
                ]
 
 
-class CBC_config(dict):
+class FPGA_config(dict):
 
     def __init__(self, default_values=None):
-        super().__init__({key: None for key in config_keys})
+        super().__init__({key: 0 for key in config_keys})
         if default_values:
             for key, value in default_values.items():
                 if key in config_keys:
