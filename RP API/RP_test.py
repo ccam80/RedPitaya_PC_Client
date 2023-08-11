@@ -45,8 +45,12 @@ default_CH1_example = {"mode": 'fixed_frequency',
                        "offset_start": 100,
                        "offset_stop": 200,
                        "offset_sweep": True,
-                       "cubic_amplitude": 0,
-                       "quadratic_amplitude": 0,
+                       "cubic_amplitude_start": 0,
+                       "cubic_amplitude_stop": 0,
+                       "cubic_amplitude_sweep": False,
+                       "quadratic_amplitude_start": 0,
+                       "quadratic_amplitude_stop": 0,
+                       "quadratic_amplitude_sweep": False,
                        "duration": 1.1
                        }
 
@@ -63,10 +67,14 @@ RP = RedPitaya(CH1_init=default_CH1_example)
 
 # RP.CH1.set_params_cubic()
 # RP.choose_output("CHx")
-RP.set_mode("CH1", 'frequency_sweep')
-RP.CH1.set_param('linear_amplitude', [10, 100])
 
+RP.set_mode("CH1", 'linear_feedback')
+RP.CH1.set_params_noise(linear_amplitude=[5, -100], offset=[1,100])
 RP.print_config("Both")
+
+
+
+
 RP.print_config("CBC")
 for mode in _channel_modes:
     RP.set_mode(1, mode)

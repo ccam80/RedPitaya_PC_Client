@@ -18,8 +18,12 @@ _channel_keys = ["mode",
                  "frequency_start",
                  "frequency_stop",
                  "frequency_sweep",
-                 "cubic_amplitude",
-                 "quadratic_amplitude",
+                 "cubic_amplitude_start",
+                 "cubic_amplitude_stop",
+                 "cubic_amplitude_sweep",
+                 "quadratic_amplitude_start",
+                 "quadratic_amplitude_stop",
+                 "quadratic_amplitude_sweep",
                  "linear_amplitude_start",
                  "linear_amplitude_stop",
                  "linear_amplitude_sweep",
@@ -45,8 +49,12 @@ _datatypes = {"mode": str,
               "frequency_start": float,
               "frequency_stop": float,
               "frequency_sweep": bool,
-              "cubic_amplitude": float,
-              "quadratic_amplitude": float,
+              "cubic_amplitude_start": float,
+              "cubic_amplitude_stop": float,
+              "cubic_amplitude_sweep": bool,
+              "quadratic_amplitude_start": float,
+              "quadratic_amplitude_stop": float,
+              "quadratic_amplitude_sweep": bool,
               "linear_amplitude_start": float,
               "linear_amplitude_stop": float,
               "linear_amplitude_sweep": bool,
@@ -61,8 +69,12 @@ _limits = {"mode": _channel_modes,
            "frequency_start": [0, 2000000],
            "frequency_stop": [0, 2000000],
            "frequency_sweep": [0, 1],
-           "cubic_amplitude": [-1000, 1000],
-           "quadratic_amplitude": [-1000, 1000],
+           "cubic_amplitude_start": [-1000, 1000],
+           "cubic_amplitude_stop": [-1000, 1000],
+           "cubic_amplitude_sweep": [0, 1],
+           "quadratic_amplitude_start": [-1000, 1000],
+           "quadratic_amplitude_stop": [-1000, 1000],
+           "quadratic_amplitude_sweep": [0, 1],
            "linear_amplitude_start": [-1000, 1000],
            "linear_amplitude_stop": [-1000, 1000],
            "linear_amplitude_sweep": [0, 1],
@@ -131,3 +143,15 @@ class channel_config(dict):
             lower_limit, upper_limit = sorted(limits)
 
             return lower_limit <= value <= upper_limit
+        
+    def clear_param(self, parameter):
+        if parameter == "input_channel":
+            self[parameter] = 1
+        elif _datatypes[parameter] == str:
+            self[parameter] = ""
+        elif _datatypes[parameter] in (int, float):
+            self[parameter] = 0
+        elif _datatypes[parameter] == bool:
+            self[parameter] = False
+        else:
+            print("xd")

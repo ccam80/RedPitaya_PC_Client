@@ -102,13 +102,23 @@ class CBC:
         be given to set the sweep range. As such, the sweep logic is simultaneously
         updated.
         """
-        if param_name in CBC_sweepable:
-            start, stop, sweep = fixed_or_sweep(param_name, param_val, CBC_sweepable)
-            self.config[param_name + "_start"] = start
-            self.config[param_name + "_stop"] = stop
-            self.config[param_name + "_sweep"] = sweep
-        else:
-            self.config[param_name] = param_val
+        # if param_name in CBC_sweepable:
+        #     start, stop, sweep = fixed_or_sweep(param_name, param_val, CBC_sweepable)
+        #     self.config[param_name + "_start"] = start
+        #     self.config[param_name + "_stop"] = stop
+        #     self.config[param_name + "_sweep"] = sweep
+        # else:
+        #     self.config[param_name] = param_val
+            
+            
+        param_ranges = fixed_or_sweep(param_name, param_val, "CBC")
+        if len(param_ranges) == 3:
+            self.config[param_name + "_start"] = param_ranges[0]
+            self.config[param_name + "_stop"] = param_ranges[1]
+            self.config[param_name + "_sweep"] = param_ranges[2]
+        elif len(param_ranges) == 1:
+            self.config[param_name] = param_ranges[0]
+            
 #<<<<<<< HEAD
     
     

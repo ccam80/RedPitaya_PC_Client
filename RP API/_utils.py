@@ -93,12 +93,12 @@ _sweepable_params = ['cubic_amplitude',
 
 def fixed_or_sweep(param, sweep_range, mode):
     if mode not in _modes_sweep_params.keys():
-        raise ValueError("{mode} is an invalid mode. Please use one of 'fixed_frequency', 'frequency_sweep', 'artificial_nonlinearity', 'artificial_nonlinearity_parametric', 'cubic', 'linear_feedback', 'white_noise', 'CBC', or 'off'")
+        raise ValueError(f"{mode} is an invalid mode. Please use one of 'fixed_frequency', 'frequency_sweep', 'artificial_nonlinearity', 'artificial_nonlinearity_parametric', 'cubic', 'linear_feedback', 'white_noise', 'CBC', or 'off'")
     
     
     if param not in _sweepable_params:
         if isinstance(sweep_range, (list, tuple)):
-            print("Warning: {param} cannot be swept. Only the first element of 'sweep_range' will be considered, and all other elements will be ignored")
+            print(f"Warning: {param} cannot be swept. Only the first element of 'sweep_range' will be considered, and all other elements will be ignored")
             start = sweep_range[0]
         elif isinstance(sweep_range, (float, int)):
             start = sweep_range
@@ -129,7 +129,7 @@ def fixed_or_sweep(param, sweep_range, mode):
             stop = 0
             sweep = False
             if isinstance(sweep_range, (list, tuple)):
-                print("Warning: {param} cannot be swept in {mode} mode. Only the first element of 'sweep_range' will be considered, and all other elements will be ignored")
+                print(f"Warning: {param} cannot be swept in {mode} mode. Only the first element of 'sweep_range' will be considered, and all other elements will be ignored")
                 start = sweep_range[0]
             elif isinstance(sweep_range, (float, int)):
                 start = sweep_range

@@ -8,16 +8,16 @@ Created on Thu Aug  3 10:11:23 2023
 from channel_config import channel_config
 from _utils import fixed_or_sweep
 
-_channel_sweepable = ["frequency",
-                      "a",
-                     "b"]
+_modes_params = {"fixed_frequency":                     ['frequency_start', 'linear_amplitude_start', 'offset_start'],
+                  "frequency_sweep":                    ['frequency_start', 'frequency_stop', 'frequency_sweep', 'linear_amplitude_start', 'offset_start'],
+                  "artificial_nonlinearity":            ['cubic_amplitude_start', 'quadratic_amplitude_start', 'linear_amplitude_start', 'offset_start'],
+                  "artificial_nonlinearity_parametric": ['cubic_amplitude_start', 'quadratic_amplitude_start', 'linear_amplitude_start', 'offset_start', 'frequency_start'],
+                  "cubic":                              ['cubic_amplitude_start', 'quadratic_amplitude_start', 'linear_amplitude_start', 'offset_start', 'input_channel'],
+                  "linear_feedback":                    ['linear_amplitude_start', 'linear_amplitude_stop', 'linear_amplitude_sweep', 'offset_start', 'offset_stop', 'offset_sweep', 'input_channel'],
+                  "white_noise":                        ['linear_amplitude_start', 'offset_start'],
+                  "off":                                []
+                  }
 
-_channel_fixed = ["p3",
-                 "p2",
-                 "p1",
-                 "p0",
-                 "input_channel",
-                 "duration"]
 
 
 
@@ -33,7 +33,8 @@ class channel:
             print ("{:<20} {:<20} ".format(key, str(self.config[key])))
         print()
 
-
+    
+        
     def set_mode(self, mode, **kwargs):
         """
         Sets an output mode for a determined channel.
@@ -70,44 +71,54 @@ class channel:
                 -> mode = "cubic"
                 -> fixed_offset = 5
         """
-
+        
+        # Sets the mode to the specified string
         self.config["mode"] = mode
-        if kwargs:
-            # If there are any keyword-argument inputs, then the relevant
-            # set_param_(mode) function is called to set these parameters.
+        
+        # Resets any unused parameters within that mode. 
+        for param in self.config.keys():            
+            if (param not in _modes_params[mode]) and (param != "mode"):
+                self.config.clear_param(param)
+        
+        # # If there are any keyword-argument inputs, then the relevant
+        # # set_param_(mode) function is called to set these parameters.
+        # if kwargs:
+        #     # Sets any unsed parameters to "None"
+        #     # for key in _channel_sweepable + _channel_fixed:
+        #     #     if key not in kwargs.keys():
+        #     #         kwargs[key] = None
+                    
+        #     for key in self.config.keys():
+        #         if key not in kwargs.keys():
+        #             kwargs[key] = None
 
-            # Sets any unsed parameters to "None"
-            for key in _channel_sweepable + _channel_fixed:
-                if key not in kwargs.keys():
-                    kwargs[key] = None
+        #     if mode == "linear_feedback":
+        #         self.set_params_linear(linear_amplitude=kwargs["linear_amplitude"], 
+        #                                 offset=kwargs["offset"], 
+        #                                 input_channel=kwargs["input_channel"])
 
-            if mode == "linear_feedback":
-                self.set_params_linear(linear_amplitude=kwargs["linear_amplitude"], 
-                                       offset=kwargs["offset"], 
-                                       input_channel=kwargs["input_channel"])
+        #     elif mode == "cubic":
+        #         self.set_params_cubic(cubic_amplitude=kwargs["cubic_amplitude"], 
+        #                               quadratic_amplitude=kwargs["quadratic_amplitude"], 
+        #                               linear_amplitude=kwargs["linear_amplitude"], 
+        #                               offset=kwargs["offset"], 
+        #                               input_channel=kwargs["input_channel"])
 
-            elif mode == "cubic":
-                self.set_params_cubic(cubic_amplitude=kwargs["cubic_amplitude"], 
-                                      quadratic_amplitude=kwargs["quadratic_amplitude"], 
-                                      linear_amplitude=kwargs["linear_amplitude"], 
-                                      offset=kwargs["offset"], 
-                                      input_channel=kwargs["input_channel"])
+        #     elif mode == "white_noise":
+        #         self.set_params_noise(linear_amplitude=kwargs["linear_amplitude"], 
+        #                               offset=kwargs["offset"])
 
-            elif mode == "white_noise":
-                self.set_params_noise(linear_amplitude=kwargs["linear_amplitude"], 
-                                      offset=kwargs["offset"])
+        #     elif mode in ["artificial_nonlinearity", "artificial_nonlinearity_parametric"]:
+        #         self.set_params_artificial(cubic_amplitude=kwargs["cubic_amplitude"], 
+        #                                     quadratic_amplitude=kwargs["quadratic_amplitude"], 
+        #                                     linear_amplitude=kwargs["linear_amplitude"], 
+        #                                     offset=kwargs["offset"], 
+        #                                     frequency=kwargs["frequency"])
 
-            elif mode in ["artificial_nonlinearity", "artificial_nonlinearity_parametric"]:
-                self.set_params_artificial(cubic_amplitude=kwargs["cubic_amplitude"], 
-                                           quadratic_amplitude=kwargs["quadratic_amplitude"], 
-                                           linear_amplitude=kwargs["linear_amplitude"], 
-                                           offset=kwargs["offset"], 
-                                           frequency=kwargs["frequency"])
-
-            elif mode in ["fixed_frequency", "frequency_sweep"]:
-                self.set_params_freq(linear_amplitude=kwargs["linear_amplitude"], 
-                                     offset=kwargs["offset"], 
-                                     frequency=kwargs["frequency"])
+        #     elif mode in ["fixed_frequency", "frequency_sweep"]:
+        #         self.set_params_freq(linear_amplitude=kwargs["linear_amplitude"], 
+        #                               offset=kwargs["offset"], 
+        #                               frequency=kwargs["frequency"])
 
 
 
@@ -119,7 +130,7 @@ class channel:
             RP.CH1.set_input_channel(1)
                 -> input_channel = 2
         """
-        self.input_channel = input_channel
+        self.config["input_channel"] = input_channel
 
 
 
@@ -202,7 +213,10 @@ class channel:
                 -> input_channel = 2
                 -> All other parameters are ignored.
         """
-
+        mode = self.config["mode"]
+        if mode != "linear_feedback":
+            raise AttributeError(f"Mode is set to '{mode}'. You must set it to 'linear_feedback' first.")
+            
         #lin_keys = {"A", "B", "input_channel"}
         if linear_amplitude:
             self.set_param("linear_amplitude", linear_amplitude)
@@ -249,6 +263,10 @@ class channel:
                 -> B = 4
                 -> All other parameters are ignored.
         """
+        mode = self.config["mode"]
+        if mode != "cubic":
+            raise AttributeError(f"Mode is set to '{mode}'. You must set it to 'cubic' first.")
+            
         if cubic_amplitude:
             self.set_param("cubic_amplitude", cubic_amplitude)
         if quadratic_amplitude:
@@ -285,6 +303,10 @@ class channel:
                 -> A = 1
                 -> D = 4
         """
+        mode = self.config["mode"]
+        if mode != "white_noise":
+            raise AttributeError(f"Mode is set to '{mode}'. You must set it to 'white_noise' first.")
+            
         if linear_amplitude:
             self.set_param("linear_amplitude", linear_amplitude)
         if offset:
@@ -326,7 +348,10 @@ class channel:
                 -> frequency_sweep = True
                 -> D is ignored.
         """
-
+        mode = self.config["mode"]
+        if mode not in ["fixed_frequency", "frequency_sweep"]:
+            raise AttributeError(f"Mode is set to '{mode}'. You must set it to 'fixed_frequency' or 'frequency_sweep' first.")
+            
         if linear_amplitude:
             self.set_param("linear_amplitude", linear_amplitude)
         if offset:
@@ -376,6 +401,10 @@ class channel:
                 -> fixed_x2_coeff = 2
                 -> All other parameters are ignored.
         """
+        mode = self.config["mode"]
+        if mode not in ["artificial_nonlinearity", "artificial_nonlinearity_parametric"]:
+            raise AttributeError(f"Mode is set to '{mode}'. You must set it to 'artificial_nonlinearity' or 'artificial_nonlinearity_parametric' first.")
+            
         if cubic_amplitude:
             self.set_param("cubic_amplitude", cubic_amplitude)
         if quadratic_amplitude:
