@@ -58,8 +58,8 @@ _datatypes = {"mode": str,
               "linear_amplitude_start": float,
               "linear_amplitude_stop": float,
               "linear_amplitude_sweep": bool,
-              "offset_start": int, 
-              "offset_stop": int, 
+              "offset_start": int,
+              "offset_stop": int,
               "offset_sweep": bool,
               "duration": float
               }
@@ -143,8 +143,12 @@ class channel_config(dict):
             lower_limit, upper_limit = sorted(limits)
 
             return lower_limit <= value <= upper_limit
-        
+
     def clear_param(self, parameter):
+        #TODO: make this a bit more fitting with this custom dict - perhaps a new
+        # dict of default values a la "limits". Or set params with a default dict
+        # from channel.py so that this module doesn't handle that. Which is
+        # more in keeping with the chosen architecture?
         if parameter == "input_channel":
             self[parameter] = 1
         elif _datatypes[parameter] == str:

@@ -17,6 +17,7 @@ be particularly human-readable, however the mapping should be readable.
 from float_converter import NumpyFloatToFixConverter
 from functools import partial
 
+
 # Map mode names to their number representation on fabric
 _channel_modes = {"fixed_frequency": 0,
                   "frequency_sweep": 1,
@@ -31,12 +32,15 @@ _channel_modes = {"fixed_frequency": 0,
 _channel_inputs = {1:1,
                    2:0}
 
+# Map CBC channel selection onto binary toggle on fabric
 _CBC_input_orders = {1:1,
                     2:0}
 
+# Map "polynomial target" onto binary toggle on fabric
 _polynomial_targets = {'displacement': 0,
                      'velocity': 1}
 
+# Start float to Q16.16 format converter
 _float_to_fix = NumpyFloatToFixConverter(True, 16, 16)
 
 

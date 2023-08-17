@@ -46,7 +46,7 @@ class FPGA_config(dict):
                 if key in config_keys:
                     self[key] = value
                 else:
-                    print(f"Warning: The key '{key}' is not included in CBC settings and has been discarded.")
+                    raise KeyError(f"Warning: The key '{key}' is not included in CBC settings and has been discarded.")
 
 
     def __getattr__(self, item):
