@@ -59,8 +59,8 @@ default_CBC_example = {"CBC_enabled": True,
                        "velocity_external": True,
                        "displacement_external": False,
                        "polynomial_target": 'displacement',
-                       "kp": 1.1,
-                       "kd": 1.2,
+                       "proportional_gain": 1.1,
+                       "derivative_gain": 1.2,
                        "reference_amplitude_start": 100,
                        "reference_amplitude_stop": 200,
                        "reference_amplitude_sweep": True,
@@ -96,27 +96,25 @@ RP = RedPitaya(CH1_init=default_CH1_example,
 # RP.CH1.set_params_cubic()
 # RP.choose_output("CHx")
 
-RP.set_mode("CH1", 'linear_feedback')
-RP.CH1.set_params_noise(linear_amplitude=[5, -100], offset=[1,100])
+RP.choose_mode("CH1", 'linear_feedback', linear_amplitude=[1,2], input_channel=2, cubic_amplitude=2)
+
+
+
+
 RP.print_config("Both")
 
+# for mode in _channel_modes:
+#     RP.set_mode(1, mode)
+#     update_FPGA_channel(1, RP.CH1.config, RP.system.FPGA)
+#     update_FPGA_channel(2, RP.CH2.config, RP.system.FPGA)
+#     print(mode)
+#     for key, item in RP.system.FPGA.items():
+#         print(f'{key}: {item}')
+#     print("")
 
+#     update_FPGA_channel('CBC', RP.CBC.config, RP.system.FPGA)
+#     RP.print_config("CBC")
 
-
-RP.print_config("CBC")
-
-for mode in _channel_modes:
-    RP.set_mode(1, mode)
-    update_FPGA_channel(1, RP.CH1.config, RP.system.FPGA)
-    update_FPGA_channel(2, RP.CH2.config, RP.system.FPGA)
-    print(mode)
-    for key, item in RP.system.FPGA.items():
-        print(f'{key}: {item}')
-    print("")
-
-    update_FPGA_channel('CBC', RP.CBC.config, RP.system.FPGA)
-    RP.print_config("CBC")
-
-    for key, item in RP.system.FPGA.items():
-        print(f'{key}: {item}')
-    print("")
+#     for key, item in RP.system.FPGA.items():
+#         print(f'{key}: {item}')
+#     print("")

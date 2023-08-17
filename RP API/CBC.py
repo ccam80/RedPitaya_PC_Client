@@ -136,15 +136,19 @@ class CBC:
 
 
 #>>>>>>> remotes/origin/chris_working
-    def set_external(self, external_input):
+    def set_external(self, external_input, logic):
+        if not isinstance(logic, bool):
+            raise TypeError("'logic' should be of boolean type; either True or False")
+        
         if external_input == "displacement":
-            self.config["displacement_external"] = True
-            self.config["velocity_external"] = False
+            self.config["displacement_external"] = logic
         elif external_input == "velocity":
-            self.config["displacement_external"] = False
-            self.config["velocity_external"] = True
+            self.config["velocity_external"] = logic
         else:
             raise ValueError("input type '%s' is invalid. Use either 'displacement' or 'velocity'")
+    
+    
+    
     
     def set_polynomial_target(self, target):        
         if target == "displacement":
