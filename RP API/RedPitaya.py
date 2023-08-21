@@ -216,20 +216,34 @@ class RedPitaya():
         else:
             raise ValueError("'target' must be either 'displacement' or 'velocity'.")
 
-    def choose_external_input_type(self, target, logic):
-        """
-        Determines whether the external input is given as a displacement or
-        velocity signal. This function should be used to protect against
-        setting both to "True" at any given time.
-        """
-        if target in ["displacement", "disp"]:
-            self.CBC.set_external("displacement", logic)
-        elif target in ["velocity", "vel"]:
-            self.CBC.set_external("velocity", logic)
+    # def choose_external_input_type(self, target, logic):
+    #     """
+    #     Determines whether the external input is given as a displacement or
+    #     velocity signal. This function should be used to protect against
+    #     setting both to "True" at any given time.
+    #     """
+    #     if target in ["displacement", "disp"]:
+    #         self.CBC.set_external("displacement", logic)
+    #     elif target in ["velocity", "vel"]:
+    #         self.CBC.set_external("velocity", logic)
+    #     else:
+    #         raise ValueError("'target' must be either 'displacement' or 'velocity'.")
+    
+    def choose_CBC_displacement_input(self, target):
+        if target == "external":
+            self.CBC.set_displacement_external(True)
+        elif target == "integrate":
+            self.CBC.set_displacement_external(False)
         else:
-            raise ValueError("'target' must be either 'displacement' or 'velocity'.")
-
-
+            raise ValueError("'target' must be either 'external' or 'integrate'")
+            
+    def choose_CBC_velocity_input(self, target):
+        if target == "external":
+            self.CBC.set_velocity_external(True)
+        elif target == "differentiate":
+            self.CBC.set_velocity_external(False)
+        else:
+            raise ValueError("'target' must be either 'external' or 'differentiate'")
 
     def choose_output(self, channel, CHx_mode=None):
         """
@@ -317,7 +331,12 @@ class RedPitaya():
             raise ValueError("'channel' must be either 'CH1', 'CH2', 'Both' or 'CBC'.")
 
 
-                       
+     
+    def choose_CBC_input_order(self, IN1="none", IN2="none"):
+        self.CBC.determine_input_order(IN1, IN2)
+                  
+        
+
             
     def set_param(self, channel, parameter_name, value):
         """
@@ -385,6 +404,9 @@ class RedPitaya():
 
     def set_freq(self, channel, value):
         self.set_param(channel, "frequency", value)
+        
+    def set_frequency(self, channel, value):
+        self.set_param(channel, "frequency", value)
 
     def set_duration(self, channel, value):
         self.set_param(channel, "duration", value)
@@ -392,16 +414,16 @@ class RedPitaya():
     def set_gains(self, channel, gains):
         if channel == "CBC":
             if isinstance(gains, (list, tuple)) and len(gains) > 1: 
-                self.CBC.set_param('kp', gains[0])
-                self.CBC.set_param('kd', gains[1])
+                self.CBC.set_param('proportional_gain', gains[0])
+                self.CBC.set_param('derivative_gain', gains[1])
             if isinstance(gains, (list, tuple)) and len(gains) == 1:
-                self.CBC.set_param('kp', gains[0])
-                self.CBC.set_param('kd', 0)
-                print("Warning - only one value found in 'gains'. Value for kd has been ignored.")
+                self.CBC.set_param('proportional_gain', gains[0])
+                self.CBC.set_param('derivative_gain', 0)
+                print("Warning - only one value found in 'gains'. Value for derivative_gain has been ignored.")
             elif isinstance(gains, (float, int)):   
-                self.CBC.set_param('kp', gains)
-                self.CBC.set_param('kd', 0)
-                print("Warning - only one value found in 'gains'. Value for kd has been ignored.")
+                self.CBC.set_param('proportional_gain', gains)
+                self.CBC.set_param('derivative_gain', 0)
+                print("Warning - only one value found in 'gains'. Value for derivative_gain has been ignored.")
         else:
             raise ValueError("'channel' must be be 'CBC'.")
 

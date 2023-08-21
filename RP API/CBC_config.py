@@ -71,7 +71,7 @@ _datatypes = {"CBC_enabled": bool,
               "duration": float}
 
 _limits = {"CBC_enabled": [0, 1],
-           "input_order": [1, 2],
+           "input_order": [0, 2],
            "velocity_external": [0, 1],
            "displacement_external": [0, 1],
            "polynomial_target": ["displacement", "velocity"],

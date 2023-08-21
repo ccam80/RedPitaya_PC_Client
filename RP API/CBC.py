@@ -221,3 +221,59 @@ class CBC:
             self.set_external(external)
         if input_order:
             self.set_param("input_order", input_order)
+            
+            
+    def determine_input_order(self, IN1, IN2):
+        # TODO - check whether the logic here makes sense. Added an additional option of "0" where both inputs are not set at all. 
+        #   If IN1=Disp, IN2=Vel  -> input_order=1?
+        #   If IN1=Vel,  IN2=Disp -> input_order=2?
+        # On top of this logic, if an input is set to "none", then whichever option the other input is, it conforms to that. 
+        # Of course, it means that if there is no input set, then that state must be either differentiated/integrated to be re-constructed down the line. 
+        
+        # velocity_external     = 0 -> to use the differentiater?
+        # displacement_external = 0 -> to use the integrator?
+        
+        # Case 0 - Neither input is plugged in
+        if IN1 == "none"            and IN2 == "none":
+            self.config["input_order"] = 0
+            
+        # Case 1 - Only one of the inputs are given
+        elif IN1 == "none"          and IN2 == "displacement":
+            self.config["input_order"] = 2
+            self.config["displacement_external"] = True
+            self.config["velocity_external"] = False
+        elif IN1 == "none"          and IN2 == "velocity":
+            self.config["input_order"] = 1
+            self.config["displacement_external"] = False
+            self.config["velocity_external"] = True
+        elif IN1 == "displacement"  and IN2 == "none":
+            self.config["input_order"] = 1
+            self.config["displacement_external"] = True
+            self.config["velocity_external"] = False
+        elif IN1 == "velocity"      and IN2 == "none":
+            self.config["input_order"] = 2
+            self.config["displacement_external"] = False
+            self.config["velocity_external"] = True
+            
+        # Case 2 - both inputs are uniquely given
+        elif IN1 == "displacement"  and IN2 == "velocity":
+            self.config["input_order"] = 1        
+        elif IN1 == "velocity"      and IN2 == "displacement":
+            self.config["input_order"] = 2
+            
+        # Case 3 - both inputs are repeated of the same (this basically shouldn't happen)
+        elif IN1 == "displacement"  and IN2 == "displacement":
+            raise ValueError("Both inputs are set to 'displacement'. For computation, only one of these channels will be used in CBC mode.")
+        elif IN1 == "velocity"      and IN2 == "velocity":
+            raise ValueError("Both inputs are set to 'velocity'. For computation, only one of these channels will be used in CBC mode.")
+        else:
+            raise ValueError("'IN1' and 'IN2' must be either 'displacement', 'velocity', or 'none'")
+            
+    
+    def set_displacement_external(self, logic):
+        self.config["displacement_external"] = logic
+    
+    def set_velocity_external(self, logic):
+        self.config["velocity_external"] = logic
+        
+        

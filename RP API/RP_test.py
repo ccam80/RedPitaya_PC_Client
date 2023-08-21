@@ -96,12 +96,12 @@ RP = RedPitaya(CH1_init=default_CH1_example,
 # RP.CH1.set_params_cubic()
 # RP.choose_output("CHx")
 
-RP.choose_mode("CH1", 'linear_feedback', linear_amplitude=[1,2], input_channel=2, cubic_amplitude=2)
+RP.reset_config("CBC")
 
+RP.set_gains("CBC", [1,100])
 
+RP.print_config("CBC")
 
-
-RP.print_config("Both")
 
 # for mode in _channel_modes:
 #     RP.set_mode(1, mode)
