@@ -145,7 +145,7 @@ class channel_config(dict):
             return lower_limit <= value <= upper_limit
 
     def clear_param(self, parameter):
-        #TODO: make this a bit more fitting with this custom dict - perhaps a new
+        #TODO2: make this a bit more fitting with this custom dict - perhaps a new
         # dict of default values a la "limits". Or set params with a default dict
         # from channel.py so that this module doesn't handle that. Which is
         # more in keeping with the chosen architecture?

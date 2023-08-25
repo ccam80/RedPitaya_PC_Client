@@ -34,7 +34,7 @@ class RedPitaya():
         self.CH2 = channel(CH2_init)
         self.CBC = CBC(CBC_init)
         self.system = system()
-        # TODo: Chris to insert connection to network stuff here
+        # TODO: Chris to insert connection to network stuff here
 
     def reset_config(self, channel, CH_init=None):
         """
@@ -432,7 +432,7 @@ class RedPitaya():
             raise ValueError("'channel' must be be 'CBC'.")
             
     def set_duration(self, duration):
-        # TODO: It was intended to set all configs to the same duration right? 
+        # TODO4: It was intended to set all configs to the same duration right? 
         self.set_param("CH1", "duration", duration)
         self.set_param("CH2", "duration", duration)
         self.set_param("CBC", "duration", duration)

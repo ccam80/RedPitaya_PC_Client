@@ -142,7 +142,7 @@ class CBC:
         This function takes in the physical description of the signal in each 
         input channel, and interprets the logic required for setting the 
         relevant MUX within the FPGA.
-        (See TODO for logic, and put in description here)
+        (See TODO1 for logic, and put in description here)
 
         Parameters
         ----------
@@ -156,7 +156,7 @@ class CBC:
         None.
 
         """
-        # TODO - check whether the logic here makes sense. Added an additional option of "0" where both inputs are not set at all. 
+        # TODO1 - check whether the logic here makes sense. Added an additional option of "0" where both inputs are not set at all. 
         #   If IN1=Disp, IN2=Vel  -> input_order=1?
         #   If IN1=Vel,  IN2=Disp -> input_order=2?
         # On top of this logic, if an input is set to "none", then whichever option the other input is, it conforms to that. 
@@ -220,7 +220,7 @@ class CBC:
         None.
 
         """
-        # TODO: To check whether logic is the correct way around.
+        # TODO1: To check whether logic is the correct way around.
         if not isinstance(logic, bool):
             raise TypeError("'logic' should be of boolean type; either True or False")
         
@@ -238,7 +238,7 @@ class CBC:
             True  = Direct/external
             False = Integrated
         """        
-        # TODO: To check whether logic is the correct way around.
+        # TODO1: To check whether logic is the correct way around.
         if isinstance(logic, bool):
             self.config["displacement_external"] = logic
         else:
@@ -251,7 +251,7 @@ class CBC:
             True  = Direct/external
             False = Differentiated
         """
-        # TODO: To check whether logic is the correct way around.
+        # TODO1: To check whether logic is the correct way around.
         if isinstance(logic, bool):
             self.config["velocity_external"] = logic
         else:

@@ -37,8 +37,8 @@ class system:
         else:
             raise ValueError("'rate' must be either 'fast' or 'slow'")
     
-    # TODO: is recording duration different from the ones set in Channel and CBC? 
+    # TODO4: is recording duration different from the ones set in Channel and CBC? 
     
-    # TODO: setting IP address requires some protection and/or checking that the value set is correct. 
+    # TODO5: setting IP address requires some protection and/or checking that the value set is correct. 
     def set_IP_address(self, ip_address):
         self.config["ip_address"] = ip_address

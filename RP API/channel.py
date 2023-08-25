@@ -229,17 +229,6 @@ class channel:
         if input_channel:
             self.set_param("input_channel", input_channel)
 
-        # for key, value in kwargs.items():
-        #     if key in lin_keys:
-        #         self.set_param(key, value)
-        #         lin_keys.remove(key)
-        #     else:
-        #         # TODO: Could throw a KeyError(?) telling that this key is not used for the linear mode
-        #         print("Warning: key '%s' is not used in linear mode, and will be ignored." % key)
-
-        # for key in lin_keys:
-        #     print("Warning: key '%s' not found. Value will remain unchanged" % key)
-
 
     def set_params_cubic(self, cubic_amplitude=None, quadratic_amplitude=None, linear_amplitude=None, offset=None, input_channel=None):
         """
