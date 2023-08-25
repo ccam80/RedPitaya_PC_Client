@@ -97,8 +97,7 @@ RP = RedPitaya(CH1_init=default_CH1_example,
 # RP.choose_output("CHx")
 
 RP.reset_config("CBC")
-
-RP.set_gains("CBC", [1,100])
+RP.set_gains("CBC", 1)
 
 RP.print_config("CBC")
 

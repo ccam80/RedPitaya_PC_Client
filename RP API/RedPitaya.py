@@ -160,12 +160,12 @@ class RedPitaya():
         
         
         if channel == "Both":
-            self.set_param("CH1", "input_channel", input_channel)
-            self.set_param("CH2", "input_channel", input_channel)
+           self.CH1.set_input_channel(input_channel)
+           self.CH2.set_input_channel(input_channel)
         elif channel in ["CH1", 1]:
-            self.set_param("CH1", "input_channel", input_channel)
+            self.CH1.set_input_channel(input_channel)
         elif channel in ["CH2", 2]:
-            self.set_param("CH2", "input_channel", input_channel)
+            self.CH2.set_input_channel(input_channel)
         
         
         
@@ -382,7 +382,7 @@ class RedPitaya():
             raise ValueError("'dicts' is empty, meaning no parameters have been set.")
 
 
-        if channel in ["CH1", "CH2", "CBC"]:
+        if channel in ["CH1", "CH2", "CBC", 1, 2]:
             for key, value in dicts.items():
                 self.set_param(channel, key, value)
         else:
@@ -408,9 +408,7 @@ class RedPitaya():
     def set_frequency(self, channel, value):
         self.set_param(channel, "frequency", value)
 
-    def set_duration(self, channel, value):
-        self.set_param(channel, "duration", value)
-
+    
     def set_gains(self, channel, gains):
         if channel == "CBC":
             if isinstance(gains, (list, tuple)) and len(gains) > 1: 
@@ -432,6 +430,12 @@ class RedPitaya():
             self.set_param(channel, "reference_amplitude", values)
         else:
             raise ValueError("'channel' must be be 'CBC'.")
+            
+    def set_duration(self, duration):
+        # TODO: It was intended to set all configs to the same duration right? 
+        self.set_param("CH1", "duration", duration)
+        self.set_param("CH2", "duration", duration)
+        self.set_param("CBC", "duration", duration)
 
     
 
