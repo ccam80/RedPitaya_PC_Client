@@ -65,7 +65,7 @@ _datatypes = {"mode": str,
               }
 
 _limits = {"mode": _channel_modes,
-           "input_channel": [1, 2],
+           "input_channel": [0, 2],
            "frequency_start": [0, 2000000],
            "frequency_stop": [0, 2000000],
            "frequency_sweep": [0, 1],
@@ -95,8 +95,8 @@ class channel_config(dict):
                     self[key] = value
                 else:
                     print(f"Warning: The key '{key}' is not included in channel settings and has been discarded.")
-
-
+    
+    
     def __getattr__(self, item):
         if item in self:
             return self[item]
@@ -149,9 +149,7 @@ class channel_config(dict):
         # dict of default values a la "limits". Or set params with a default dict
         # from channel.py so that this module doesn't handle that. Which is
         # more in keeping with the chosen architecture?
-        if parameter == "input_channel":
-            self[parameter] = 1
-        elif _datatypes[parameter] == str:
+        if _datatypes[parameter] == str:
             self[parameter] = ""
         elif _datatypes[parameter] in (int, float):
             self[parameter] = 0

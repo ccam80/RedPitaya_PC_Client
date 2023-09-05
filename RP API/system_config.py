@@ -19,10 +19,6 @@ _system_keys = ["continuous_output",
                "recording_duration"
                ]
 
-# TODO3: To double-check
-# cont_output -> is or isnt
-# ip -> a string of 12:345:678
-# sample -> "fast" or "slow"
 _datatypes = {"continuous_output": bool,
             "ip_address": str,
             "sampling_rate": str,

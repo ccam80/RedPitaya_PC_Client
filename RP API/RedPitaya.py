@@ -26,7 +26,7 @@ class RedPitaya():
                  CH2_init=None,
                  CBC_init=None,
                  system_init=None):
-        #TODO: I have added "init" dicts for each channel, but we will need to
+        #TODO6: I have added "init" dicts for each channel, but we will need to
         #potentially tweak this so that you can call RP with an ip address, for example,
         #and it will automatically update system. Default values, perhaps?
 
@@ -34,9 +34,9 @@ class RedPitaya():
         self.CH2 = channel(CH2_init)
         self.CBC = CBC(CBC_init)
         self.system = system()
-        # TODO: Chris to insert connection to network stuff here
+        # TODO7: Chris to insert connection to network stuff here
 
-    def reset_config(self, channel, CH_init=None):
+    def reset_config(self, channel_name, CH_init=None):
         """
         This function will restore/reset the configuration given by the user. 
         An optional 'CH_init' dictoinary can be passed (similarly to creating
@@ -70,14 +70,14 @@ class RedPitaya():
             -> Resets channel 1 to the entries given in CH1_init
             
         """
-        if channel == "CBC":
+        if channel_name == "CBC":
             self.CBC = CBC(CH_init)
-        elif channel in ["CH1", 1]:
+        elif channel_name in ["CH1", 1]:            
             self.CH1 = channel(CH_init)
-        elif channel in ["CH2", 2]:
+        elif channel_name in ["CH2", 2]:
             self.CH2 = channel(CH_init)
-        elif channel == "system":
-            self.system = system(CH_init)
+        elif channel_name == "system":
+            self.system = system()
         else:
             raise ValueError("'channel' must be be either 'CH1', 'CH2', or 'CBC'.")
             
@@ -123,7 +123,7 @@ class RedPitaya():
             raise ValueError("'channel' must be be either 'CH1', 'CH2' or 'Both', or 'CBC'.")
 
     
-    def choose_input_channel(self, channel, input_channel):
+    def choose_channel_input(self, channel, input_channel):
         """
         This function sets which input channel is used for mathematical computation. 
         This is used in certain channel modes (linear_feedback, cubic).
@@ -170,7 +170,7 @@ class RedPitaya():
         
         
     
-    def choose_mode(self, channel, mode, **kwargs):
+    def choose_channel_mode(self, channel, mode, **kwargs):
         """
         Sets an output mode for a determined channel.
 
@@ -200,17 +200,9 @@ class RedPitaya():
         elif channel in ["CH2", 2]:
             self.CH2.set_mode(mode, **kwargs)
             
-        
     
     
-    def choose_input_order(self, input_channel):
-        if input_channel in [1, 2]:
-            self.CBC.set_input_order(input_channel) 
-        else:
-            raise ValueError("'input_channel' must be either 1 or 2.")
-    
-    
-    def choose_polynomial_target(self, target):        
+    def choose_CBC_polynomial_target(self, target):        
         if target in ["displacement", "velocity"]:
             self.CBC.set_polynomial_target(target)
         else:

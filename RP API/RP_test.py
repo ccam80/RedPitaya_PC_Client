@@ -85,21 +85,27 @@ RP = RedPitaya(CH1_init=default_CH1_example,
                CH2_init=default_CH1_example,
                CBC_init=default_CBC_example)
 
-# RP.set_frequency('CBC', 1000)
-# RP.set_frequency(1, [1000,200000])
-# RP.CH1.frequency_sweep
-
-# RP.CBC.polynomial_target = "displacement"
-# # RP.CBC.polynomial_target = "blargh"
-# RP.CH1.mode = "linear_feedback"
-
-# RP.CH1.set_params_cubic()
-# RP.choose_output("CHx")
-
+RP.reset_config('CH1')
+RP.reset_config("CH2")
 RP.reset_config("CBC")
-RP.set_gains("CBC", 1)
 
-RP.print_config("CBC")
+
+# Example: Linear Feedback
+out_channel = "CH1"
+RP.choose_output(out_channel, "linear_feedback")
+RP.choose_channel_input(out_channel, 1)
+RP.set_linear_amplitude(out_channel, [100, 200])
+RP.set_offset(out_channel, 1)
+RP.print_config('Both')
+
+# Example: cubic feedback
+out_channel = "CH2"
+RP.choose_output(out_channel, "cubic")
+RP.choose_channel_input(out_channel, 2)
+RP.set_cubic_amplitude(out_channel, 50)
+RP.set_quadratic_amplitude(out_channel, 50)
+RP.print_config('Both')
+
 
 
 # for mode in _channel_modes:
