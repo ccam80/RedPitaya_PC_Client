@@ -65,8 +65,8 @@ _datatypes = {"CBC_enabled": bool,
               "linear_amplitude_start": float,
               "linear_amplitude_stop": float,
               "linear_amplitude_sweep": bool,
-              "offset_start": int, 
-              "offset_stop": int, 
+              "offset_start": int,
+              "offset_stop": int,
               "offset_sweep": bool,
               "duration": float}
 
@@ -96,6 +96,8 @@ _limits = {"CBC_enabled": [0, 1],
            "offset_stop": [1000, -1000],
            "offset_sweep": [0, 1],
            "duration": [0, 60]}
+
+
 
 
 
@@ -142,12 +144,12 @@ class CBC_config(dict):
         else:
             raise KeyError(f"'Channel Config' object does not support adding new keys. Key '{key}' rejected")
 
-    def is_within_limits(self, value, _limits):
-        if type(_limits[0]) == str:
-            return value in _limits
+    def is_within_limits(self, value, limits):
+        if type(limits[0]) == str:
+            return value in limits
 
         else:
-            if len(_limits) != 2:
+            if len(limits) != 2:
                 raise ValueError("_limits list must contain exactly two items.")
-            lower_limit, upper_limit = sorted(_limits)
+            lower_limit, upper_limit = sorted(limits)
             return lower_limit <= value <= upper_limit

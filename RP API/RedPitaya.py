@@ -7,6 +7,7 @@ Created on Thu Jul 20 16:50:13 2023
 from channel import channel
 from CBC import CBC
 from system import system
+from mem_mapping import update_FPGA_channel
 
 
 
@@ -431,3 +432,20 @@ class RedPitaya():
         self.set_param("CH1", "duration", duration)
         self.set_param("CH2", "duration", duration)
         self.set_param("CBC", "duration", duration)
+
+    def update_FPGA(self):
+        if self.CBC.config.CBC_enabled:
+            update_FPGA_channel('CBC', self.CBC.config, self.FPGA.config)
+        else:
+
+            update_FPGA_channel(1, self.CH1.config, self.FPGA.config)
+            update_FPGA_channel(2, self.CH2.config, self.FPGA.config)
+
+        packet = [0, self.FPGA.config, True, [False,0]]
+        try:
+            self.data.GUI_to_data_Queue.put(packet, block=False)
+            logging.debug("packet sent to socket process")
+
+        except:
+            logging.debug("Didn't send config to data process")
+            pass
