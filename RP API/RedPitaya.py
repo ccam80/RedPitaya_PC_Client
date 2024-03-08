@@ -23,23 +23,29 @@ class RedPitaya():
     """
 
     def __init__(self,
-                 ip = None.
+                 ip = None,
                  CH1_init=None,
                  CH2_init=None,
                  CBC_init=None,
                  system_init=None
                  ):
-        #TODO6: I have added "init" dicts for each channel, but we will need to
-        #potentially tweak this so that you can call RP with an ip address, for example,
-        #and it will automatically update system. Default values, perhaps?
-        if
+
         self.CH1 = channel(CH1_init)
         self.CH2 = channel(CH2_init)
         self.CBC = CBC(CBC_init)
-        self.system = system(system_init)
+        self.system = system(system_init={'ip': ip})
         # TODO7: Chris to insert connection to network stuff here
         #TODO8: if IP isn't none, get it into the system dict after initialisation
 
+    def start(self):
+        try:
+            self.system.start()
+            return True
+        
+        except Exception as e:
+            print(e)
+            return False
+        
     def reset_config(self, channel_name, CH_init=None):
         """
         This function will restore/reset the configuration given by the user.

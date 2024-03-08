@@ -77,7 +77,7 @@ class RP_communications(object):
 
      # ************************ Process admin ****************************** #
 
-    def start_Process(self):
+    def start_process(self):
         """Begin thread, toggle run state"""
 
         if self.process == None:
@@ -106,7 +106,7 @@ class RP_communications(object):
             logging.debug(str(e))
             return False
 
-    def inform_GUI(self, event):
+    def push_data(self, event):
         """ Send message back to GUI thread, either:
             Allocated: Tell GUI new shared memory is allocated
             data_ready: Shared memory filled with requested data. """
@@ -123,7 +123,7 @@ class RP_communications(object):
         self.shared_memory_name = self.shared_mem.name
 
         #Tell GUI the memory is allocated
-        self.inform_GUI("allocated")
+        self.push_data("allocated")
         logging.debug("inform GUI executed")
      # ************************ TCP Comms with RP MCU  ********************* #
 
@@ -180,7 +180,7 @@ class RP_communications(object):
         self.close_socket()
 
         del view
-        self.inform_GUI("data_ready")
+        self.push_data("data_ready")
         self.shared_mem.close()
         del self.shared_mem
 
