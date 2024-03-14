@@ -33,6 +33,8 @@ Created on Thu Jul 20 21:55:49 2023
 from RedPitaya import RedPitaya
 from mem_mapping import update_FPGA_channel
 from channel_config import _channel_modes
+import traceback
+
 
 default_CH1_example = {"mode": 'fixed_frequency',
                        "input_channel": 1,
@@ -107,30 +109,41 @@ default_config =    {"CBC_enabled": True,
                        "offset_stop": 1,
                        "offset_sweep": False,
                        "duration": 1.1}
+
+default_system = {"continuous_output": False,
+                  "ip_address": "192.168.1.3",
+                  "sampling_rate": "fast",
+                  "duration": 1.1}
+
 RP = RedPitaya(CH1_init=default_CH1_example,
                CH2_init=default_CH1_example,
-               CBC_init=default_CBC_example)
+               CBC_init=default_CBC_example,
+               system_init=default_system)
 
-RP.reset_config('CH1')
-RP.reset_config("CH2")
-RP.reset_config("CBC")
+if __name__ == '__main__':
+    RP.start()
+    RP.start_recording()
+    RP.update_FPGA()
+# RP.reset_config('CH1')
+# RP.reset_config("CH2")
+# RP.reset_config("CBC")
 
 
-# Example: Linear Feedback
-out_channel = "CH1"
-RP.choose_output(out_channel, "linear_feedback")
-RP.choose_channel_input(out_channel, 1)
-RP.set_linear_amplitude(out_channel, [100, 200])
-RP.set_offset(out_channel, 1)
-RP.print_config('Both')
+# # Example: Linear Feedback
+# out_channel = "CH1"
+# RP.choose_output(out_channel, "linear_feedback")
+# RP.choose_channel_input(out_channel, 1)
+# RP.set_linear_amplitude(out_channel, [100, 200])
+# RP.set_offset(out_channel, 1)
+# RP.print_config('Both')
 
-# Example: cubic feedback
-out_channel = "CH2"
-RP.choose_output(out_channel, "cubic")
-RP.choose_channel_input(out_channel, 2)
-RP.set_cubic_amplitude(out_channel, 50)
-RP.set_quadratic_amplitude(out_channel, 50)
-RP.print_config('Both')
+# # Example: cubic feedback
+# out_channel = "CH2"
+# RP.choose_output(out_channel, "cubic")
+# RP.choose_channel_input(out_channel, 2)
+# RP.set_cubic_amplitude(out_channel, 50)
+# RP.set_quadratic_amplitude(out_channel, 50)
+# RP.print_config('Both')
 
 
 

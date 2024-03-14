@@ -8,12 +8,21 @@ from channel import channel
 from CBC import CBC
 from system import system
 from mem_mapping import update_FPGA_channel
+import numpy as np
+import os
+import traceback
+import logging
+from multiprocessing.shared_memory import SharedMemory
+from PyQt5.QtCore import QTimer
 
 
+#TODO: Get system settings mapping incorporated into send update to FPGA, including trigger
+#TODO: 
 
 system_settings_start = {'continuous_output': 0,
                          'ip_address': "192.168.1.3",
-                         'sampling_rate': 'slow'}
+                         'sampling_rate': 'slow',
+                         'duration': 1.1}
 
 class RedPitaya():
     """ RedPitaya class opens connection with redpitaya and instantiates config.
@@ -23,7 +32,6 @@ class RedPitaya():
     """
 
     def __init__(self,
-                 ip = None,
                  CH1_init=None,
                  CH2_init=None,
                  CBC_init=None,
@@ -33,17 +41,30 @@ class RedPitaya():
         self.CH1 = channel(CH1_init)
         self.CH2 = channel(CH2_init)
         self.CBC = CBC(CBC_init)
-        self.system = system(system_init={'ip': ip})
+        self.system = system(system_init)
+        
+        self.measurement=0
+        self.num_samples = 0
         # TODO7: Chris to insert connection to network stuff here
         #TODO8: if IP isn't none, get it into the system dict after initialisation
-
+        logging.basicConfig(filename='APIlog.log',
+                            level=logging.DEBUG,
+                            format='%(asctime)s %(message)s',
+                            datefmt='%m/%d/%Y %I:%M:%S %p')
+        logging.debug('Logfile initialised')
+        
+        
+        self.timer = QTimer()
+        self.timer.timeout.connect(lambda: self.monitor())
+        
+        
     def start(self):
         try:
-            self.system.start()
+            self.system.start_comms()
             return True
         
-        except Exception as e:
-            print(e)
+        except Exception:
+            logging.debug(traceback.format_exc())
             return False
         
     def reset_config(self, channel_name, CH_init=None):
@@ -125,10 +146,9 @@ class RedPitaya():
         elif channel == "CBC":
             self.CBC.print_config()
         elif channel == "Both":
-            print ("{:<25} {:<20} {:<20} ".format("Key", "Channel 1", "Channel 2"))
+            logging.debug ("{:<25} {:<20} {:<20} ".format("Key", "Channel 1", "Channel 2"))
             for key in self.CH1.config.keys():
-                print ("{:<25} {:<20} {:<20} ".format(key, str(self.CH1.config[key]), str(self.CH2.config[key])))
-            print()
+                logging.debug ("{:<25} {:<20} {:<20} ".format(key, str(self.CH1.config[key]), str(self.CH2.config[key])))
         else:
             raise ValueError("'channel' must be be either 'CH1', 'CH2' or 'Both', or 'CBC'.")
 
@@ -306,7 +326,7 @@ class RedPitaya():
                 CH1_mode = CHx_mode[0]
                 CH2_mode = CHx_mode[1]
             if len(CHx_mode) > 2:
-                print("Warning: Only first two '*CHx_mode' arguments are considered. Additional arguments will be ignored.")
+                logging.debug("Warning: Only first two '*CHx_mode' arguments are considered. Additional arguments will be ignored.")
         else:
             CH1_mode = "off"
             CH2_mode = "off"
@@ -325,7 +345,7 @@ class RedPitaya():
             self.CBC.config["CBC_enabled"] = False
         elif channel == "CBC":
             if CHx_mode:
-                print("Warning: 'CHx_mode' arguments are not used in CBC mode, and will be ignored.")
+                logging.debug("Warning: 'CHx_mode' arguments are not used in CBC mode, and will be ignored.")
             self.CH1.set_mode('off')
             self.CH2.set_mode('off')
             self.CBC.config["CBC_enabled"] = True
@@ -419,11 +439,11 @@ class RedPitaya():
             if isinstance(gains, (list, tuple)) and len(gains) == 1:
                 self.CBC.set_param('proportional_gain', gains[0])
                 self.CBC.set_param('derivative_gain', 0)
-                print("Warning - only one value found in 'gains'. Value for derivative_gain has been ignored.")
+                logging.debug("Warning - only one value found in 'gains'. Value for derivative_gain has been ignored.")
             elif isinstance(gains, (float, int)):
                 self.CBC.set_param('proportional_gain', gains)
                 self.CBC.set_param('derivative_gain', 0)
-                print("Warning - only one value found in 'gains'. Value for derivative_gain has been ignored.")
+                logging.debug("Warning - only one value found in 'gains'. Value for derivative_gain has been ignored.")
         else:
             raise ValueError("'channel' must be be 'CBC'.")
 
@@ -438,20 +458,118 @@ class RedPitaya():
         self.set_param("CH1", "duration", duration)
         self.set_param("CH2", "duration", duration)
         self.set_param("CBC", "duration", duration)
+        
+    def start_recording(self):
+       if self.measurement==0: 
+           self.measurement = 1
+           #TODO: Un-hard-code sample rates
+           if self.system.config.sampling_rate == "slow":
+               self.num_samples = (int(self.system.config.duration *
+                                   488281))
+           elif self.system.config.sampling_rate == "fast":
+               self.num_samples = (int(self.system.config.duration *
+                                   5000000))
+               
+           self.num_bytes = self.num_samples * 8
+           # Send record request to server
+           packet = [0, self.system.FPGA, False, [True, self.num_bytes]]
+           logging.debug("{} samples requested".format(self.num_samples))
+           try:
+               self.system.comms.GUI_to_data_Queue.put(packet, block=False)
+               logging.debug("packet sent to socket process")
+               #Switch button mode
+               self.measurement = 1
+               self.timer.start(250)
+               
+           except Exception:
+               logging.debug("Didn't send config to data process")
+               logging.debug(traceback.format_exc())
+               pass
+       else:
+           self.measurement = 0
+           # Stop data recording monitoring
+           self.timer.stop()
+           # Close shared memory
+           self.shared_mem.close()
+           self.shared_mem.unlink()
+           
+    def monitor(self):
+        if (self.system.comms.process_isRun):
+            try:
+                data_ready, memory_name = self.system.comms.data_to_GUI_Queue.get(block=False)
+                logging.debug ("{}, {}".format(data_ready, memory_name))
+                
+                if memory_name:
+                    logging.debug(memory_name)
+                    self.shared_mem = SharedMemory(name=memory_name, size=self.num_bytes, create=False)
+                    # Send trigger and number of bytes to server
+                    packet = [1, self.FPGA_config, False, [False,self.num_bytes]]
+                    try:
+                        self.system.comms.GUI_to_data_Queue.put(packet, block=False)
+                        logging.debug("packet sent to socket process")
+    
+                    except Exception:
+                        logging.debug("Didn't send config to data process")
+                        logging.debug(traceback.format_exc())
+                        pass
+                
+                elif data_ready:
+                    self.MeasureFinished()
+            except:
+                pass
+                
+    def MeasureFinished(self):
+        self.measurement = 0
+        self.ui.buttonMeasurement.setText("Start Measurement") # change button text
+        # Stop data recording monitoring
+        self.timer.stop()        
+        #create array with view of shared mem
+        logging.debug("data_ready recognised")
+        temp = np.ndarray((self.num_samples), dtype=np.dtype([('in', np.int16), ('out', np.int16)]), buffer=self.shared_mem.buf)
+        #copy into permanent array
+        recording = np.copy(temp)
+        logging.debug("recording copied")
+        # Delete view of shared memory (important, otherwise memory still exists)
+        del temp
+        
+        # Update Canvas
+        self.scale=[float(self.ui.inputScal0.text()),float(self.ui.inputScal1.text()),float(self.ui.inputScal2.text()),float(self.ui.inputScal3.text())]
+        self.offset=[float(self.ui.inputOffset0.text()),float(self.ui.inputOffset1.text()),float(self.ui.inputOffset2.text()),float(self.ui.inputOffset3.text())]
+        self.canvas.update_canvas([recording['in'],recording['out']],self.scale,self.offset)
+        
+        # Store to *.csv
+        if self.ui.checkBoxStore.isChecked():
+            #Set up data directory
+            datadir="./Data/"
+            if (os.path.isdir(datadir) != True):
+                os.mkdir(datadir)
+            label = self.ui.inputFileName.text()
+            i = 0
+            while os.path.exists(datadir + '{}{}.csv'.format(label, i)):
+                i += 1
+            np.savetxt(datadir + '{}{}.csv'.format(label, i), 
+                        np.transpose([recording['in'], recording['out']]), 
+                        delimiter=";", fmt='%d',
+                        header="Sample rate: {}".format(125000000 / self.FPGA_config["CIC_divider"]))
+        
+        # Close shared memory
+        self.shared_mem.close()
+        self.shared_mem.unlink()
 
     def update_FPGA(self):
         if self.CBC.config.CBC_enabled:
-            update_FPGA_channel('CBC', self.CBC.config, self.FPGA.config)
+            update_FPGA_channel('CBC', self.CBC.config, self.system.FPGA)
         else:
 
-            update_FPGA_channel(1, self.CH1.config, self.FPGA.config)
-            update_FPGA_channel(2, self.CH2.config, self.FPGA.config)
+            update_FPGA_channel(1, self.CH1.config, self.system.FPGA)
+            update_FPGA_channel(2, self.CH2.config, self.system.FPGA)
 
-        packet = [0, self.FPGA.config, True, [False,0]]
+        packet = [0, self.system.FPGA, True, [False,0]]
         try:
-            self.data.GUI_to_data_Queue.put(packet, block=False)
+            self.system.comms.GUI_to_data_Queue.put(packet, block=False)
             logging.debug("packet sent to socket process")
 
-        except:
+        except Exception:
             logging.debug("Didn't send config to data process")
+            logging.debug(traceback.format_exc())
             pass

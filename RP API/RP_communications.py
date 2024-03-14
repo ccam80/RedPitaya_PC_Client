@@ -16,6 +16,7 @@ import struct
 import logging
 import select
 import sys
+import traceback
 from FPGA_config import FPGA_config, config_keys
 
 class StreamToLogger(object):
@@ -73,7 +74,7 @@ class RP_communications(object):
         #Socket config
         self.port = port
         self.ip = ip
-        self.s = None
+        self.socket = None
 
      # ************************ Process admin ****************************** #
 
@@ -101,9 +102,13 @@ class RP_communications(object):
         try:
             self.trigger, self.config, self.config_change, [self.record_request, self.bytes_to_receive] = self.GUI_to_data_Queue.get(block=False)
             logging.debug("message received")
+            logging.debug(f"""trigger: {self.trigger},
+                          config: {self.config},
+                          config_change: {self.config_change},
+                          [rec request: {self.record_request}, btr: {self.bytes_to_receive}]""")
             return True
         except Exception as e:
-            logging.debug(str(e))
+            # logging.debug(traceback.format_exc())
             return False
 
     def push_data(self, event):
@@ -141,7 +146,7 @@ class RP_communications(object):
             logging.debug("Socket type (config) not acknowledged by server")
         else:
             try:
-                self.s.sendall(config_send)
+                self.socket.sendall(config_send)
             except Exception as e:
                 logging.debug("config send error")
                 logging.debug(e)
@@ -171,7 +176,7 @@ class RP_communications(object):
 
         while (self.bytes_to_receive):
             #Load info into array in nbyte chunks
-            nbytes = self.s.recv_into(view, self.bytes_to_receive)
+            nbytes = self.socket.recv_into(view, self.bytes_to_receive)
             view = view[nbytes:]
             self.bytes_to_receive -= nbytes
             logging.debug(self.bytes_to_receive)
@@ -188,7 +193,7 @@ class RP_communications(object):
         """ Wait for an acknowledge byte from server. If no byte or incorrect
         value received, log error and return -1. Returns 1 on successful ack. """
 
-        ack = int.from_bytes(self.s.recv(4), "little", signed=False)
+        ack = int.from_bytes(self.socket.recv(4), "little", signed=False)
         logging.debug("Ack value received: {}, expected {}".format(ack, ack_value))
 
         if ack == ack_value:
@@ -221,7 +226,7 @@ class RP_communications(object):
     def close_socket(self):
         """Close socket and wait for a 100ms. """
         # Close socket
-        self.s.close()
+        self.socket.close()
         sleep(0.1)
 
     def open_socket(self):
@@ -243,7 +248,7 @@ class RP_communications(object):
             payload = np.uint32(self.bytes_to_receive)
             ack_value = np.uint32(self.bytes_to_receive)
 
-        self.s.sendall(payload)
+        self.socket.sendall(payload)
         if (self.wait_for_ack(ack_value) == 1):
             return 1
         else:
@@ -284,13 +289,13 @@ class RP_communications(object):
 
                 elif self.trigger:
                     # Trigger FPGA, start recording
-                    self.config['trigger'] = 1
+                    self.trigger = 1
                     self.send_settings_to_FPGA()
                     logging.debug("{} to receive".format(self.bytes_to_receive))
 
                     self.record()
 
-                    self.config['trigger'] = 0
+                    self.trigger = 0
                     self.send_settings_to_FPGA()
                     logging.debug("Trigger off sent")
 
@@ -303,7 +308,7 @@ class RP_communications(object):
 
         self.isrun = False
         logging.debug("Close called")
-        logging.debug("{} s".format(self.s))
+        logging.debug("{} s".format(self.socket))
 
         if self.process_isRun:
             self.process.terminate()

@@ -13,19 +13,26 @@ from system_config import system_config
 from FPGA_config import FPGA_config
 from RP_communications import RP_communications
 from re import match
+import traceback
+
+_default_init = {"continuous_output": False,
+            "ip_address": "192.168.1.3",
+            "sampling_rate": "fast",
+            "duration": 1.1
+            }
+
+
 
 class system:
-# _datatypes = {"continuous_output": bool,
-#             "ip_address": str,
-#             "sampling_rate": str,
-#             "recording_duration": float
-#             }
+    def __init__(self, default_values=_default_init):
 
-
-    def __init__(self):
-        self.config = system_config()
+                
+        self.config = system_config(default_values = default_values)
         self.FPGA = FPGA_config()
-        self.comms = RP_communications()
+        if self.config.ip_address:
+            self.comms = RP_communications(ip=self.config.ip_address)
+        else:
+            self.comms = RP_communications(ip=self._default_init['ip_address'])
 
     def set_continuous_output(self, cont_output):
         if cont_output:
@@ -41,12 +48,12 @@ class system:
         else:
             raise ValueError("'rate' must be either 'fast' or 'slow'")
 
-    def start(self):
+    def start_comms(self):
         try:
             self.comms.start_process()
             return True 
-        except Exception as e:
-            print(e)
+        except Exception:
+            print(traceback.format_exc())
             return False
         
     def set_IP_address(self, ip_address):

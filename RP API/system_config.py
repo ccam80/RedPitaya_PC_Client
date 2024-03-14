@@ -17,19 +17,19 @@ from re import match
 _system_keys = ["continuous_output",
                "ip_address",
                "sampling_rate",
-               "recording_duration"
+               "duration"
                ]
 
 _datatypes = {"continuous_output": bool,
             "ip_address": str,
             "sampling_rate": str,
-            "recording_duration": float
+            "duration": float
             }
 
 _limits = {"continuous_output": [0, 1],
           "ip_address": None,
           "sampling_rate": ["fast", "slow"],
-          "recording_duration": [0,60]
+          "duration": [0,60]
           }
 
 class system_config(dict):

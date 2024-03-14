@@ -285,5 +285,5 @@ class CBC:
         else:
             raise TypeError("'logic' should be of type 'bool'")
 
-     def clear_param(self, parameter):
-         self[parameter] = _default_values[parameter]
+    def clear_param(self, parameter):
+        self[parameter] = _default_values[parameter]
