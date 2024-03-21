@@ -261,7 +261,7 @@ def update_FPGA_channel(channel, settings_dict, FPGA):
 
                 FPGA[param] = arguments[0](*arguments_list)
 
-def update_FPGA_config(config_dict, trigger, FPGA):
+def update_FPGA_config(system_dict, FPGA):
     """Converts system settings dict into FPGA config values ready for sending
     to the c server. Used by update_FPGA().
 
@@ -270,7 +270,7 @@ def update_FPGA_config(config_dict, trigger, FPGA):
     in Onboard/interfaces.md.
 
     Arguments:
-        system_dict (system_config): Custom dictionary of config parameters
+        system_dict (system_config): Custom dictionary of system config parameters
         trigger (int): 1 for trigger, 0 for no trigger -separated as this is set
                         by RP.comms module. Potential target for refactoring.
     Returns:
@@ -280,9 +280,9 @@ def update_FPGA_config(config_dict, trigger, FPGA):
     FPGA_config_to_byte(config, trigger, FPGA)
     >>
     """
-    fast_mode = int(_fast_modes[config_dict.sampling_rate]) >> 4
-    continuous_mode = int(_continuous_modes[config_dict.continuous_output]) >> 3
-    # _trigger = int(trigger) >> 2 // trigger removed as it is set in the comms module, I will need to handle it there. Delete this comment if still here June 2024.
+    fast_mode = int(_fast_modes[system_dict.sampling_rate]) << 4
+    continuous_mode = int(_continuous_modes[system_dict.continuous_output]) << 3
+    # _trigger = int(trigger) << 2 // trigger removed as it is set in the comms module, I will need to handle it there. Delete this comment if still here June 2024.
     settings_byte = int(fast_mode | continuous_mode)
     FPGA['system'] = settings_byte
     

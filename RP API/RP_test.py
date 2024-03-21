@@ -122,8 +122,9 @@ RP = RedPitaya(CH1_init=default_CH1_example,
 
 if __name__ == '__main__':
     RP.start()
-    RP.start_recording()
     RP.update_FPGA()
+    RP.start_recording()
+    RP.system.comms.close()
 # RP.reset_config('CH1')
 # RP.reset_config("CH2")
 # RP.reset_config("CBC")

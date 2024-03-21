@@ -9,6 +9,7 @@ from CBC import CBC
 from system import system
 from mem_mapping import update_FPGA_channel, update_FPGA_config
 import numpy as np
+from time import sleep
 import os
 import traceback
 import logging
@@ -479,7 +480,9 @@ class RedPitaya():
                logging.debug("packet sent to socket process")
                #Switch button mode
                self.measurement = 1
-               self.timer.start(250)
+               while (self.measurement):
+                   self.monitor()
+                   sleep(0.1)
                
            except Exception:
                logging.debug("Didn't send config to data process")
@@ -564,7 +567,7 @@ class RedPitaya():
             update_FPGA_channel(1, self.CH1.config, self.system.comms.config)
             update_FPGA_channel(2, self.CH2.config, self.system.comms.config)
             
-        update_FPGA_config(self.system.config, self.system.comms, self.system.comms.config)
+        update_FPGA_config(self.system.config, self.system.comms.config)
 
         packet = [0, self.system.comms.config, True, [False,0]]
         try:
