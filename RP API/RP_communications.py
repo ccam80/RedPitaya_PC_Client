@@ -136,6 +136,12 @@ class RP_communications(object):
 
         # Get config and package into c-readable struct
         format_ = "BBBBiiiiiiiiiiiiii"
+        
+        # Trigger folded into FPGA struct here, as it's modified in the RP_comms module
+        # and the system byte is otherwise modified in RedPitaya/mem_mapping.
+        # This is probably only here because I have gotten the heirarchy confused.
+        self.config['system'] = int(self.config['system'] | (self.trigger >> 2))
+        
         values_to_pack = [self.config[key] for key in config_keys]
 
         config_send = struct.pack(format_, *values_to_pack)

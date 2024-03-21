@@ -28,7 +28,6 @@ class system:
 
                 
         self.config = system_config(default_values = default_values)
-        self.FPGA = FPGA_config()
         if self.config.ip_address:
             self.comms = RP_communications(ip=self.config.ip_address)
         else:
