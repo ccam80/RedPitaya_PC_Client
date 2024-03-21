@@ -6,7 +6,6 @@ data transfer into and out of the RedPitaya from the PC.
 
 @author: cca78
 """
-from multiprocessing import Queue
 from multiprocessing import Process, Queue
 from multiprocessing.shared_memory import SharedMemory
 from time import sleep
