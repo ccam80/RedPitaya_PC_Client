@@ -14,16 +14,10 @@ import os
 import traceback
 import logging
 from multiprocessing.shared_memory import SharedMemory
-from PyQt5.QtCore import QTimer
+from time import gmtime, strftime
 
-
-#TODO: Get system settings mapping incorporated into send update to FPGA, including trigger
-#TODO: 
-
-system_settings_start = {'continuous_output': 0,
-                         'ip_address': "192.168.1.3",
-                         'sampling_rate': 'slow',
-                         'duration': 1.1}
+#Todo: create config.txt file to save and load offset, scale parameters, modifiable with a button push (maybe?)
+#Todo: recording progress bar/readout
 
 class RedPitaya():
     """ RedPitaya class opens connection with redpitaya and instantiates config.
@@ -46,18 +40,14 @@ class RedPitaya():
         
         self.measurement=0
         self.num_samples = 0
-        # TODO7: Chris to insert connection to network stuff here
-        #TODO8: if IP isn't none, get it into the system dict after initialisation
+
+
         logging.basicConfig(filename='APIlog.log',
                             level=logging.DEBUG,
                             format='%(asctime)s %(message)s',
                             datefmt='%m/%d/%Y %I:%M:%S %p')
         logging.debug('Logfile initialised')
-        
-        
-        self.timer = QTimer()
-        self.timer.timeout.connect(lambda: self.monitor())
-        
+                
         
     def start(self):
         try:
@@ -455,7 +445,6 @@ class RedPitaya():
             raise ValueError("'channel' must be be 'CBC'.")
 
     def set_duration(self, duration):
-        # TODO4: It was intended to set all configs to the same duration right?
         self.set_param("CH1", "duration", duration)
         self.set_param("CH2", "duration", duration)
         self.set_param("CBC", "duration", duration)
@@ -506,7 +495,7 @@ class RedPitaya():
                     logging.debug(memory_name)
                     self.shared_mem = SharedMemory(name=memory_name, size=self.num_bytes, create=False)
                     # Send trigger and number of bytes to server
-                    packet = [1, self.FPGA_config, False, [False,self.num_bytes]]
+                    packet = [1, self.system.comms.config, False, [False,self.num_bytes]]
                     try:
                         self.system.comms.GUI_to_data_Queue.put(packet, block=False)
                         logging.debug("packet sent to socket process")
@@ -523,41 +512,35 @@ class RedPitaya():
                 
     def MeasureFinished(self):
         self.measurement = 0
-        self.ui.buttonMeasurement.setText("Start Measurement") # change button text
-        # Stop data recording monitoring
-        self.timer.stop()        
+    
         #create array with view of shared mem
         logging.debug("data_ready recognised")
-        temp = np.ndarray((self.num_samples), dtype=np.dtype([('in', np.int16), ('out', np.int16)]), buffer=self.shared_mem.buf)
+        temp = np.ndarray((self.num_samples), dtype=np.dtype([('in1', np.int16), ('in2', np.int16), ('out1', np.int16), ('out2', np.int16)]), buffer=self.shared_mem.buf)
         #copy into permanent array
         recording = np.copy(temp)
         logging.debug("recording copied")
         # Delete view of shared memory (important, otherwise memory still exists)
         del temp
         
-        # Update Canvas
-        self.scale=[float(self.ui.inputScal0.text()),float(self.ui.inputScal1.text()),float(self.ui.inputScal2.text()),float(self.ui.inputScal3.text())]
-        self.offset=[float(self.ui.inputOffset0.text()),float(self.ui.inputOffset1.text()),float(self.ui.inputOffset2.text()),float(self.ui.inputOffset3.text())]
-        self.canvas.update_canvas([recording['in'],recording['out']],self.scale,self.offset)
         
         # Store to *.csv
-        if self.ui.checkBoxStore.isChecked():
-            #Set up data directory
-            datadir="./Data/"
-            if (os.path.isdir(datadir) != True):
-                os.mkdir(datadir)
-            label = self.ui.inputFileName.text()
-            i = 0
-            while os.path.exists(datadir + '{}{}.csv'.format(label, i)):
-                i += 1
-            np.savetxt(datadir + '{}{}.csv'.format(label, i), 
-                        np.transpose([recording['in'], recording['out']]), 
-                        delimiter=";", fmt='%d',
-                        header="Sample rate: {}".format(125000000 / self.FPGA_config["CIC_divider"]))
+        #Set up data directory
+        datadir="./Data/"
+        if (os.path.isdir(datadir) != True):
+            os.mkdir(datadir)
+        label = strftime("%Y-%m-%d %H_%M_%S", gmtime())
+        i = 0
+        while os.path.exists(datadir + '{}{}.csv'.format(label, i)):
+            i += 1
+        np.savetxt(datadir + '{}{}.csv'.format(label, i), 
+                   np.transpose([recording['in1'], recording['in2'], recording['out1'], recording['out2']]), 
+                   delimiter=";", fmt='%d',
+                   header="Sample rate: {}\n In1; In2; Out1; Out2".format(self.system.config.sampling_rate))
         
         # Close shared memory
         self.shared_mem.close()
         self.shared_mem.unlink()
+        self.recording = recording
 
     def update_FPGA(self):
         if self.CBC.config.CBC_enabled:

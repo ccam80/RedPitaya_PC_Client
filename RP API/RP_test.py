@@ -33,7 +33,9 @@ Created on Thu Jul 20 21:55:49 2023
 from RedPitaya import RedPitaya
 from mem_mapping import update_FPGA_channel
 from channel_config import _channel_modes
+import numpy as np
 import traceback
+import matplotlib.pyplot as plt
 
 
 default_CH1_example = {"mode": 'fixed_frequency',
@@ -41,12 +43,12 @@ default_CH1_example = {"mode": 'fixed_frequency',
                        "frequency_start": 100,
                        "frequency_stop": 1000,
                        "frequency_sweep": True,
-                       "linear_amplitude_start": 0,
-                       "linear_amplitude_stop": 1,
-                       "linear_amplitude_sweep": True,
+                       "linear_amplitude_start": 1000,
+                       "linear_amplitude_stop": 0,
+                       "linear_amplitude_sweep": False,
                        "offset_start": 100,
                        "offset_stop": 200,
-                       "offset_sweep": True,
+                       "offset_sweep": False,
                        "cubic_amplitude_start": 0,
                        "cubic_amplitude_stop": 0,
                        "cubic_amplitude_sweep": False,
@@ -56,7 +58,7 @@ default_CH1_example = {"mode": 'fixed_frequency',
                        "duration": 1.1
                        }
 
-default_CBC_example = {"CBC_enabled": True,
+default_CBC_example = {"CBC_enabled": False,
                        "input_order": 1,
                        "velocity_external": True,
                        "displacement_external": False,
@@ -83,7 +85,7 @@ default_CBC_example = {"CBC_enabled": True,
                        "offset_sweep": False,
                        "duration": 1.1}
 
-default_config =    {"CBC_enabled": True,
+default_config =    {"CBC_enabled": False,
                        "input_order": 1,
                        "velocity_external": True,
                        "displacement_external": False,
@@ -125,6 +127,16 @@ if __name__ == '__main__':
     RP.update_FPGA()
     RP.start_recording()
     RP.system.comms.close()
+    
+    recording = RP.recording
+    recording = np.transpose([recording['in1'], recording['in2'], recording['out1'], recording['out2']])
+    fig, ax = plt.subplots(4,1)
+    ax = ax.ravel()
+    ax[0].plot(recording[:,0], label="Input 1")
+    ax[1].plot(recording[:,1], label="Input 2")
+    ax[2].plot(recording[:,2], label="Input 3")
+    ax[3].plot(recording[:,3], label="Input 4")
+    
 # RP.reset_config('CH1')
 # RP.reset_config("CH2")
 # RP.reset_config("CBC")

@@ -17,7 +17,7 @@ import traceback
 
 _default_init = {"continuous_output": False,
             "ip_address": "192.168.1.3",
-            "sampling_rate": "fast",
+            "sampling_rate": "slow",
             "duration": 1.1
             }
 
