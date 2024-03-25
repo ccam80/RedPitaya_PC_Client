@@ -57,3 +57,10 @@ class system:
         
     def set_IP_address(self, ip_address):
         self.config["ip_address"] = ip_address
+        
+        
+        
+    # ***************************************************
+    # Seigan Development - Untested
+    # ***************************************************
+

@@ -50,6 +50,16 @@ class RedPitaya():
                 
         
     def start(self):
+        """
+        Starts the communications Process() between the (?) Python API and FPGA.
+        system.start_comms() 
+            -> system.RP_communications.start_process()
+            -> system.RP_communications.process = Process()
+            
+        TODO: Check if this description is correct
+        TODO: This function is named extremely arbitrarily (start, start_comms, 
+                stary_process). Any way to simply/unify them?
+        """
         try:
             self.system.start_comms()
             return True
@@ -448,11 +458,19 @@ class RedPitaya():
         self.set_param("CH1", "duration", duration)
         self.set_param("CH2", "duration", duration)
         self.set_param("CBC", "duration", duration)
-        
+    
+    
+    # ************************************************************************
+    # TODO: Check whether these functions should be here, or elsewhere. 
+    # They seem to access more than one 'layer' down, contradicting the layout/rules
+    #  set out and make it very confusing.
+    # ************************************************************************
     def start_recording(self):
        if self.measurement==0: 
            self.measurement = 1
            #TODO: Un-hard-code sample rates
+           
+           # TODO: Does self.system.config refer to FPGA_config? 
            if self.system.config.sampling_rate == "slow":
                self.num_samples = (int(self.system.config.duration *
                                    488281))
