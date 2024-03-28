@@ -44,8 +44,8 @@ class RedPitaya():
 
         logging.basicConfig(filename='APIlog.log',
                             level=logging.DEBUG,
-                            format='%(asctime)s %(message)s',
-                            datefmt='%m/%d/%Y %I:%M:%S %p')
+                            format='%(asctime)s.%(msecs)03d %(message)s',
+                            datefmt='%m/%d/%Y %I:%M:%S')
         logging.debug('Logfile initialised')
                 
         

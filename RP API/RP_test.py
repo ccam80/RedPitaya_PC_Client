@@ -40,14 +40,14 @@ import matplotlib.pyplot as plt
 
 default_CH1_example = {"mode": 'fixed_frequency',
                        "input_channel": 1,
-                       "frequency_start": 100,
-                       "frequency_stop": 1000,
-                       "frequency_sweep": True,
+                       "frequency_start": 10,
+                       "frequency_stop": 0,
+                       "frequency_sweep": False,
                        "linear_amplitude_start": 1000,
                        "linear_amplitude_stop": 0,
                        "linear_amplitude_sweep": False,
                        "offset_start": 100,
-                       "offset_stop": 200,
+                       "offset_stop": 0,
                        "offset_sweep": False,
                        "cubic_amplitude_start": 0,
                        "cubic_amplitude_stop": 0,
@@ -114,7 +114,7 @@ default_config =    {"CBC_enabled": False,
 
 default_system = {"continuous_output": False,
                   "ip_address": "192.168.1.3",
-                  "sampling_rate": "fast",
+                  "sampling_rate": "slow",
                   "duration": 1.1}
 
 RP = RedPitaya(CH1_init=default_CH1_example,
@@ -130,7 +130,7 @@ if __name__ == '__main__':
     
     recording = RP.recording
     recording = np.transpose([recording['in1'], recording['in2'], recording['out1'], recording['out2']])
-    fig, ax = plt.subplots(4,1)
+    fig, ax = plt.subplots(4,1, sharex=True)
     ax = ax.ravel()
     ax[0].plot(recording[:,0], label="Input 1")
     ax[1].plot(recording[:,1], label="Input 2")
