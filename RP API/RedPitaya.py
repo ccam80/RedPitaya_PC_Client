@@ -506,6 +506,7 @@ class RedPitaya():
     def monitor(self):
         if (self.system.comms.process_isRun):
             try:
+                # TODO - remove Queue and change to 'normal' process
                 data_ready, memory_name = self.system.comms.data_to_GUI_Queue.get(block=False)
                 logging.debug ("{}, {}".format(data_ready, memory_name))
                 
@@ -515,6 +516,7 @@ class RedPitaya():
                     # Send trigger and number of bytes to server
                     packet = [1, self.system.comms.config, False, [False,self.num_bytes]]
                     try:
+                        # TODO - remove Queue and change to 'normal' process
                         self.system.comms.GUI_to_data_Queue.put(packet, block=False)
                         logging.debug("packet sent to socket process")
     
@@ -564,14 +566,16 @@ class RedPitaya():
         if self.CBC.config.CBC_enabled:
             update_FPGA_channel('CBC', self.CBC.config, self.system.comms.config)
         else:
-
             update_FPGA_channel(1, self.CH1.config, self.system.comms.config)
             update_FPGA_channel(2, self.CH2.config, self.system.comms.config)
             
         update_FPGA_config(self.system.config, self.system.comms.config)
-
-        packet = [0, self.system.comms.config, True, [False,0]]
+        
+        #           [no trigger,    config dictionary,          config HAS changed, [no recording,  zero bytes]]
+        packet =    [0,             self.system.comms.config,   True,               [False,         0]]
+        
         try:
+            # TODO - remove Queue and change to 'normal' process
             self.system.comms.GUI_to_data_Queue.put(packet, block=False)
             logging.debug("packet sent to socket process")
 

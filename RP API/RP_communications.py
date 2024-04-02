@@ -322,3 +322,51 @@ class RP_communications(object):
         if self.socket is not None:
             self.socket.close()
             logging.debug("socket closed")
+            
+    # ***************************************************
+    # Seigan Development - Untested
+    # ***************************************************
+    def fetch_packet(self, packet):
+        # TODO: Check description is consistent
+        """ 
+        This function is a re-write of the old 'fetch_instructions' functions.
+        
+        Receives a packet depending on a certain process. 
+        The packet is a list with the contents (in order):
+                1) trigger: (bool)
+                    Recording trigger
+                2) config: (struct)
+                    New config struct for FPGA
+                3) config_change: (bool)
+                    Whether 'config' has changed or not
+                4) [memory_allocation, memory_size_in_bytes]: list(bool, bytes?)
+                    A list of two elements, consisting of whether a memory allocation exists, and the size of the memory allocation.
+                    
+        
+        TODO: These examples were taken from the old code. To check whether they are actually consistent. 
+        Ex. 1:
+            packet = [0, self.system.comms.config, True, [False, 0]]
+                -> The system configuration has changed.
+            
+        Ex. 2:
+            packet = [0, self.system.comms.config, False, [True, self.num_bytes]]
+                -> Sending a record request.
+        
+        Ex. 3:
+            packet =  [1, self.system.comms.config, False, [False, self.num_bytes]]
+                -> Send trigger and number of bytes to server
+        """
+
+        try:
+            self.trigger, self.config, self.config_change, [self.record_request, self.bytes_to_receive] = packet
+            logging.debug("message received")
+            logging.debug(f"""trigger: {self.trigger},
+                          config: {self.config},
+                          config_change: {self.config_change},
+                          [rec request: {self.record_request}, btr: {self.bytes_to_receive}]""")
+            return True
+        except Exception:
+            # TODO - is this how to use logging.debug? 
+            logging.debug("message not received")
+            return False
+    
