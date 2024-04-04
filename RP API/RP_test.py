@@ -126,7 +126,7 @@ if __name__ == '__main__':
     RP.start()
     RP.update_FPGA()
     RP.start_recording()
-    RP.system.comms.close()
+    RP.close_recording()
     
     recording = RP.recording
     recording = np.transpose([recording['in1'], recording['in2'], recording['out1'], recording['out2']])

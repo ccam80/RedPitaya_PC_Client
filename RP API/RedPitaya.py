@@ -455,16 +455,12 @@ class RedPitaya():
             raise ValueError("'channel' must be be 'CBC'.")
 
     def set_duration(self, duration):
+        # TODO: there may be another setting for duration in 'config'. To check what to use.
         self.set_param("CH1", "duration", duration)
         self.set_param("CH2", "duration", duration)
         self.set_param("CBC", "duration", duration)
     
     
-    # ************************************************************************
-    # TODO: Check whether these functions should be here, or elsewhere. 
-    # They seem to access more than one 'layer' down, contradicting the layout/rules
-    #  set out and make it very confusing.
-    # ************************************************************************
     def start_recording(self):
        if self.measurement==0: 
            self.measurement = 1
@@ -561,6 +557,8 @@ class RedPitaya():
         self.shared_mem.close()
         self.shared_mem.unlink()
         self.recording = recording
+        
+
 
     def update_FPGA(self):
         if self.CBC.config.CBC_enabled:
@@ -583,3 +581,152 @@ class RedPitaya():
             logging.debug("Didn't send config to data process")
             logging.debug(traceback.format_exc())
             pass
+        
+        
+    # ***************************************************
+    # Seigan Development - Untested
+    # Wild wild west of bad code goes here
+    # ***************************************************
+    def update_FPGA_settings(self):
+        """
+        TODO: add description + examples
+
+        Returns
+        -------
+        None.
+
+        """
+        # TODO: Check what our notation/convetion for layering was, as this might void it. 
+        # Might not be possible to reference 'parallel' layers anyway, so this will have to do
+        if self.CBC.config.CBC_enabled:
+            update_FPGA_channel('CBC', self.CBC.config, self.system.comms.config)
+        else:
+            update_FPGA_channel(1, self.CH1.config, self.system.comms.config)
+            update_FPGA_channel(2, self.CH2.config, self.system.comms.config)
+            
+        update_FPGA_config(self.system.config, self.system.comms.config)
+        
+        try:
+            # This is the only change compared to 'update_FPGA'. Essentially removes the Queue item
+            self.system.send_settings_FPGA()
+            logging.debug("FPGA settings successfully updated.")
+        except Exception:
+            logging.debug("An exception occured. FPGA settings could not be updated.")
+            logging.debug(traceback.format_exc())       # TODO: not sure what this line does. 
+            pass
+    
+
+    def prepare_record(self):
+        """
+        TODO: add descriptions + examples
+        TODO: check name is appropriate.
+
+        Returns
+        -------
+        None.
+
+        """
+        logging.debug("Recording request recieved")       # TODO: likely redundant
+        self.system.prepare_record()
+    
+    def trigger_record(self, duration):
+        """
+        TODO: add descriptions + examples
+        TODO: check name is appropriate.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.system.trigger_record()
+    
+    def start_record(self):
+        if self.measurement==0: 
+           self.measurement = 1
+           #TODO: Un-hard-code sample rates
+           
+           # TODO: Does self.system.config refer to FPGA_config? 
+           if self.system.config.sampling_rate == "slow":
+               self.num_samples = (int(self.system.config.duration *
+                                   488281))
+           elif self.system.config.sampling_rate == "fast":
+               self.num_samples = (int(self.system.config.duration *
+                                   5000000))
+               
+           self.num_bytes = self.num_samples * 8
+           
+           # Send record request to server
+           # packet = [0, self.system.comms.config, False, [True, self.num_bytes]]
+           
+           logging.debug("{} samples requested".format(self.num_samples))
+           try:
+               # self.system.comms.GUI_to_data_Queue.put(packet, block=False)
+               self.shared_memory_name = self.prepare_record()
+               self.shared_mem = SharedMemory(name=self.shared_memory_name, size=self.num_bytes, create=False)
+               
+               logging.debug("packet sent to socket process")
+               #Switch button mode
+               self.measurement = 1
+               while (self.measurement):
+                   self.monitor_recording()
+                   sleep(0.1)
+               
+           except Exception:
+               logging.debug("Didn't send config to data process")
+               logging.debug(traceback.format_exc())
+               pass
+        else:
+           self.measurement = 0
+           # Stop data recording monitoring
+           self.timer.stop()
+           # Close shared memory
+           self.shared_mem.close()
+           self.shared_mem.unlink()
+   
+    def monitor_recording(self):
+        # if (self.system.comms.process_isRun):
+        #     try:
+        #         # TODO - remove Queue and change to 'normal' process
+        #         data_ready, memory_name = self.system.comms.data_to_GUI_Queue.get(block=False)
+        #         logging.debug ("{}, {}".format(data_ready, memory_name))
+                
+        #         if memory_name:
+        #             logging.debug(memory_name)
+        #             self.shared_mem = SharedMemory(name=memory_name, size=self.num_bytes, create=False)
+        #             # Send trigger and number of bytes to server
+        #             packet = [1, self.system.comms.config, False, [False,self.num_bytes]]
+        #             try:
+        #                 # TODO - remove Queue and change to 'normal' process
+        #                 self.system.comms.GUI_to_data_Queue.put(packet, block=False)
+        #                 logging.debug("packet sent to socket process")
+    
+        #             except Exception:
+        #                 logging.debug("Didn't send config to data process")
+        #                 logging.debug(traceback.format_exc())
+        #                 pass
+                
+        #         elif data_ready:
+        #             self.MeasureFinished()
+        #     except:
+        #         pass
+         if (self.system.comms.process_isRun):
+             try:
+                 if self.shared_memory_name and not self.data_ready:
+                     try:
+                         self.data_ready = self.system.trigger_record()
+                     except:
+                         logging.debug("Didn't send config to data process")
+                         logging.debug(traceback.format_exc())
+                 elif self.data_ready:
+                     self.MeasureFinished()
+                     
+                     # Remove instaces of data ready and shared_mem_name
+                     self.data_ready = 0
+                     del self.shared_memory_name
+             except:
+                 pass
+                 
+             
+          
+    

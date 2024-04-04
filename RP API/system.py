@@ -14,6 +14,7 @@ from FPGA_config import FPGA_config
 from RP_communications import RP_communications
 from re import match
 import traceback
+import logging
 
 _default_init = {"continuous_output": False,
             "ip_address": "192.168.1.3",
@@ -62,5 +63,24 @@ class system:
         
     # ***************************************************
     # Seigan Development - Untested
+    # Wild wild west of bad code goes here
     # ***************************************************
+    def send_settings_to_FPGA(self):
+        self.comms.send_settings_to_FPGA()
+        
+    def prepare_record(self):
+        return self.comms.initiate_record2()
+        
+    def trigger_record(self):
+        # TODO: Is it required to send settings to FPGA before & after? Probably was explained but need a reminder again.
+        # self.trigger = 1
+        self.comms.send_settings_to_FPGA()
+        logging.debug("{} to receive".format(self.comms.bytes_to_receive))  # TODO: bytes_to_recieve is a packet item. Need to check whether this will cause a hissy fit or not
 
+        data_ready = self.comms.record2()
+
+        # self.trigger = 0
+        self.comms.send_settings_to_FPGA()
+        logging.debug("Trigger off sent")
+        
+        return data_ready
