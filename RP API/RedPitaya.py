@@ -608,7 +608,7 @@ class RedPitaya():
         
         try:
             # This is the only change compared to 'update_FPGA'. Essentially removes the Queue item
-            self.system.send_settings_FPGA()
+            self.system.send_settings_to_FPGA()
             logging.debug("FPGA settings successfully updated.")
         except Exception:
             logging.debug("An exception occured. FPGA settings could not be updated.")
@@ -627,19 +627,8 @@ class RedPitaya():
 
         """
         logging.debug("Recording request recieved")       # TODO: likely redundant
-        self.system.prepare_record()
+        return self.system.prepare_record()
     
-    def trigger_record(self, duration):
-        """
-        TODO: add descriptions + examples
-        TODO: check name is appropriate.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.system.trigger_record()
     
     def start_record(self):
         if self.measurement==0: 
@@ -655,6 +644,8 @@ class RedPitaya():
                                    5000000))
                
            self.num_bytes = self.num_samples * 8
+           self.system.comms.bytes_to_receive = self.num_bytes        # TODO - needed as the packet no longer exists. Think of a better implementation
+           
            
            # Send record request to server
            # packet = [0, self.system.comms.config, False, [True, self.num_bytes]]
@@ -714,15 +705,11 @@ class RedPitaya():
              try:
                  if self.shared_memory_name and not self.data_ready:
                      try:
-                         self.data_ready = self.system.trigger_record()
+                         self.system.trigger_record()
                      except:
                          logging.debug("Didn't send config to data process")
                          logging.debug(traceback.format_exc())
-                 elif self.data_ready:
                      self.MeasureFinished()
-                     
-                     # Remove instaces of data ready and shared_mem_name
-                     self.data_ready = 0
                      del self.shared_memory_name
              except:
                  pass

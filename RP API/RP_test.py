@@ -123,19 +123,19 @@ RP = RedPitaya(CH1_init=default_CH1_example,
                system_init=default_system)
 
 if __name__ == '__main__':
-    RP.start()
-    RP.update_FPGA()
-    RP.start_recording()
-    RP.close_recording()
+    # RP.start()
+    RP.update_FPGA_settings()
+    RP.start_record()
+    # RP.close_recording()
     
-    recording = RP.recording
-    recording = np.transpose([recording['in1'], recording['in2'], recording['out1'], recording['out2']])
-    fig, ax = plt.subplots(4,1, sharex=True)
-    ax = ax.ravel()
-    ax[0].plot(recording[:,0], label="Input 1")
-    ax[1].plot(recording[:,1], label="Input 2")
-    ax[2].plot(recording[:,2], label="Input 3")
-    ax[3].plot(recording[:,3], label="Input 4")
+    # recording = RP.recording
+    # recording = np.transpose([recording['in1'], recording['in2'], recording['out1'], recording['out2']])
+    # fig, ax = plt.subplots(4,1, sharex=True)
+    # ax = ax.ravel()
+    # ax[0].plot(recording[:,0], label="Input 1")
+    # ax[1].plot(recording[:,1], label="Input 2")
+    # ax[2].plot(recording[:,2], label="Input 3")
+    # ax[3].plot(recording[:,3], label="Input 4")
     
 # RP.reset_config('CH1')
 # RP.reset_config("CH2")

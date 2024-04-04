@@ -58,6 +58,7 @@ class RP_communications(object):
         # Queues to pass data to and from main thread/GUI
         self.GUI_to_data_Queue = Queue()
         self.data_to_GUI_Queue = Queue()
+        self.rec_process = Process(target=self.record2)
 
         #State toggles and counters
         self.process = None
@@ -423,7 +424,7 @@ class RP_communications(object):
         #Tell GUI the memory is allocated
         #self.push_data("allocated")
         #logging.debug("inform GUI executed")
-        return self.shared_mem.name
+        return self.shared_memory_name
     
     def record2(self):
         self.open_socket()
@@ -481,7 +482,9 @@ class RP_communications(object):
         sys.stderr = StreamToLogger(log, logging.DEBUG)
         
         self.rec_process.start()
-        self.rec_process.stop()
+        
+        # TODO: kinda unsure the diff between run and start
+        # self.rec_process.run()
         
         
         

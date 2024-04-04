@@ -77,7 +77,7 @@ class system:
         self.comms.send_settings_to_FPGA()
         logging.debug("{} to receive".format(self.comms.bytes_to_receive))  # TODO: bytes_to_recieve is a packet item. Need to check whether this will cause a hissy fit or not
 
-        data_ready = self.comms.record2()
+        data_ready = self.comms.recording_process()
 
         # self.trigger = 0
         self.comms.send_settings_to_FPGA()
