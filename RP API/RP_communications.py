@@ -466,7 +466,8 @@ class RP_communications(object):
     def record2(self):
         """
         TODO: rename. Remove old instajnce of 'record'
-
+        
+        
         Returns
         -------
         None.
@@ -510,7 +511,8 @@ class RP_communications(object):
     
     def recording_process(self):
         """
-        Opens a separate process 
+        Opens a separate Process in order to commence measurments of the RedPitaya 
+        hardware. 
 
         Returns
         -------
@@ -530,7 +532,7 @@ class RP_communications(object):
         
         self.rec_process = Process(target=self.record3)     # TODO: Change from record3 to the revevant final record function.
         self.rec_process.start()
-        self.rec_process.join()       # Unsure whether this is required?
+        self.rec_process.join()       # TODO: Unsure whether this is required?
         self.rec_process.close()
         
         
