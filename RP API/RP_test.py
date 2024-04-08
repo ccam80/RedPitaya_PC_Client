@@ -124,11 +124,11 @@ RP = RedPitaya(CH1_init=default_CH1_example,
 
 if __name__ == '__main__':
     # RP.start()
-    RP.update_FPGA_settings()
+    # RP.update_FPGA_settings()
     RP.start_record()
     # RP.close_recording()
     
-    # recording = RP.recording
+    recording = RP.recording
     # recording = np.transpose([recording['in1'], recording['in2'], recording['out1'], recording['out2']])
     # fig, ax = plt.subplots(4,1, sharex=True)
     # ax = ax.ravel()

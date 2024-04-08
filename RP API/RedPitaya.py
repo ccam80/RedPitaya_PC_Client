@@ -56,9 +56,7 @@ class RedPitaya():
             -> system.RP_communications.start_process()
             -> system.RP_communications.process = Process()
             
-        TODO: Check if this description is correct
-        TODO: This function is named extremely arbitrarily (start, start_comms, 
-                stary_process). Any way to simply/unify them?
+        TODO: Check whether this function is now redundant - In its new implementation, a new process is made at the time of recording only. 
         """
         try:
             self.system.start_comms()
@@ -462,47 +460,65 @@ class RedPitaya():
     
     
     def start_recording(self):
-       if self.measurement==0: 
-           self.measurement = 1
-           #TODO: Un-hard-code sample rates
-           
-           # TODO: Does self.system.config refer to FPGA_config? 
-           if self.system.config.sampling_rate == "slow":
-               self.num_samples = (int(self.system.config.duration *
-                                   488281))
-           elif self.system.config.sampling_rate == "fast":
-               self.num_samples = (int(self.system.config.duration *
-                                   5000000))
-               
-           self.num_bytes = self.num_samples * 8
-           # Send record request to server
-           packet = [0, self.system.comms.config, False, [True, self.num_bytes]]
-           logging.debug("{} samples requested".format(self.num_samples))
-           try:
-               self.system.comms.GUI_to_data_Queue.put(packet, block=False)
-               logging.debug("packet sent to socket process")
-               #Switch button mode
-               self.measurement = 1
-               while (self.measurement):
-                   self.monitor()
-                   sleep(0.1)
-               
-           except Exception:
-               logging.debug("Didn't send config to data process")
-               logging.debug(traceback.format_exc())
-               pass
-       else:
-           self.measurement = 0
-           # Stop data recording monitoring
-           self.timer.stop()
-           # Close shared memory
-           self.shared_mem.close()
-           self.shared_mem.unlink()
+        """
+        The old version of starting a recording. 
+        TODO: You should use 'start_record' instead, and delete this function.
+
+        Returns
+        -------
+        None.
+
+        """
+        
+        if self.measurement==0: 
+            self.measurement = 1
+            #TODO: Un-hard-code sample rates
+            
+            if self.system.config.sampling_rate == "slow":
+                self.num_samples = (int(self.system.config.duration *
+                                    488281))
+            elif self.system.config.sampling_rate == "fast":
+                self.num_samples = (int(self.system.config.duration *
+                                    5000000))
+                
+            self.num_bytes = self.num_samples * 8
+            # Send record request to server
+            packet = [0, self.system.comms.config, False, [True, self.num_bytes]]
+            logging.debug("{} samples requested".format(self.num_samples))
+            try:
+                self.system.comms.GUI_to_data_Queue.put(packet, block=False)
+                logging.debug("packet sent to socket process")
+                #Switch button mode
+                self.measurement = 1
+                while (self.measurement):
+                    self.monitor()
+                    sleep(0.1)
+                
+            except Exception:
+                logging.debug("Didn't send config to data process")
+                logging.debug(traceback.format_exc())
+                pass
+        else:
+            self.measurement = 0
+            # Stop data recording monitoring
+            self.timer.stop()
+            # Close shared memory
+            self.shared_mem.close()
+            self.shared_mem.unlink()
            
     def monitor(self):
+        """
+        The old version of monitoring a recording. 
+        TODO: You should use 'monitor_record' instead, and delete this function. 
+
+        Returns
+        -------
+        None.
+
+        """
+        
         if (self.system.comms.process_isRun):
             try:
-                # TODO - remove Queue and change to 'normal' process
                 data_ready, memory_name = self.system.comms.data_to_GUI_Queue.get(block=False)
                 logging.debug ("{}, {}".format(data_ready, memory_name))
                 
@@ -512,7 +528,6 @@ class RedPitaya():
                     # Send trigger and number of bytes to server
                     packet = [1, self.system.comms.config, False, [False,self.num_bytes]]
                     try:
-                        # TODO - remove Queue and change to 'normal' process
                         self.system.comms.GUI_to_data_Queue.put(packet, block=False)
                         logging.debug("packet sent to socket process")
     
@@ -532,6 +547,7 @@ class RedPitaya():
         #create array with view of shared mem
         logging.debug("data_ready recognised")
         temp = np.ndarray((self.num_samples), dtype=np.dtype([('in1', np.int16), ('in2', np.int16), ('out1', np.int16), ('out2', np.int16)]), buffer=self.shared_mem.buf)
+        
         #copy into permanent array
         recording = np.copy(temp)
         logging.debug("recording copied")
@@ -561,6 +577,16 @@ class RedPitaya():
 
 
     def update_FPGA(self):
+        """
+        The old version of updating the FPGA settings. 
+        TODO: You should use 'update_FPGA_settings' instead, and delete this function. 
+
+        Returns
+        -------
+        None.
+
+        """
+        
         if self.CBC.config.CBC_enabled:
             update_FPGA_channel('CBC', self.CBC.config, self.system.comms.config)
         else:
@@ -573,7 +599,6 @@ class RedPitaya():
         packet =    [0,             self.system.comms.config,   True,               [False,         0]]
         
         try:
-            # TODO - remove Queue and change to 'normal' process
             self.system.comms.GUI_to_data_Queue.put(packet, block=False)
             logging.debug("packet sent to socket process")
 
@@ -589,7 +614,9 @@ class RedPitaya():
     # ***************************************************
     def update_FPGA_settings(self):
         """
-        TODO: add description + examples
+        This function opens a socket to the FPGA and updates all config dictionaries. 
+        The configurations updated depend on the current mode (CHx or CBC).
+        TODO: Check that this still works, without using Queues.
 
         Returns
         -------
@@ -612,30 +639,45 @@ class RedPitaya():
             logging.debug("FPGA settings successfully updated.")
         except Exception:
             logging.debug("An exception occured. FPGA settings could not be updated.")
-            logging.debug(traceback.format_exc())       # TODO: not sure what this line does. 
+            logging.debug(traceback.format_exc())
             pass
     
 
     def prepare_record(self):
         """
-        TODO: add descriptions + examples
-        TODO: check name is appropriate.
+        This function creates the shared memory required for data transfer. 
+
+        Returns
+        -------
+        Shared memory name - string(?) which can be accessed by the RP object.
+
+        """
+        logging.debug("Recording request recieved")
+        return self.system.prepare_record()
+    
+    
+    def start_record(self):
+        """
+        This function enables recording of measurements from the RedPitaya hardware. 
+        This is achieved in the following steps:
+            - Determines the samples from the sampling rate and duration.
+            - Requests creation of the shared memory
+            - Conduct the recording Process
+            - Save the recording from the shared memory space into a csv file.
+        
+        Recording can be accessed through RP.recording.
 
         Returns
         -------
         None.
 
         """
-        logging.debug("Recording request recieved")       # TODO: likely redundant
-        return self.system.prepare_record()
-    
-    
-    def start_record(self):
+        
+        
         if self.measurement==0: 
            self.measurement = 1
-           #TODO: Un-hard-code sample rates
+           # TODO (CC): Un-hard-code sample rates
            
-           # TODO: Does self.system.config refer to FPGA_config? 
            if self.system.config.sampling_rate == "slow":
                self.num_samples = (int(self.system.config.duration *
                                    488281))
@@ -659,9 +701,12 @@ class RedPitaya():
                logging.debug("packet sent to socket process")
                #Switch button mode
                self.measurement = 1
-               while (self.measurement):
-                   self.monitor_recording()
-                   sleep(0.1)
+               
+               # TODO: Check this bit of code - why was it previously in a loop?
+               self.monitor_recording()
+               # while (self.measurement):
+               #     self.monitor_recording()
+               #     sleep(0.1)
                
            except Exception:
                logging.debug("Didn't send config to data process")
@@ -676,43 +721,37 @@ class RedPitaya():
            self.shared_mem.unlink()
    
     def monitor_recording(self):
+        """
+        Creates a Process which enables measurements from the RedPitaya 
+        hardware to be taken. Subsequently, measurements are saved into a shared
+        memory space, which can be used for further processing. 
+        
+        TODO: There is no 'flag' which checks whether recording was finished. Depending on my(SH's) poor understanding of multiprocessing, this might cause errors. 
+        
+        Returns
+        -------
+        None.
+
+        """
+        
         # if (self.system.comms.process_isRun):
-        #     try:
-        #         # TODO - remove Queue and change to 'normal' process
-        #         data_ready, memory_name = self.system.comms.data_to_GUI_Queue.get(block=False)
-        #         logging.debug ("{}, {}".format(data_ready, memory_name))
-                
-        #         if memory_name:
-        #             logging.debug(memory_name)
-        #             self.shared_mem = SharedMemory(name=memory_name, size=self.num_bytes, create=False)
-        #             # Send trigger and number of bytes to server
-        #             packet = [1, self.system.comms.config, False, [False,self.num_bytes]]
-        #             try:
-        #                 # TODO - remove Queue and change to 'normal' process
-        #                 self.system.comms.GUI_to_data_Queue.put(packet, block=False)
-        #                 logging.debug("packet sent to socket process")
-    
-        #             except Exception:
-        #                 logging.debug("Didn't send config to data process")
-        #                 logging.debug(traceback.format_exc())
-        #                 pass
-                
-        #         elif data_ready:
-        #             self.MeasureFinished()
-        #     except:
-        #         pass
-         if (self.system.comms.process_isRun):
-             try:
-                 if self.shared_memory_name and not self.data_ready:
-                     try:
-                         self.system.trigger_record()
-                     except:
-                         logging.debug("Didn't send config to data process")
-                         logging.debug(traceback.format_exc())
-                     self.MeasureFinished()
-                     del self.shared_memory_name
-             except:
-                 pass
+        try:
+            if self.shared_memory_name:# and not self.data_ready:
+                try:
+                    # This creates a new Process which enables the recording.
+                    self.system.trigger_record()
+                except:
+                    logging.debug("Didn't send config to data process")
+                    logging.debug(traceback.format_exc())
+                # We assume that the recording finishes here and therefore can proceed to the post-processing. Previously held a flag when the recoridng was finished. 
+                self.MeasureFinished()
+                del self.shared_memory_name
+        except:
+            logging.debug("Shared memory does not exist")
+            logging.debug(traceback.format_exc())
+            pass
+        # else:
+        #     logging.debug("Not process run")
                  
              
           

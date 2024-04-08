@@ -17,6 +17,8 @@ import select
 import sys
 import traceback
 from FPGA_config import FPGA_config, config_keys
+import random # For emulating data capture. To not be used otherwise!
+
 
 class StreamToLogger(object):
     """
@@ -56,9 +58,10 @@ class RP_communications(object):
                  ip="192.168.1.3",
                  ):
         # Queues to pass data to and from main thread/GUI
+        # TODO: redundant now
         self.GUI_to_data_Queue = Queue()
         self.data_to_GUI_Queue = Queue()
-        self.rec_process = Process(target=self.record2)
+        
 
         #State toggles and counters
         self.process = None
@@ -79,6 +82,10 @@ class RP_communications(object):
      # ************************ Process admin ****************************** #
 
     def start_process(self):
+        """
+        TODO: Unsure if this is required - process is started and stopped within a single funciton call duirng recoring only.
+        """
+        
         """Begin thread, toggle run state"""
 
         if self.process == None:
@@ -91,6 +98,10 @@ class RP_communications(object):
      # **************** Local Inter-process Comms with GUI****************** #
 
     def fetch_instructions(self):
+        """
+        TODO: Old function - maybe remove?
+        """
+        
         """ Get and save instructions from GUI thread:
 
             config: New config struct for FPGA
@@ -136,10 +147,13 @@ class RP_communications(object):
 
 
     def backgroundThread(self):    # retrieve data
+        """
+        Old function - maybe remove?
+        """
         """ Process to run in thread in the background. Saves a copy of class
         state when started, works ot of this, which is invisible to the GUI.
         This state is lost upon thread.join.
-            """
+        """
 
         # Set up socketlog.log debug log
         logging.basicConfig(filename='socketlog.log',
@@ -182,6 +196,10 @@ class RP_communications(object):
 
 
     def close(self):
+        """
+        Old function - maybe remove?
+        """
+        
         """End process and close socket when GUI is closed"""
 
         self.isrun = False
@@ -318,6 +336,10 @@ class RP_communications(object):
     
     # prepare_record ********************************************
     def initiate_record(self):
+        """
+        TODO: There is a new initiate_record2 function which replaces this.
+        """
+        
         self.shared_mem = SharedMemory(size=self.bytes_to_receive, create=True)
         self.shared_memory_name = self.shared_mem.name
 
@@ -329,6 +351,10 @@ class RP_communications(object):
         
     # trigger_record ********************************************
     def record(self):
+        """
+        TODO: There is a new record function which replaced this. 
+        """
+        
         self.open_socket()
         if (self.initiate_transfer("recording") < 1):
             logging.debug("Socket type (record) not acknowledged by server")
@@ -373,7 +399,6 @@ class RP_communications(object):
     # Wild wild west of bad code goes here
     # ***************************************************
     def fetch_packet(self, packet):
-        # TODO: Check description is consistent
         # TODO: CHeck whether packets are even required in this new structure (I think not)
         """ 
         This function is a re-write of the old 'fetch_instructions' functions.
@@ -390,7 +415,7 @@ class RP_communications(object):
                     A list of two elements, consisting of whether a memory allocation exists, and the size of the memory allocation.
                     
         
-        TODO: These examples were taken from the old code. To check whether they are actually consistent. 
+        todo: These examples were taken from the old code. To check whether they are actually consistent. 
         Ex. 1:
             packet = [0, self.system.comms.config, True, [False, 0]]
                 -> The system configuration has changed.
@@ -413,20 +438,40 @@ class RP_communications(object):
                           [rec request: {self.record_request}, btr: {self.bytes_to_receive}]""")
             return True
         except Exception:
-            # TODO - is this how to use logging.debug? 
             logging.debug("message not received")
             return False
     
     def initiate_record2(self):
+        """
+        TODO: remove number "2" from the function name. Find other instances and fix those too. 
+
+        Returns
+        -------
+        TYPE
+            DESCRIPTION.
+
+        """
+        
         self.shared_mem = SharedMemory(size=self.bytes_to_receive, create=True)
         self.shared_memory_name = self.shared_mem.name
 
         #Tell GUI the memory is allocated
-        #self.push_data("allocated")
-        #logging.debug("inform GUI executed")
+        #self.push_data("allocated")    # Removed as there are no more Queues.
+        logging.debug("inform GUI executed")
+        
+        # The only difference is that it returns the shared mem name which can be used elsewhere in the program.
         return self.shared_memory_name
     
+    
     def record2(self):
+        """
+        TODO: rename. Remove old instajnce of 'record'
+
+        Returns
+        -------
+        None.
+
+        """
         self.open_socket()
         if (self.initiate_transfer("recording") < 1):
             logging.debug("Socket type (record) not acknowledged by server")
@@ -459,11 +504,13 @@ class RP_communications(object):
         self.shared_mem.close()
         del self.shared_mem
         
-        return 1
+        # Since this is in a Process, the return does nothing. 
+        # In this new iteration, I will assume that a finished process is the same as returning a 'data ready'
+        # return 1    
     
     def recording_process(self):
         """
-        Do recording stuff
+        Opens a separate process 
 
         Returns
         -------
@@ -481,12 +528,69 @@ class RP_communications(object):
         sys.stdout = StreamToLogger(log, logging.DEBUG)
         sys.stderr = StreamToLogger(log, logging.DEBUG)
         
+        self.rec_process = Process(target=self.record3)     # TODO: Change from record3 to the revevant final record function.
         self.rec_process.start()
+        self.rec_process.join()       # Unsure whether this is required?
+        self.rec_process.close()
         
-        # TODO: kinda unsure the diff between run and start
-        # self.rec_process.run()
         
+    def record3(self):
+        """
+        A dummy function for SH to use in testing, which emulates a connection 
+        to the RedPitaya hardware to measure samples.
+        Instead, it uses a random number generator to fill the shared memory. 
         
+        TODO: To replace.
+        
+        Returns
+        -------
+        None.
+
+        """
+        logging.debug("Using artificial data for measurment emulation.")
+        #self.open_socket()
+        # if (self.initiate_transfer("recording") < 1):
+        #     logging.debug("Socket type (record) not acknowledged by server")
+
+        #Create view of shared memory buffer
+        view = memoryview(self.shared_mem.buf)
+        logging.debug("memory view created")
+        logging.debug("{} to receive".format(self.bytes_to_receive))
+
+        # wait for trigger confirmation from server - process may get stuck in
+        # this loop if trigger acknowledgement is lost
+        # if (self.wait_for_ack() != 1):
+        #     logging.debug("Record acknowledge not received")
+        #     return
+
+        logging.debug("start receive")
+
+        # while (self.bytes_to_receive):
+        #     #Load info into array in nbyte chunks
+        #     nbytes = self.socket.recv_into(view, self.bytes_to_receive)
+        #     view = view[nbytes:]
+        #     self.bytes_to_receive -= nbytes
+        #     logging.debug(self.bytes_to_receive)
+        
+        print(self.shared_mem.buf.shape[0])
+        print(self.bytes_to_receive)
+        # num = (random.sample(range(0, 255), self.bytes_to_receive))
+        num = random.sample(range(0, 255), 100)
+        for i, c in enumerate(num):
+            self.shared_mem.buf[i] = i
+        
+
+        # self.purge_socket()
+        # self.close_socket()
+
+        del view
+        # self.push_data("data_ready")
+        self.shared_mem.close()
+        del self.shared_mem
+        
+        # Since this is in a Process, the return does nothing. 
+        # In this new iteration, I will assume that a finished process is the same as returning a 'data ready'
+        # return 1    
         
     
 
