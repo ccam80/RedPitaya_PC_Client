@@ -6,7 +6,7 @@ data transfer into and out of the RedPitaya from the PC.
 
 @author: cca78
 """
-from multiprocessing import Process, Queue
+from multiprocessing import Process
 from multiprocessing.shared_memory import SharedMemory
 from time import sleep
 import numpy as np
@@ -17,7 +17,6 @@ import select
 import sys
 import traceback
 from FPGA_config import FPGA_config, config_keys
-import random # For emulating data capture. To not be used otherwise!
 
 
 class StreamToLogger(object):
@@ -57,19 +56,13 @@ class RP_communications(object):
                  port=1001,
                  ip="192.168.1.3",
                  ):
-        # Queues to pass data to and from main thread/GUI
-        # TODO: redundant now
-        # self.GUI_to_data_Queue = Queue()
-        # self.data_to_GUI_Queue = Queue()
+
         
 
         #State toggles and counters
         self.process = None
-        self.process_isRun = False
         self.bytes_to_receive = 0
         self.trigger = False
-        self.config_change = False
-        self.record_request = False
 
         #FPGA config dict
         self.config = FPGA_config()
@@ -78,121 +71,22 @@ class RP_communications(object):
         self.port = port
         self.ip = ip
         self.socket = None
-
-
     
-
-    def close(self):
-        """
-        Old function - maybe remove?
-        """
         
-        """End process and close socket when GUI is closed"""
-
-        self.isrun = False
-        logging.debug("Close called")
-        logging.debug("{} s".format(self.socket))
-
-        if self.process_isRun:
-            self.process.terminate()
-            self.process_isRun = False
-
-        if self.socket is not None:
-            self.socket.close()
-            logging.debug("socket closed")
-    
-    
-    # ***************************************************
-    # Seigan Development - Repurposed
-    # Functions unchanged, but used differently
-    # ***************************************************   
-    
-    
-    # Socket ********************************************
-    def open_socket(self):
-        """Open generic client socket."""
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
-        try:
-            self.socket.connect((self.ip, self.port))
-        except Exception as e:
-            logging.debug(e)
-            
-            
-    def close_socket(self):
-        """Close socket and wait for a 100ms. """
-        # Close socket
-        self.socket.close()
-        self.socket = None
-        sleep(0.1)
-    
-    def purge_socket(self):
-        """Purge receive buffer if server is streaming naiively and likely to
-        overshoot. Ensure you have all the data you need first. Should only be
-        required after record"""
-
-        readers = [1]
-        self.socket.setblocking(False)
-        sockets = [self.socket]
-
-        while readers != []:
-            readers, writers, err = select.select(sockets,
-                                                  sockets,
-                                                  sockets,
-                                                  2)
-            try:
-                purged = self.socket.recv(16384)
-                logging.debug("{} bytes received in purge, header = {} {} {} {}".format(len(purged), purged[0], purged[1], purged[3], purged[4]))
-            except Exception as e:
-                logging.debug("Purge recv error: {}".format(e))
-                break
-            
-    
-    def initiate_transfer(self, type='config'):
-        """ Send request info to MCU, await acknowledgement. Sends 4-byte 0 to initiate
-        config packet send, expect ack value of 2. Sends "bytes to receive" value otherwise,
-        expects ack value of bytes_to_receive. """
-        if type == 'config':
-            payload = np.uint32(0)
-            ack_value = 2
-        if type == 'recording':
-            payload = np.uint32(self.bytes_to_receive)
-            ack_value = np.uint32(self.bytes_to_receive)
-
-        self.socket.sendall(payload)
-        if (self.wait_for_ack(ack_value) == 1):
-            return 1
-        else:
-            return -1
-    
-    def wait_for_ack(self, ack_value=1):
-        """ Wait for an acknowledge byte from server. If no byte or incorrect
-        value received, log error and return -1. Returns 1 on successful ack. """
-
-        ack = int.from_bytes(self.socket.recv(4), "little", signed=False)
-        logging.debug("Ack value received: {}, expected {}".format(ack, ack_value))
-
-        if ack == ack_value:
-            return 1
-        else:
-            logging.debug("Bad acknowledge")
-            return -1
-     
-    def push_data(self, event):
-        """ Send message back to GUI thread, either:
-            Allocated: Tell GUI new shared memory is allocated
-            data_ready: Shared memory filled with requested data. """
-
-        if event == "allocated":
-            self.data_to_GUI_Queue.put([0, self.shared_memory_name], block=False)
-            logging.debug(self.shared_memory_name + "sent to GUI")
-
-        elif event == "data_ready":
-            self.data_to_GUI_Queue.put([1, 0], block=False)
-        
-    # Update_FPGA_settings ********************************************
+    # =========================================================================
+    # Communications with the RP
+    # =========================================================================
     def send_settings_to_FPGA(self):
-        """Package FPGA_config attribute and send to server"""
+        """
+        Called by RP.update_FPGA_settings()
+        Opens the socket and sends updates to the server by. Changes of settings
+        made by the config dictionaries in RP.FPGA_config, RP.channel, and RP.CBC.
+        
+        Returns
+        -------
+        None.
 
+        """
         # Get config and package into c-readable struct
         format_ = "BBBBiiiiiiiiiiiiii"
         
@@ -219,193 +113,22 @@ class RP_communications(object):
         logging.debug("FPGA settings sent")
         
         
-    
-
-    
-    # prepare_record ********************************************
-    def initiate_record(self):
+    def recording_process(self, shared_memory_name):
         """
-        TODO: There is a new initiate_record2 function which replaces this.
-        """
-        
-        self.shared_mem = SharedMemory(size=self.bytes_to_receive, create=True)
-        self.shared_memory_name = self.shared_mem.name
-
-        #Tell GUI the memory is allocated
-        self.push_data("allocated")
-        logging.debug("inform GUI executed")
-        
-        
-        
-    # trigger_record ********************************************
-    def record(self):
-        """
-        TODO: There is a new record function which replaced this. 
-        """
-        
-        self.open_socket()
-        if (self.initiate_transfer("recording") < 1):
-            logging.debug("Socket type (record) not acknowledged by server")
-
-        #Create view of shared memory buffer
-        view = memoryview(self.shared_mem.buf)
-        logging.debug("memory view created")
-        logging.debug("{} to receive".format(self.bytes_to_receive))
-
-        # wait for trigger confirmation from server - process may get stuck in
-        # this loop if trigger acknowledgement is lost
-        if (self.wait_for_ack() != 1):
-            logging.debug("Record acknowledge not received")
-            return
-
-        logging.debug("start receive")
-
-        while (self.bytes_to_receive):
-            #Load info into array in nbyte chunks
-            nbytes = self.socket.recv_into(view, self.bytes_to_receive)
-            view = view[nbytes:]
-            self.bytes_to_receive -= nbytes
-            logging.debug(self.bytes_to_receive)
-
-        self.purge_socket()
-        self.close_socket()
-
-        del view
-        self.push_data("data_ready")
-        self.shared_mem.close()
-        del self.shared_mem
-    
-    
-    # ***************************************************
-    # Seigan Development - Tested and working
-    # Miracles happen here
-    # ***************************************************
-    
-    
-    # ***************************************************
-    # Seigan Development - Untested
-    # Wild wild west of bad code goes here
-    # ***************************************************
-    def fetch_packet(self, packet):
-        # TODO: CHeck whether packets are even required in this new structure (I think not)
-        """ 
-        This function is a re-write of the old 'fetch_instructions' functions.
-        
-        Receives a packet depending on a certain process. 
-        The packet is a list with the contents (in order):
-                1) trigger: (bool)
-                    Recording trigger
-                2) config: (struct)
-                    New config struct for FPGA
-                3) config_change: (bool)
-                    Whether 'config' has changed or not
-                4) [memory_allocation, memory_size_in_bytes]: list(bool, bytes?)
-                    A list of two elements, consisting of whether a memory allocation exists, and the size of the memory allocation.
-                    
-        
-        todo: These examples were taken from the old code. To check whether they are actually consistent. 
-        Ex. 1:
-            packet = [0, self.system.comms.config, True, [False, 0]]
-                -> The system configuration has changed.
-            
-        Ex. 2:
-            packet = [0, self.system.comms.config, False, [True, self.num_bytes]]
-                -> Sending a record request.
-        
-        Ex. 3:
-            packet =  [1, self.system.comms.config, False, [False, self.num_bytes]]
-                -> Send trigger and number of bytes to server
-        """
-
-        try:
-            self.trigger, self.config, self.config_change, [self.record_request, self.bytes_to_receive] = packet
-            logging.debug("message received")
-            logging.debug(f"""trigger: {self.trigger},
-                          config: {self.config},
-                          config_change: {self.config_change},
-                          [rec request: {self.record_request}, btr: {self.bytes_to_receive}]""")
-            return True
-        except Exception:
-            logging.debug("message not received")
-            return False
-    
-    def initiate_record2(self):
-        """
-        TODO: remove number "2" from the function name. Find other instances and fix those too. 
-
-        Returns
-        -------
-        TYPE
-            DESCRIPTION.
-
-        """
-        
-        self.shared_mem = SharedMemory(size=self.bytes_to_receive, create=True)
-        self.shared_memory_name = self.shared_mem.name
-
-        #Tell GUI the memory is allocated
-        #self.push_data("allocated")    # Removed as there are no more Queues.
-        logging.debug("inform GUI executed")
-        
-        # The only difference is that it returns the shared mem name which can be used elsewhere in the program.
-        return self.shared_memory_name
-    
-    
-    def record2(self):
-        """
-        TODO: rename. Remove old instajnce of 'record'
-        
-        
-        Returns
-        -------
-        None.
-
-        """
-        self.open_socket()
-        if (self.initiate_transfer("recording") < 1):
-            logging.debug("Socket type (record) not acknowledged by server")
-
-        #Create view of shared memory buffer
-        view = memoryview(self.shared_mem.buf)
-        logging.debug("memory view created")
-        logging.debug("{} to receive".format(self.bytes_to_receive))
-
-        # wait for trigger confirmation from server - process may get stuck in
-        # this loop if trigger acknowledgement is lost
-        if (self.wait_for_ack() != 1):
-            logging.debug("Record acknowledge not received")
-            return
-
-        logging.debug("start receive")
-
-        while (self.bytes_to_receive):
-            #Load info into array in nbyte chunks
-            nbytes = self.socket.recv_into(view, self.bytes_to_receive)
-            view = view[nbytes:]
-            self.bytes_to_receive -= nbytes
-            logging.debug(self.bytes_to_receive)
-
-        self.purge_socket()
-        self.close_socket()
-
-        del view
-        # self.push_data("data_ready")
-        self.shared_mem.close()
-        del self.shared_mem
-        
-        # Since this is in a Process, the return does nothing. 
-        # In this new iteration, I will assume that a finished process is the same as returning a 'data ready'
-        # return 1    
-    
-    def recording_process(self):
-        """
-        Opens a separate Process in order to commence measurments of the RedPitaya 
-        hardware. 
+        Called by RP.start_record()
+        Opens a new parallel thread (process) to enable sampling measurments 
+        from the RedPitaya hardware into a shared memory space.
+                
+        Parameters
+        ----------
+        shared_memory_name : TYPE 
+            Reference to shared memory address(?)
+            TODO2: add datatype (its a string?)
 
         Returns
         -------
         None.
-
+        
         """
         # Set up socketlog.log debug log
         logging.basicConfig(filename='socketlog.log',
@@ -418,70 +141,167 @@ class RP_communications(object):
         sys.stdout = StreamToLogger(log, logging.DEBUG)
         sys.stderr = StreamToLogger(log, logging.DEBUG)
         
-        self.rec_process = Process(target=self.record2)     # TODO: Change from record3 to the revevant final record function.
+        self.rec_process = Process(target=self.record, args=(shared_memory_name,))   
         self.rec_process.start()
-        self.rec_process.join()       # TODO: Unsure whether this is required?
-        self.rec_process.close()        # TODO: check if close is required
+        self.rec_process.join()       
+        self.rec_process.close()  
         
-        
-    def record3(self):
+    def record(self, shared_memory_name):
         """
-        A dummy function for SH to use in testing, which emulates a connection 
-        to the RedPitaya hardware to measure samples.
-        Instead, it uses a random number generator to fill the shared memory. 
-        
-        TODO: To replace.
-        
+        Called by RP.start_record()
+        This function is called as a Process item. Measurements from hardware 
+        are taken and into a shared memory space. 
+                
+        Parameters
+        ----------
+        shared_memory_name : TYPE 
+            Reference to shared memory address(?)
+            TODO2: add datatype (its a string?)
+
         Returns
         -------
         None.
-
+        
         """
-        logging.debug("Using artificial data for measurment emulation.")
-        #self.open_socket()
-        # if (self.initiate_transfer("recording") < 1):
-        #     logging.debug("Socket type (record) not acknowledged by server")
+        
+        self.open_socket()
+        if (self.initiate_transfer("recording") < 1):
+            logging.debug("Socket type (record) not acknowledged by server")
 
         #Create view of shared memory buffer
+        self.shared_mem = SharedMemory(name=self.shared_memory_name, size=self.bytes_to_receive, create=False)
+        
+        
         view = memoryview(self.shared_mem.buf)
         logging.debug("memory view created")
         logging.debug("{} to receive".format(self.bytes_to_receive))
 
         # wait for trigger confirmation from server - process may get stuck in
         # this loop if trigger acknowledgement is lost
-        # if (self.wait_for_ack() != 1):
-        #     logging.debug("Record acknowledge not received")
-        #     return
+        if (self.wait_for_ack() != 1):
+            logging.debug("Record acknowledge not received")
+            return
 
         logging.debug("start receive")
 
-        # while (self.bytes_to_receive):
-        #     #Load info into array in nbyte chunks
-        #     nbytes = self.socket.recv_into(view, self.bytes_to_receive)
-        #     view = view[nbytes:]
-        #     self.bytes_to_receive -= nbytes
-        #     logging.debug(self.bytes_to_receive)
-        
-        print(self.shared_mem.buf.shape[0])
-        print(self.bytes_to_receive)
-        # num = (random.sample(range(0, 255), self.bytes_to_receive))
-        num = random.sample(range(0, 255), 100)
-        for i, c in enumerate(num):
-            self.shared_mem.buf[i] = i
-        
+        while (self.bytes_to_receive):
+            #Load info into array in nbyte chunks
+            nbytes = self.socket.recv_into(view, self.bytes_to_receive)
+            view = view[nbytes:]
+            self.bytes_to_receive -= nbytes
+            logging.debug(self.bytes_to_receive)
 
-        # self.purge_socket()
-        # self.close_socket()
+        self.purge_socket()
+        self.close_socket()
 
         del view
-        # self.push_data("data_ready")
         self.shared_mem.close()
         del self.shared_mem
-        
-        # Since this is in a Process, the return does nothing. 
-        # In this new iteration, I will assume that a finished process is the same as returning a 'data ready'
-        # return 1    
-        
     
+    # =========================================================================
+    # Complimentary functions for communications with the server.
+    # =========================================================================
+    def initiate_transfer(self, type='config'):
+        """
+        Called by RP.comms.record() and RP.comms.send_settings_to_FPGA()
+        Send request info to MCU, await acknowledgement. Sends 4-byte 0 to 
+        initiate config packet send, expect ack value of 2. Sends 
+        "bytes to receive" value otherwise, expects ack value of bytes_to_receive.
 
+        Parameters
+        ----------
+        type : string, optional
+            Describes which function it is used for. The default is 'config'.
 
+        Returns
+        -------
+        int
+            Recieved acknowlegdement value from the socket.
+
+        """
+        
+        if type == 'config':
+            payload = np.uint32(0)
+            ack_value = 2
+        if type == 'recording':
+            payload = np.uint32(self.bytes_to_receive)
+            ack_value = np.uint32(self.bytes_to_receive)
+
+        self.socket.sendall(payload)
+        if (self.wait_for_ack(ack_value) == 1):
+            return 1
+        else:
+            return -1
+    
+    def wait_for_ack(self, ack_value=1):
+        """
+        Called by RP.comms.record()
+        Wait for an acknowledge byte from server. If no byte or incorrect
+        value received, log error and return -1. Returns 1 on successful ack. 
+        
+        Parameters
+        ----------
+        ack_value : int, optional
+            Expected acknowledgement value. The default is 1.
+
+        Returns
+        -------
+        int
+            Recieved acknowlegdement value from the socket.
+
+        """
+        
+        
+
+        ack = int.from_bytes(self.socket.recv(4), "little", signed=False)
+        logging.debug("Ack value received: {}, expected {}".format(ack, ack_value))
+
+        if ack == ack_value:
+            return 1
+        else:
+            logging.debug("Bad acknowledge")
+            return -1
+    
+    # =========================================================================
+    # Socket-related functions
+    # =========================================================================
+    def open_socket(self):
+        """Open generic client socket."""
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
+        try:
+            self.socket.connect((self.ip, self.port))
+        except Exception as e:
+            logging.debug(e)
+            
+            
+    def close_socket(self):
+        """Close socket and wait for a 100ms. """
+        # Close socket
+        self.socket.close()
+        self.socket = None
+        sleep(0.1)
+    
+    def purge_socket(self):
+        """Purge receive buffer if server is streaming naiively and likely to
+        overshoot. Ensure you have all the data you need first. Should only be
+        required after record"""
+    
+        readers = [1]
+        self.socket.setblocking(False)
+        sockets = [self.socket]
+    
+        while readers != []:
+            readers, writers, err = select.select(sockets,
+                                                  sockets,
+                                                  sockets,
+                                                  2)
+            try:
+                purged = self.socket.recv(16384)
+                logging.debug("{} bytes received in purge, header = {} {} {} {}".format(len(purged), purged[0], purged[1], purged[3], purged[4]))
+            except Exception as e:
+                logging.debug("Purge recv error: {}".format(e))
+                break
+            
+
+        
+   

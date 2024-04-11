@@ -48,40 +48,41 @@ class system:
         else:
             raise ValueError("'rate' must be either 'fast' or 'slow'")
 
-    def start_comms(self):
-        try:
-            self.comms.start_process()
-            return True 
-        except Exception:
-            print(traceback.format_exc())
-            return False
         
     def set_IP_address(self, ip_address):
         self.config["ip_address"] = ip_address
         
+    def set_duration(self, duration):
+        self.config["duration"] = duration
+    
         
-        
-    # ***************************************************
-    # Seigan Development - Untested
-    # Wild wild west of bad code goes here
-    # ***************************************************
     def send_settings_to_FPGA(self):
+        """
+        This function acts only as an intermediate medium to call RP.comms.send_settings_to_FPGA()
+        
+        Returns
+        -------
+        None.
+        """
+        
         self.comms.send_settings_to_FPGA()
+       
+    def trigger_record(self, shared_memory_name):       
+        """
+        This function acts only as an intermediate medium to call RP.comms.recording_process()
         
-    def prepare_record(self):
-        return self.comms.initiate_record2()
-        
-    def trigger_record(self):
-        # TODO: Is it required to send settings to FPGA before & after? Probably was explained but need a reminder again.
-        
+        Returns
+        -------
+        None.
+        """
         
         self.trigger = 1
-        self.comms.send_settings_to_FPGA()     # TODO: Uncomment when using with physical hardware
-        logging.debug("{} to receive".format(self.comms.bytes_to_receive))  # TODO: bytes_to_recieve is a packet item. Need to check whether this will cause a hissy fit or not
+        self.comms.send_settings_to_FPGA()     
+        logging.debug("{} to receive".format(self.comms.bytes_to_receive))  
 
-        self.comms.recording_process()
+        self.comms.recording_process(shared_memory_name=shared_memory_name)
 
         self.trigger = 0
-        self.comms.send_settings_to_FPGA()     # TODO: Uncomment when using with physical hardware
+        self.comms.send_settings_to_FPGA()     
         logging.debug("Trigger off sent")
         
