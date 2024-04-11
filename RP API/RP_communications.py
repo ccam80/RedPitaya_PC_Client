@@ -131,15 +131,15 @@ class RP_communications(object):
         
         """
         # Set up socketlog.log debug log
-        logging.basicConfig(filename='socketlog.log',
-                            level=logging.DEBUG,
-                            format='%(asctime)s %(message)s',
-                            datefmt='%m/%d/%Y %I:%M:%S %p')
+        # logging.basicConfig(filename='socketlog.log',
+        #                     level=logging.DEBUG,
+        #                     format='%(asctime)s %(message)s',
+        #                     datefmt='%m/%d/%Y %I:%M:%S %p')
 
-        logging.debug('Logfile initialised')
-        log = logging.getLogger('socket')
-        sys.stdout = StreamToLogger(log, logging.DEBUG)
-        sys.stderr = StreamToLogger(log, logging.DEBUG)
+        # logging.debug('Logfile initialised')
+        # log = logging.getLogger('socket')
+        # sys.stdout = StreamToLogger(log, logging.DEBUG)
+        # sys.stderr = StreamToLogger(log, logging.DEBUG)
         
         self.rec_process = Process(target=self.record, args=(shared_memory_name,))   
         self.rec_process.start()
@@ -169,7 +169,7 @@ class RP_communications(object):
             logging.debug("Socket type (record) not acknowledged by server")
 
         #Create view of shared memory buffer
-        self.shared_mem = SharedMemory(name=self.shared_memory_name, size=self.bytes_to_receive, create=False)
+        self.shared_mem = SharedMemory(name=shared_memory_name, size=self.bytes_to_receive, create=False)
         
         
         view = memoryview(self.shared_mem.buf)

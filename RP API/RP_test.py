@@ -36,6 +36,9 @@ from channel_config import _channel_modes
 import numpy as np
 import traceback
 import matplotlib.pyplot as plt
+import logging
+
+logging.getLogger("matplotlib").setLevel(logging.WARNING)
 
 
 default_CH1_example = {"mode": 'fixed_frequency',
@@ -47,6 +50,26 @@ default_CH1_example = {"mode": 'fixed_frequency',
                        "linear_amplitude_stop": 0,
                        "linear_amplitude_sweep": False,
                        "offset_start": 100,
+                       "offset_stop": 0,
+                       "offset_sweep": False,
+                       "cubic_amplitude_start": 0,
+                       "cubic_amplitude_stop": 0,
+                       "cubic_amplitude_sweep": False,
+                       "quadratic_amplitude_start": 0,
+                       "quadratic_amplitude_stop": 0,
+                       "quadratic_amplitude_sweep": False,
+                       "duration": 0.2
+                       }
+
+default_CH2_example = {"mode": 'fixed_frequency',
+                       "input_channel": 2,
+                       "frequency_start": 20,
+                       "frequency_stop": 0,
+                       "frequency_sweep": False,
+                       "linear_amplitude_start": 500,
+                       "linear_amplitude_stop": 0,
+                       "linear_amplitude_sweep": False,
+                       "offset_start": 0,
                        "offset_stop": 0,
                        "offset_sweep": False,
                        "cubic_amplitude_start": 0,
@@ -115,10 +138,10 @@ default_config =    {"CBC_enabled": False,
 default_system = {"continuous_output": False,
                   "ip_address": "192.168.1.3",
                   "sampling_rate": "slow",
-                  "duration": 0.2}
+                  "duration": 0.05}
 
 RP = RedPitaya(CH1_init=default_CH1_example,
-               CH2_init=default_CH1_example,
+               CH2_init=default_CH2_example,
                CBC_init=default_CBC_example,
                system_init=default_system)
 

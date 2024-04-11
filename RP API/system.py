@@ -19,7 +19,7 @@ import logging
 _default_init = {"continuous_output": False,
             "ip_address": "192.168.1.3",
             "sampling_rate": "slow",
-            "duration": 1.1
+            "duration": 1
             }
 
 
@@ -76,13 +76,13 @@ class system:
         None.
         """
         
-        self.trigger = 1
+        self.comms.trigger = 1
         self.comms.send_settings_to_FPGA()     
         logging.debug("{} to receive".format(self.comms.bytes_to_receive))  
 
         self.comms.recording_process(shared_memory_name=shared_memory_name)
 
-        self.trigger = 0
+        self.comms.trigger = 0
         self.comms.send_settings_to_FPGA()     
         logging.debug("Trigger off sent")
         

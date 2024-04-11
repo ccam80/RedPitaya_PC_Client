@@ -594,7 +594,6 @@ class RedPitaya():
         """
         
         try:
-            if self.shared_memory_name:# and not self.data_ready:
                 try:
                     # This creates a new Process which enables the recording.
                     self.system.trigger_record(shared_memory_name=self.shared_memory_name)
@@ -603,7 +602,7 @@ class RedPitaya():
                     logging.debug(traceback.format_exc())
                 # We assume that the recording finishes here and therefore can proceed to the post-processing. 
                 self.MeasureFinished()
-                del self.shared_memory_name
+                self.shared_memory_name = None
         except:
             logging.debug("Shared memory does not exist")
             logging.debug(traceback.format_exc())
@@ -654,7 +653,6 @@ class RedPitaya():
         
         # Close shared memory
         self.shared_mem.close()
-        self.system.comms.shared_mem.close()
         self.shared_mem.unlink()
         self.recording = recording
              
