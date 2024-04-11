@@ -530,10 +530,10 @@ class RP_communications(object):
         sys.stdout = StreamToLogger(log, logging.DEBUG)
         sys.stderr = StreamToLogger(log, logging.DEBUG)
         
-        self.rec_process = Process(target=self.record3)     # TODO: Change from record3 to the revevant final record function.
+        self.rec_process = Process(target=self.record2)     # TODO: Change from record3 to the revevant final record function.
         self.rec_process.start()
         self.rec_process.join()       # TODO: Unsure whether this is required?
-        self.rec_process.close()
+        self.rec_process.close()        # TODO: check if close is required
         
         
     def record3(self):
