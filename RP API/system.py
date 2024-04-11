@@ -75,13 +75,13 @@ class system:
         # TODO: Is it required to send settings to FPGA before & after? Probably was explained but need a reminder again.
         
         
-        # self.trigger = 1
-        #self.comms.send_settings_to_FPGA()     # TODO: Uncomment when using with physical hardware
+        self.trigger = 1
+        self.comms.send_settings_to_FPGA()     # TODO: Uncomment when using with physical hardware
         logging.debug("{} to receive".format(self.comms.bytes_to_receive))  # TODO: bytes_to_recieve is a packet item. Need to check whether this will cause a hissy fit or not
 
         self.comms.recording_process()
 
-        # self.trigger = 0
-        #self.comms.send_settings_to_FPGA()     # TODO: Uncomment when using with physical hardware
+        self.trigger = 0
+        self.comms.send_settings_to_FPGA()     # TODO: Uncomment when using with physical hardware
         logging.debug("Trigger off sent")
         

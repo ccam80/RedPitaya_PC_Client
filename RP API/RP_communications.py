@@ -59,8 +59,8 @@ class RP_communications(object):
                  ):
         # Queues to pass data to and from main thread/GUI
         # TODO: redundant now
-        self.GUI_to_data_Queue = Queue()
-        self.data_to_GUI_Queue = Queue()
+        # self.GUI_to_data_Queue = Queue()
+        # self.data_to_GUI_Queue = Queue()
         
 
         #State toggles and counters
@@ -79,121 +79,8 @@ class RP_communications(object):
         self.ip = ip
         self.socket = None
 
-     # ************************ Process admin ****************************** #
-
-    def start_process(self):
-        """
-        TODO: Unsure if this is required - process is started and stopped within a single funciton call duirng recoring only.
-        """
-        
-        """Begin thread, toggle run state"""
-
-        if self.process == None:
-            self.process_isRun = True
-            self.process = Process(target=self.backgroundThread)
-            self.process.start()
-            
-    
-
-     # **************** Local Inter-process Comms with GUI****************** #
-
-    def fetch_instructions(self):
-        """
-        TODO: Old function - maybe remove?
-        """
-        
-        """ Get and save instructions from GUI thread:
-
-            config: New config struct for FPGA
-            config_change: Config struct changed, request to send (could easily optimise out)
-            record request: First request from GUI, initiates shared memory setup and handshake
-            trigger: Shared memory set up, ready to receive & send to GUI.
-
-        """
-
-        try:
-            self.trigger, self.config, self.config_change, [self.record_request, self.bytes_to_receive] = self.GUI_to_data_Queue.get(block=False)
-            logging.debug("message received")
-            logging.debug(f"""trigger: {self.trigger},
-                          config: {self.config},
-                          config_change: {self.config_change},
-                          [rec request: {self.record_request}, btr: {self.bytes_to_receive}]""")
-            return True
-        except Exception as e:
-            # logging.debug(traceback.format_exc())
-            return False
 
     
-
-
-        
-     # ************************ TCP Comms with RP MCU  ********************* #
-
-    
-
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    # ********************** MAIN LOOP ************************************* #
-
-
-    def backgroundThread(self):    # retrieve data
-        """
-        Old function - maybe remove?
-        """
-        """ Process to run in thread in the background. Saves a copy of class
-        state when started, works ot of this, which is invisible to the GUI.
-        This state is lost upon thread.join.
-        """
-
-        # Set up socketlog.log debug log
-        logging.basicConfig(filename='socketlog.log',
-                            level=logging.DEBUG,
-                            format='%(asctime)s %(message)s',
-                            datefmt='%m/%d/%Y %I:%M:%S %p')
-
-        logging.debug('Logfile initialised')
-        log = logging.getLogger('socket')
-        sys.stdout = StreamToLogger(log, logging.DEBUG)
-        sys.stderr = StreamToLogger(log, logging.DEBUG)
-
-        while(True):
-            # Check for instructions and dispatch accordingly
-            if self.fetch_instructions():
-
-                if self.config_change:
-                    self.send_settings_to_FPGA()
-                    self.config_change = 0
-
-                elif self.record_request:
-                    logging.debug("request received")
-                    self.initiate_record()
-                    self.record_request = False
-
-                elif self.trigger:
-                    # Trigger FPGA, start recording
-                    self.trigger = 1
-                    self.send_settings_to_FPGA()
-                    logging.debug("{} to receive".format(self.bytes_to_receive))
-
-                    self.record()
-
-                    self.trigger = 0
-                    self.send_settings_to_FPGA()
-                    logging.debug("Trigger off sent")
-
-                else:
-                    sleep(0.1)
-
 
     def close(self):
         """
@@ -235,6 +122,7 @@ class RP_communications(object):
         """Close socket and wait for a 100ms. """
         # Close socket
         self.socket.close()
+        self.socket = None
         sleep(0.1)
     
     def purge_socket(self):

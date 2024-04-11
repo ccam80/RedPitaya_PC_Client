@@ -55,7 +55,7 @@ default_CH1_example = {"mode": 'fixed_frequency',
                        "quadratic_amplitude_start": 0,
                        "quadratic_amplitude_stop": 0,
                        "quadratic_amplitude_sweep": False,
-                       "duration": 1.1
+                       "duration": 0.2
                        }
 
 default_CBC_example = {"CBC_enabled": False,
@@ -83,7 +83,7 @@ default_CBC_example = {"CBC_enabled": False,
                        "offset_start": 0,
                        "offset_stop": 1,
                        "offset_sweep": False,
-                       "duration": 1.1}
+                       "duration": 0.2}
 
 default_config =    {"CBC_enabled": False,
                        "input_order": 1,
@@ -110,12 +110,12 @@ default_config =    {"CBC_enabled": False,
                        "offset_start": 0,
                        "offset_stop": 1,
                        "offset_sweep": False,
-                       "duration": 1.1}
+                       "duration": 0.2}
 
 default_system = {"continuous_output": False,
                   "ip_address": "192.168.1.3",
                   "sampling_rate": "slow",
-                  "duration": 1.1}
+                  "duration": 0.2}
 
 RP = RedPitaya(CH1_init=default_CH1_example,
                CH2_init=default_CH1_example,
@@ -124,18 +124,22 @@ RP = RedPitaya(CH1_init=default_CH1_example,
 
 if __name__ == '__main__':
     # RP.start()
-    # RP.update_FPGA_settings()
+    RP.update_FPGA_settings()
     RP.start_record()
     # RP.close_recording()
     
     recording = RP.recording
-    # recording = np.transpose([recording['in1'], recording['in2'], recording['out1'], recording['out2']])
-    # fig, ax = plt.subplots(4,1, sharex=True)
-    # ax = ax.ravel()
-    # ax[0].plot(recording[:,0], label="Input 1")
-    # ax[1].plot(recording[:,1], label="Input 2")
-    # ax[2].plot(recording[:,2], label="Input 3")
-    # ax[3].plot(recording[:,3], label="Input 4")
+    recording = np.transpose([recording['in1'], recording['in2'], recording['out1'], recording['out2']])
+    fig, ax = plt.subplots(4,1, sharex=True, layout='constrained')
+    ax = ax.ravel()
+    ax[0].plot(recording[:,0], label="Input 1")
+    ax[0].set_title("In1")
+    ax[1].plot(recording[:,1], label="Input 2")
+    ax[1].set_title("In2")
+    ax[2].plot(recording[:,2], label="Input 3")
+    ax[2].set_title("Out1")
+    ax[3].plot(recording[:,3], label="Input 4")
+    ax[3].set_title("Out2")
     
 # RP.reset_config('CH1')
 # RP.reset_config("CH2")

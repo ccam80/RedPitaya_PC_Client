@@ -571,6 +571,7 @@ class RedPitaya():
         
         # Close shared memory
         self.shared_mem.close()
+        self.system.comms.shared_mem.close()
         self.shared_mem.unlink()
         self.recording = recording
         
@@ -672,7 +673,7 @@ class RedPitaya():
         None.
 
         """
-        
+        self.recording = None
         
         if self.measurement==0: 
            self.measurement = 1
