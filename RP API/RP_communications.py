@@ -93,7 +93,15 @@ class RP_communications(object):
         # Trigger folded into FPGA struct here, as it's modified in the RP_comms module
         # and the system byte is otherwise modified in RedPitaya/mem_mapping.
         # This is probably only here because I (CC) have gotten the heirarchy confused.
-        self.config['system'] = int(self.config['system'] | (self.trigger << 2))
+        # I could not for the life of me figure out how to set the bit directly with a 
+        # bool, so I test the trigger condition and just clear/set with a 1 based on 
+        # the result
+        if self.trigger:
+            self.config['system'] = int(self.config['system'] | (1 << 2))
+        else:
+            self.config['system'] = int(self.config['system'] & ~(1 << 2))
+        
+        logging.debug(self.config)
         
         values_to_pack = [self.config[key] for key in config_keys]
 

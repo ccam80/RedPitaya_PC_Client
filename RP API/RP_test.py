@@ -41,32 +41,12 @@ import logging
 logging.getLogger("matplotlib").setLevel(logging.WARNING)
 
 
-default_CH1_example = {"mode": 'fixed_frequency',
+default_CH1_example = {"mode": 'frequency_sweep',
                        "input_channel": 1,
-                       "frequency_start": 10,
-                       "frequency_stop": 0,
-                       "frequency_sweep": False,
-                       "linear_amplitude_start": 1000,
-                       "linear_amplitude_stop": 0,
-                       "linear_amplitude_sweep": False,
-                       "offset_start": 100,
-                       "offset_stop": 0,
-                       "offset_sweep": False,
-                       "cubic_amplitude_start": 0,
-                       "cubic_amplitude_stop": 0,
-                       "cubic_amplitude_sweep": False,
-                       "quadratic_amplitude_start": 0,
-                       "quadratic_amplitude_stop": 0,
-                       "quadratic_amplitude_sweep": False,
-                       "duration": 0.2
-                       }
-
-default_CH2_example = {"mode": 'fixed_frequency',
-                       "input_channel": 2,
-                       "frequency_start": 20,
-                       "frequency_stop": 0,
-                       "frequency_sweep": False,
-                       "linear_amplitude_start": 500,
+                       "frequency_start": 25,           # in Hz
+                       "frequency_stop": 50,             # in Hz
+                       "frequency_sweep": True,
+                       "linear_amplitude_start": 100,
                        "linear_amplitude_stop": 0,
                        "linear_amplitude_sweep": False,
                        "offset_start": 0,
@@ -78,7 +58,27 @@ default_CH2_example = {"mode": 'fixed_frequency',
                        "quadratic_amplitude_start": 0,
                        "quadratic_amplitude_stop": 0,
                        "quadratic_amplitude_sweep": False,
-                       "duration": 0.2
+                       "duration": 0.4
+                       }
+
+default_CH2_example = {"mode": 'off',
+                       "input_channel": 2,
+                       "frequency_start": 0,
+                       "frequency_stop": 0,
+                       "frequency_sweep": False,
+                       "linear_amplitude_start": 0,
+                       "linear_amplitude_stop": 0,
+                       "linear_amplitude_sweep": False,
+                       "offset_start": 0,
+                       "offset_stop": 0,
+                       "offset_sweep": False,
+                       "cubic_amplitude_start": 0,
+                       "cubic_amplitude_stop": 0,
+                       "cubic_amplitude_sweep": False,
+                       "quadratic_amplitude_start": 0,
+                       "quadratic_amplitude_stop": 0,
+                       "quadratic_amplitude_sweep": False,
+                       "duration": 0.4
                        }
 
 default_CBC_example = {"CBC_enabled": False,
@@ -106,7 +106,7 @@ default_CBC_example = {"CBC_enabled": False,
                        "offset_start": 0,
                        "offset_stop": 1,
                        "offset_sweep": False,
-                       "duration": 0.2}
+                       "duration": 0.4}
 
 default_config =    {"CBC_enabled": False,
                        "input_order": 1,
@@ -133,12 +133,12 @@ default_config =    {"CBC_enabled": False,
                        "offset_start": 0,
                        "offset_stop": 1,
                        "offset_sweep": False,
-                       "duration": 0.2}
+                       "duration": 0.4}
 
 default_system = {"continuous_output": False,
                   "ip_address": "192.168.1.3",
                   "sampling_rate": "slow",
-                  "duration": 0.05}
+                  "duration": 0.4}
 
 RP = RedPitaya(CH1_init=default_CH1_example,
                CH2_init=default_CH2_example,
@@ -147,22 +147,18 @@ RP = RedPitaya(CH1_init=default_CH1_example,
 
 if __name__ == '__main__':
     # RP.start()
+    
+    # RP.set_frequency('CH1', [10, 100])
+    # RP.choose_channel_mode('CH2', 'off')
+    
     RP.update_FPGA_settings()
     RP.start_record()
     # RP.close_recording()
     
-    recording = RP.recording
-    recording = np.transpose([recording['in1'], recording['in2'], recording['out1'], recording['out2']])
-    fig, ax = plt.subplots(4,1, sharex=True, layout='constrained')
-    ax = ax.ravel()
-    ax[0].plot(recording[:,0], label="Input 1")
-    ax[0].set_title("In1")
-    ax[1].plot(recording[:,1], label="Input 2")
-    ax[1].set_title("In2")
-    ax[2].plot(recording[:,2], label="Input 3")
-    ax[2].set_title("Out1")
-    ax[3].plot(recording[:,3], label="Input 4")
-    ax[3].set_title("Out2")
+    RP.PlotRecording()
+    
+    
+    
     
 # RP.reset_config('CH1')
 # RP.reset_config("CH2")

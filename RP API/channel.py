@@ -123,6 +123,8 @@ class channel:
                 self.set_params_freq(linear_amplitude=kwargs["linear_amplitude"], 
                                       offset=kwargs["offset"], 
                                       frequency=kwargs["frequency"])
+            elif mode == 'off':
+                self.config["mode"] == "off"
 
 
 

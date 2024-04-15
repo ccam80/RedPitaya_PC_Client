@@ -15,6 +15,7 @@ import traceback
 import logging
 from multiprocessing.shared_memory import SharedMemory
 from time import gmtime, strftime
+import matplotlib.pyplot as plt
 
 #Todo: create config.txt file to save and load offset, scale parameters, modifiable with a button push (maybe?)
 #Todo: recording progress bar/readout
@@ -38,7 +39,7 @@ class RedPitaya():
         self.CBC = CBC(CBC_init)
         self.system = system(system_init)
         
-        self.fast_sample_rate = 5000000
+        self.fast_sample_rate = 2500000
         self.slow_sample_rate = 488281
         
         self.measurement=0
@@ -415,9 +416,6 @@ class RedPitaya():
     def set_offset(self, channel, value):
         self.set_param(channel, "offset", value)
 
-    def set_freq(self, channel, value):
-        self.set_param(channel, "frequency", value)
-
     def set_frequency(self, channel, value):
         self.set_param(channel, "frequency", value)
 
@@ -646,15 +644,62 @@ class RedPitaya():
         i = 0
         while os.path.exists(datadir + '{}{}.csv'.format(label, i)):
             i += 1
+        # np.savetxt(datadir + '{}{}.csv'.format(label, i), 
+        #            np.transpose([recording['in1'], recording['in2'], recording['out1'], recording['out2']]), 
+        #            delimiter=";", fmt='%d',
+        #            header="Sample rate: {}\n In1; In2; Out1; Out2".format(self.system.config.sampling_rate))
+        
+        if self.system.config.sampling_rate == "slow":
+            sample_rate = "slow (" + str(self.slow_sample_rate) + ")"
+        elif self.system.config.sampling_rate == "fast":
+            sample_rate = "slow (" + str(self.fast_sample_rate) + ")"
+        
+        
+        # TODO4: Additional printing of config information.
+        # It's a bit ugly in its implementation, and its code that is repeated in print_config().
+        # Could use a cleanup, potentially as a reusable function.
+        if self.CBC.config["CBC_enabled"]:
+            # CBC mode
+            config_string = "{};{}\n".format("Key", "CBC")
+            for key in self.config.keys():
+                config_string += "{};{}\n".format(key, str(self.config[key]))
+        else:
+            # Channel mode
+            config_string = "{};{};{}\n".format("Key", "Channel 1", "Channel 2")
+            for key in self.CH1.config.keys():
+                config_string += ("{};{};{}\n".format(key, str(self.CH1.config[key]), str(self.CH2.config[key])))
+            
+        
         np.savetxt(datadir + '{}{}.csv'.format(label, i), 
                    np.transpose([recording['in1'], recording['in2'], recording['out1'], recording['out2']]), 
                    delimiter=";", fmt='%d',
-                   header="Sample rate: {}\n In1; In2; Out1; Out2".format(self.system.config.sampling_rate))
+                   header="Sample rate: {}\n".format(sample_rate) +config_string+ "In1; In2; Out1; Out2")
+        
         
         # Close shared memory
         self.shared_mem.close()
         self.shared_mem.unlink()
         self.recording = recording
+        
+        
+    def PlotRecording(self):
+        recording = self.recording
+        recording = np.transpose([recording['in1'], recording['in2'], recording['out1'], recording['out2']])
+        fig, ax = plt.subplots(4,1, sharex=True, layout='constrained')
+        ax = ax.ravel()
+        
+        
+        time = np.linspace(0, self.system.config.duration, len(recording[:,0]))
+        Nbits = 2**12
+        
+        ax[0].plot(time, recording[:,0]/Nbits, label="Input 1")
+        ax[0].set_title("In1")
+        ax[1].plot(time, recording[:,1]/Nbits, label="Input 2")
+        ax[1].set_title("In2")
+        ax[2].plot(time, recording[:,2]/Nbits, label="Input 3")
+        ax[2].set_title("Out1")
+        ax[3].plot(time, recording[:,3]/Nbits, label="Input 4")
+        ax[3].set_title("Out2")
              
         
     
