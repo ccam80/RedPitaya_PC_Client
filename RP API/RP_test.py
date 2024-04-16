@@ -41,15 +41,15 @@ import logging
 logging.getLogger("matplotlib").setLevel(logging.WARNING)
 
 
-default_CH1_example = {"mode": 'frequency_sweep',
+default_CH1_example = {"mode": 'fixed_frequency',
                        "input_channel": 1,
-                       "frequency_start": 25,           # in Hz
-                       "frequency_stop": 50,             # in Hz
-                       "frequency_sweep": True,
-                       "linear_amplitude_start": 100,
+                       "frequency_start": 0,           # in Hz
+                       "frequency_stop": 0,             # in Hz
+                       "frequency_sweep": False,
+                       "linear_amplitude_start": 0,
                        "linear_amplitude_stop": 0,
                        "linear_amplitude_sweep": False,
-                       "offset_start": 0,
+                       "offset_start": 300,
                        "offset_stop": 0,
                        "offset_sweep": False,
                        "cubic_amplitude_start": 0,
@@ -61,7 +61,7 @@ default_CH1_example = {"mode": 'frequency_sweep',
                        "duration": 0.4
                        }
 
-default_CH2_example = {"mode": 'off',
+default_CH2_example = {"mode": 'linear_feedback',
                        "input_channel": 2,
                        "frequency_start": 0,
                        "frequency_stop": 0,
@@ -69,9 +69,9 @@ default_CH2_example = {"mode": 'off',
                        "linear_amplitude_start": 0,
                        "linear_amplitude_stop": 0,
                        "linear_amplitude_sweep": False,
-                       "offset_start": 0,
-                       "offset_stop": 0,
-                       "offset_sweep": False,
+                       "offset_start": 1,
+                       "offset_stop": 500,
+                       "offset_sweep": True,
                        "cubic_amplitude_start": 0,
                        "cubic_amplitude_stop": 0,
                        "cubic_amplitude_sweep": False,
@@ -81,34 +81,34 @@ default_CH2_example = {"mode": 'off',
                        "duration": 0.4
                        }
 
-default_CBC_example = {"CBC_enabled": False,
+default_CBC_example = {"CBC_enabled": True,
                        "input_order": 1,
-                       "velocity_external": True,
-                       "displacement_external": False,
+                       "velocity_external": False,
+                       "displacement_external": True,
                        "polynomial_target": 'displacement',
-                       "proportional_gain": 1.1,
-                       "derivative_gain": 1.2,
+                       "proportional_gain": 1,
+                       "derivative_gain": 1,
                        "reference_amplitude_start": 100,
-                       "reference_amplitude_stop": 200,
-                       "reference_amplitude_sweep": True,
+                       "reference_amplitude_stop": 0,
+                       "reference_amplitude_sweep": False,
                        "frequency_start": 100,
-                       "frequency_stop": 10000,
-                       "frequency_sweep": True,
-                       "linear_amplitude_start": 0,
-                       "linear_amplitude_stop": 1,
-                       "linear_amplitude_sweep": True,
-                       "quadratic_amplitude_start": 0,
-                       "quadratic_amplitude_stop": 1,
-                       "quadratic_amplitude_sweep": True,
-                       "cubic_amplitude_start": 0,
-                       "cubic_amplitude_stop": 1,
-                       "cubic_amplitude_sweep": True,
-                       "offset_start": 0,
-                       "offset_stop": 1,
+                       "frequency_stop": 0,
+                       "frequency_sweep": False,
+                       "linear_amplitude_start": 100,
+                       "linear_amplitude_stop": 0,
+                       "linear_amplitude_sweep": False,
+                       "quadratic_amplitude_start": 10,
+                       "quadratic_amplitude_stop": 0,
+                       "quadratic_amplitude_sweep": False,
+                       "cubic_amplitude_start": 10,
+                       "cubic_amplitude_stop": 0,
+                       "cubic_amplitude_sweep": False,
+                       "offset_start": 100,
+                       "offset_stop": 0,
                        "offset_sweep": False,
                        "duration": 0.4}
 
-default_config =    {"CBC_enabled": False,
+default_config =    {"CBC_enabled": True,
                        "input_order": 1,
                        "velocity_external": True,
                        "displacement_external": False,
@@ -148,9 +148,8 @@ RP = RedPitaya(CH1_init=default_CH1_example,
 if __name__ == '__main__':
     # RP.start()
     
-    # RP.set_frequency('CH1', [10, 100])
-    # RP.choose_channel_mode('CH2', 'off')
-    
+
+    RP.set_duration(1)
     RP.update_FPGA_settings()
     RP.start_record()
     # RP.close_recording()

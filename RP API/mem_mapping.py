@@ -74,9 +74,13 @@ def range_to_interval(start, stop, duration):
     >> 631313
 
     """
+    
+    rate = 125e6
+    # rate = 488281
     try:
         span = stop - start
-        return int(duration * 125.0e6 / span)
+        return int(duration * rate / span)
+        # return int(span/(duration * 125.0e6))
 
     except ValueError:
         raise TypeError(f"'range_to_interval' expects three float or int arguments, you have passed it a {type(start)}, {type(stop)}, {type(duration)} instead.")

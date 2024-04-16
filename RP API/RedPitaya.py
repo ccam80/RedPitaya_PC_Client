@@ -640,7 +640,7 @@ class RedPitaya():
         datadir="./Data/"
         if (os.path.isdir(datadir) != True):
             os.mkdir(datadir)
-        label = strftime("%Y-%m-%d %H_%M_%S", gmtime())
+        label = strftime("%Y-%m-%d %H_%M_%S", gmtime()) #TODO 5: Why is it in GM time, not local time? 
         i = 0
         while os.path.exists(datadir + '{}{}.csv'.format(label, i)):
             i += 1
@@ -661,8 +661,8 @@ class RedPitaya():
         if self.CBC.config["CBC_enabled"]:
             # CBC mode
             config_string = "{};{}\n".format("Key", "CBC")
-            for key in self.config.keys():
-                config_string += "{};{}\n".format(key, str(self.config[key]))
+            for key in self.CBC.config.keys():
+                config_string += "{};{}\n".format(key, str(self.CBC.config[key]))
         else:
             # Channel mode
             config_string = "{};{};{}\n".format("Key", "Channel 1", "Channel 2")
