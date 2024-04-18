@@ -82,4 +82,4 @@ class NumpyFloatToFixConverter(object):
         # **NOTE** for some reason just casting resulted in shape
         # being zeroed on some indeterminate selection of OSes,
         # architectures, Python and Numpy versions"
-        return np.int16(vals)
+        return np.int32(vals)

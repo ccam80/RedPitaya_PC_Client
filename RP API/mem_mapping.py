@@ -47,7 +47,7 @@ _fast_modes = {'fast': 1,
                'slow': 0}
 
 # Start float to Q16.16 format converter
-_float_to_fix = NumpyFloatToFixConverter(True, 16, 16)
+_float_to_fix = NumpyFloatToFixConverter(True, 32, 16)
 
 
 def range_to_interval(start, stop, duration):
@@ -175,6 +175,24 @@ def channel_settings_to_byte(mode, input_select):
         return (int(_channel_modes[mode] << 1) | input_channel)
     except:
         raise TypeError(f"The CH1 settings arguments (mode, input_select) are not valid!")
+
+
+def channel_settings_for_CBC(ignored):
+    """Sets channel mode to 'off' (mode 7), which internally enables CBC on the RP
+
+    Arguments:
+        ignored: ignored, but required for compatibility with mapping function
+    Returns:
+        config_byte (int): an integer value corresponding to an 'off' mode and
+        input_channel of 1 (input_channel is unused in CBC)
+
+    e.g.
+
+    channel_settings_for_CBC(42)
+    >> 14
+    """
+    return(int(_channel_modes['off'] << 1))
+    
 
 def CBC_settings_to_byte(input_order,
                          velocity_external,
@@ -353,10 +371,10 @@ _CH1_mappings = {
         "Parameter_A": (scale_and_convert, (1/512,
                                             'linear_amplitude_start',
                                             _float_to_fix)),
-        "Parameter_B": (scale_and_convert, (64*0.98631, # 0.987 is a measured calibration constant
+        "Parameter_B": (scale_and_convert, (1/(64*0.98631), # 0.987 is a measured calibration constant
                                             'quadratic_amplitude_start',
                                             _float_to_fix)),
-        "Parameter_C": (scale_and_convert, (64*0.96659, # 0.967 is a measured calibration constant
+        "Parameter_C": (scale_and_convert, (1/(64*0.96659), # 0.967 is a measured calibration constant
                                             'cubic_amplitude_start',
                                             _float_to_fix)),
         "Parameter_D": 0,
@@ -461,10 +479,10 @@ _CH2_mappings = {
         "Parameter_G": (scale_and_convert, (1/512,
                                             'linear_amplitude_start',
                                             _float_to_fix)),
-        "Parameter_H": (scale_and_convert, (64*0.98631, # 0.987 is a measured calibration constant
+        "Parameter_H": (scale_and_convert, (1/(64*0.98631), # 0.987 is a measured calibration constant
                                             'quadratic_amplitude_start',
                                             _float_to_fix)),
-        "Parameter_I": (scale_and_convert, (64*0.96659, # 0.967 is a measured calibration constant
+        "Parameter_I": (scale_and_convert, (1/(64*0.96659), # 0.967 is a measured calibration constant
                                             'cubic_amplitude_start',
                                             _float_to_fix)),
         "Parameter_J": 0,
@@ -515,6 +533,13 @@ _CH2_mappings = {
 }
 
 _CBC_mappings = {
+    "CH1_settings": (channel_settings_for_CBC, (0,)), # CBC is toggled by the 4-bits which represent CH1's mode. 
+                          # Turning channels 'off' should turn CBC on (by design, this 
+                          # makes sense to me), but I could be persuaded otherwise.
+                          # therefore, to tur CBC on, ew need to turn channels off in
+                          # this mapping. This doesn't make sense, open to an alternative
+                          # strategy.
+    "CH2_settings": (channel_settings_for_CBC, (0,)),
     "CBC_settings": (CBC_settings_to_byte, ("input_order",
                                             "velocity_external",
                                             "displacement_external",

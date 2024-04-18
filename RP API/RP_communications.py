@@ -62,7 +62,6 @@ class RP_communications(object):
         #State toggles and counters
         self.process = None
         self.bytes_to_receive = 0
-        self.trigger = False
 
         #FPGA config dict
         self.config = FPGA_config()
@@ -89,17 +88,6 @@ class RP_communications(object):
         """
         # Get config and package into c-readable struct
         format_ = "BBBBiiiiiiiiiiiiii"
-        
-        # Trigger folded into FPGA struct here, as it's modified in the RP_comms module
-        # and the system byte is otherwise modified in RedPitaya/mem_mapping.
-        # This is probably only here because I (CC) have gotten the heirarchy confused.
-        # I could not for the life of me figure out how to set the bit directly with a 
-        # bool, so I test the trigger condition and just clear/set with a 1 based on 
-        # the result
-        if self.trigger:
-            self.config['system'] = int(self.config['system'] | (1 << 2))
-        else:
-            self.config['system'] = int(self.config['system'] & ~(1 << 2))
         
         logging.debug(self.config)
         
