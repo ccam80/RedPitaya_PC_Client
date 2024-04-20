@@ -690,7 +690,8 @@ class RedPitaya():
         
         
         time = np.linspace(0, self.system.config.duration, len(recording[:,0]))
-        Nbits = 2**12
+        # Nbits = 2**12
+        Nbits = 1 # counts are more useful for debugging
         
         ax[0].plot(time, recording[:,0]/Nbits, label="Input 1")
         ax[0].set_title("In1")

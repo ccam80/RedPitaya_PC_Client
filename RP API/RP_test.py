@@ -49,8 +49,8 @@ default_CH1_example = {"mode": 'linear_feedback',
                        "linear_amplitude_start": 0,
                        "linear_amplitude_stop": 0,
                        "linear_amplitude_sweep": False,
-                       "offset_start": -50,
-                       "offset_stop": 50,
+                       "offset_start": 1000,
+                       "offset_stop": -1000,
                        "offset_sweep": True,
                        "cubic_amplitude_start": 0,
                        "cubic_amplitude_stop": 0,
@@ -58,7 +58,7 @@ default_CH1_example = {"mode": 'linear_feedback',
                        "quadratic_amplitude_start": 0,
                        "quadratic_amplitude_stop": 0,
                        "quadratic_amplitude_sweep": False,
-                       "duration": 0.1
+                       "duration": 1.0
                        }
 
 default_CH2_example = {"mode": 'cubic',
@@ -69,10 +69,10 @@ default_CH2_example = {"mode": 'cubic',
                        "linear_amplitude_start": 0,
                        "linear_amplitude_stop": 0,
                        "linear_amplitude_sweep": False,
-                       "offset_start": 0,
+                       "offset_start": 1000,
                        "offset_stop": 0,
                        "offset_sweep": False,
-                       "cubic_amplitude_start": 1,
+                       "cubic_amplitude_start": 0,
                        "cubic_amplitude_stop": 0,
                        "cubic_amplitude_sweep": False,
                        "quadratic_amplitude_start": 0,
@@ -137,8 +137,8 @@ default_CBC_example = {"CBC_enabled": False,
 
 default_system = {"continuous_output": False,
                   "ip_address": "192.168.1.3",
-                  "sampling_rate": "slow",
-                  "duration": 0.1}
+                  "sampling_rate": "fast",
+                  "duration": 5.0}
 
 RP = RedPitaya(CH1_init=default_CH1_example,
                CH2_init=default_CH2_example,
@@ -149,7 +149,7 @@ if __name__ == '__main__':
     # RP.start()
     
 
-    RP.set_duration(1.0)
+    RP.set_duration(0.1)
     RP.update_FPGA_settings()
     RP.start_record()
     # RP.close_recording()

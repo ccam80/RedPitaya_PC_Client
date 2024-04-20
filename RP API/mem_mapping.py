@@ -46,6 +46,9 @@ _continuous_modes = {True: 1,
 _fast_modes = {'fast': 1,
                'slow': 0}
 
+_millivolts_to_counts = 8192/1000
+_FPGA_clk_freq = 125000000
+
 # Start float to Q16.16 format converter
 _float_to_fix = NumpyFloatToFixConverter(True, 32, 16)
 
@@ -75,11 +78,10 @@ def range_to_interval(start, stop, duration):
 
     """
     
-    rate = 125e6
     # rate = 488281
     try:
         span = stop - start
-        return int(duration * rate / span)
+        return int(duration * _FPGA_clk_freq / span)
         # return int(span/(duration * 125.0e6))
 
     except ValueError:
@@ -110,7 +112,7 @@ def freq_to_phase(frequency):
 
     # sanitise input and calculate increment, raise error if it's the wrong type
     try:
-        return int(float(frequency) / 125.0e6 * (1 << 30) + 0.5)
+        return int(float(frequency) / _FPGA_clk_freq * (1 << 30) + 0.5)
     except ValueError:
         raise TypeError(f"'freq_to_phase' expects a float or int argument, you have passed it a {type(frequency)} instead.")
 
@@ -321,8 +323,8 @@ _CH1_mappings = {
         "CH1_settings": (channel_settings_to_byte, ("mode",
                                                     "input_channel")),
         "Parameter_A": (freq_to_phase, ("frequency_start",)),
-        "Parameter_B": (scale_and_convert, (8.192, "linear_amplitude_start",)),
-        "Parameter_C": (scale_and_convert, (8.192*32768, "offset_start")),
+        "Parameter_B": (scale_and_convert, (_millivolts_to_counts, "linear_amplitude_start",)),
+        "Parameter_C": (scale_and_convert, (_millivolts_to_counts, "offset_start")),
         "Parameter_D": 0,
         "Parameter_E": 0,
         "Parameter_F": 0,
@@ -337,8 +339,8 @@ _CH1_mappings = {
                                              "frequency_sweep",
                                              "duration",
                                              freq_to_phase)),
-        "Parameter_C": (scale_and_convert, (8.192, "linear_amplitude_start")),
-        "Parameter_D": (scale_and_convert, (8.192*32768, "offset_start")),
+        "Parameter_C": (scale_and_convert, (_millivolts_to_counts, "linear_amplitude_start")),
+        "Parameter_D": (scale_and_convert, (_millivolts_to_counts, "offset_start")),
         "Parameter_E": 0,
         "Parameter_F": 0,
     },
@@ -346,7 +348,7 @@ _CH1_mappings = {
     "artificial_nonlinearity": {
         "CH1_settings": (channel_settings_to_byte, ("mode",
                                                     "input_channel")),
-        "Parameter_A": (scale_and_convert, (8.192, "offset_start")),
+        "Parameter_A": (scale_and_convert, (_millivolts_to_counts, "offset_start")),
         "Parameter_B": 0,
         "Parameter_C": (scale_and_convert, (1, 'linear_amplitude_start')),
         "Parameter_D": (scale_and_convert, (1, 'quadratic_amplitude_start')),
@@ -357,7 +359,7 @@ _CH1_mappings = {
     "artificial_nonlinearity_parametric": {
         "CH1_settings": (channel_settings_to_byte, ("mode",
                                                     "input_channel")),
-        "Parameter_A": (scale_and_convert, (8.192, "offset_start")),
+        "Parameter_A": (scale_and_convert, (_millivolts_to_counts, "offset_start")),
         "Parameter_B": 0,
         "Parameter_C": (scale_and_convert, (1, 'linear_amplitude_start')),
         "Parameter_D": (scale_and_convert, (1, 'quadratic_amplitude_start')),
@@ -378,7 +380,7 @@ _CH1_mappings = {
                                             'cubic_amplitude_start',
                                             _float_to_fix)),
         "Parameter_D": 0,
-        "Parameter_E": (scale_and_convert, (8.192*32768, 'offset_start')),
+        "Parameter_E": (scale_and_convert, (_millivolts_to_counts, 'offset_start')),
         "Parameter_F": 0,
     },
 
@@ -387,7 +389,7 @@ _CH1_mappings = {
                                                     "input_channel")),
         "Parameter_A": (_float_to_fix, ("linear_amplitude_start",)),
         "Parameter_B": (_float_to_fix, ("linear_amplitude_start",)),
-        "Parameter_C": (scale_and_convert, (8.192*32768, "offset_start")),
+        "Parameter_C": (scale_and_convert, (_millivolts_to_counts, "offset_start")),
         "Parameter_D": (interval_if_sweep, ("linear_amplitude_start",
                                             "linear_amplitude_stop",
                                             "linear_amplitude_sweep",
@@ -397,7 +399,7 @@ _CH1_mappings = {
                                             "offset_stop",
                                             "offset_sweep",
                                             "duration",
-                                            partial(scale_and_convert, 8.192*32768))),
+                                            partial(scale_and_convert, _millivolts_to_counts))),
         "Parameter_F": 0,
     },
 
@@ -406,8 +408,8 @@ _CH1_mappings = {
                                                     "input_channel")),
         "Parameter_A": 0,
         "Parameter_B": 0,
-        "Parameter_C": (scale_and_convert, (8.192, "linear_amplitude_start")),
-        "Parameter_D": (scale_and_convert, (8.192*32768, 'offset_start')),
+        "Parameter_C": (scale_and_convert, (_millivolts_to_counts, "linear_amplitude_start")),
+        "Parameter_D": (scale_and_convert, (_millivolts_to_counts, 'offset_start')),
         "Parameter_E": 0,
         "Parameter_F": 0,
     },
@@ -429,8 +431,8 @@ _CH2_mappings = {
         "CH2_settings": (channel_settings_to_byte, ("mode",
                                                     "input_channel")),
         "Parameter_G": (freq_to_phase, ("frequency_start",)),
-        "Parameter_H": (scale_and_convert, (8.192, "linear_amplitude_start",)),
-        "Parameter_I": (scale_and_convert, (8.192*32768, "offset_start")),
+        "Parameter_H": (scale_and_convert, (_millivolts_to_counts, "linear_amplitude_start",)),
+        "Parameter_I": (scale_and_convert, (_millivolts_to_counts, "offset_start")),
         "Parameter_J": 0,
         "Parameter_K": 0,
         "Parameter_L": 0,
@@ -445,8 +447,8 @@ _CH2_mappings = {
                                              "frequency_sweep",
                                              "duration",
                                              freq_to_phase)),
-        "Parameter_I": (scale_and_convert, (8.192, "linear_amplitude_start")),
-        "Parameter_J": (scale_and_convert, (8.192*32768, "offset_start")),
+        "Parameter_I": (scale_and_convert, (_millivolts_to_counts, "linear_amplitude_start")),
+        "Parameter_J": (scale_and_convert, (_millivolts_to_counts, "offset_start")),
         "Parameter_K": 0,
         "Parameter_L": 0,
     },
@@ -454,7 +456,7 @@ _CH2_mappings = {
     "artificial_nonlinearity": {
         "CH2_settings": (channel_settings_to_byte, ("mode",
                                                     "input_channel")),
-        "Parameter_G": (scale_and_convert, (8.192, "offset_start")),
+        "Parameter_G": (scale_and_convert, (_millivolts_to_counts, "offset_start")),
         "Parameter_H": 0,
         "Parameter_I": (scale_and_convert, (1, 'linear_amplitude_start')),
         "Parameter_J": (scale_and_convert, (1, 'quadratic_amplitude_start')),
@@ -465,7 +467,7 @@ _CH2_mappings = {
     "artificial_nonlinearity_parametric": {
         "CH2_settings": (channel_settings_to_byte, ("mode",
                                                     "input_channel")),
-        "Parameter_G": (scale_and_convert, (8.192, "offset_start")),
+        "Parameter_G": (scale_and_convert, (_millivolts_to_counts, "offset_start")),
         "Parameter_H": 0,
         "Parameter_I": (scale_and_convert, (1, 'linear_amplitude_start')),
         "Parameter_J": (scale_and_convert, (1, 'quadratic_amplitude_start')),
@@ -486,7 +488,7 @@ _CH2_mappings = {
                                             'cubic_amplitude_start',
                                             _float_to_fix)),
         "Parameter_J": 0,
-        "Parameter_K": (scale_and_convert, (8.192*32768, 'offset_start')),
+        "Parameter_K": (scale_and_convert, (_millivolts_to_counts, 'offset_start')),
         "Parameter_L": 0,
     },
 
@@ -495,7 +497,7 @@ _CH2_mappings = {
                                                     "input_channel")),
         "Parameter_G": (_float_to_fix, ("linear_amplitude_start",)),
         "Parameter_H": (_float_to_fix, ("linear_amplitude_start",)),
-        "Parameter_I": (scale_and_convert, (8.192*32768, "offset_start")),
+        "Parameter_I": (scale_and_convert, (_millivolts_to_counts, "offset_start")),
         "Parameter_J": (interval_if_sweep, ("linear_amplitude_start",
                                             "linear_amplitude_stop",
                                             "linear_amplitude_sweep",
@@ -505,7 +507,7 @@ _CH2_mappings = {
                                             "offset_stop",
                                             "offset_sweep",
                                             "duration",
-                                            partial(scale_and_convert, 8.192*32768))),
+                                            partial(scale_and_convert, _millivolts_to_counts))),
         "Parameter_L": 0,
     },
 
@@ -514,8 +516,8 @@ _CH2_mappings = {
                                                     "input_channel")),
         "Parameter_G": 0,
         "Parameter_H": 0,
-        "Parameter_I": (scale_and_convert, (8.192, "linear_amplitude_start")),
-        "Parameter_J": (scale_and_convert, (8.192*32768, 'offset_start')),
+        "Parameter_I": (scale_and_convert, (_millivolts_to_counts, "linear_amplitude_start")),
+        "Parameter_J": (scale_and_convert, (_millivolts_to_counts, 'offset_start')),
         "Parameter_K": 0,
         "Parameter_L": 0,
     },
@@ -588,12 +590,12 @@ _CBC_mappings = {
                                         partial(scale_and_convert,
                                                 1/512,
                                                 conversion=_float_to_fix))),
-    "Parameter_M": (scale_and_convert, (8.192*32768, 'offset_start')),
+    "Parameter_M": (scale_and_convert, (_millivolts_to_counts, 'offset_start')),
     "Parameter_N": (interval_if_sweep, ("offset_start",
                                         "offset_stop",
                                         "offset_sweep",
                                         "duration",
                                         partial(scale_and_convert,
-                                                8.192*32768,
+                                                _millivolts_to_counts,
                                                 conversion=_float_to_fix)))
 }
