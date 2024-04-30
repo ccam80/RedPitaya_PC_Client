@@ -591,7 +591,7 @@ _CBC_mappings = {
                                         partial(scale_and_convert,
                                                 1/(64*0.98631),
                                                  conversion=_float_to_fix))),
-    "Parameter_K": (scale_and_convert, (128, #Shift modified in FPGA, change this back to 1/512 once bitstream updated
+    "Parameter_K": (scale_and_convert, (1/512, 
                                         'linear_amplitude_start',
                                         _float_to_fix)),
     "Parameter_L": (interval_if_sweep, ("linear_amplitude_start",
