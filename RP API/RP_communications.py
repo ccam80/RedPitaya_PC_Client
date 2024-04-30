@@ -94,7 +94,8 @@ class RP_communications(object):
         values_to_pack = [self.config[key] for key in config_keys]
 
         config_send = struct.pack(format_, *values_to_pack)
-
+        logging.debug("Hex below is the config memory block for the FPGA:")
+        logging.debug(config_send[4:][::-1].hex())
         self.open_socket()
         if (self.initiate_transfer("config") < 1):
             logging.debug("Socket type (config) not acknowledged by server")
@@ -185,7 +186,7 @@ class RP_communications(object):
             nbytes = self.socket.recv_into(view, self.bytes_to_receive)
             view = view[nbytes:]
             self.bytes_to_receive -= nbytes
-            logging.debug(self.bytes_to_receive)
+            #logging.debug(self.bytes_to_receive)
 
         self.purge_socket()
         self.close_socket()

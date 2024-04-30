@@ -488,7 +488,7 @@ class RedPitaya():
 
 
     
-    def start_record(self):
+    def start_record(self, savename=None):
         """
         This function enables recording of measurements from the RedPitaya hardware. 
         This is achieved in the following steps:
@@ -523,7 +523,7 @@ class RedPitaya():
                logging.debug("packet sent to socket process")
                
                self.measurement = 1
-               self.monitor_recording()
+               self.monitor_recording(savename)
 
                
            except Exception:
@@ -578,7 +578,7 @@ class RedPitaya():
         logging.debug("Shared memory created at: " + self.shared_memory_name)
     
     
-    def monitor_recording(self):
+    def monitor_recording(self, savename=None):
         """
         Complimentary function called by RP.start_record()
         Creates a Process which enables measurements from the RedPitaya 
@@ -599,7 +599,7 @@ class RedPitaya():
                     logging.debug("Didn't send config to data process")
                     logging.debug(traceback.format_exc())
                 # We assume that the recording finishes here and therefore can proceed to the post-processing. 
-                self.MeasureFinished()
+                self.MeasureFinished(savename)
                 self.shared_memory_name = None
         except:
             logging.debug("Shared memory does not exist")
@@ -609,7 +609,7 @@ class RedPitaya():
         #     logging.debug("Not process run")
         
         
-    def MeasureFinished(self):
+    def MeasureFinished(self, savename=None):
         """
         Complimentary function called by RP.monitor recording() via RP.start_record() 
         Takes the recording from the RedPitaya hardware and saves the shared 
@@ -640,10 +640,16 @@ class RedPitaya():
         datadir="./Data/"
         if (os.path.isdir(datadir) != True):
             os.mkdir(datadir)
-        label = strftime("%Y-%m-%d %H_%M_%S", gmtime()) #TODO 5: Why is it in GM time, not local time? 
-        i = 0
-        while os.path.exists(datadir + '{}{}.csv'.format(label, i)):
-            i += 1
+        
+        
+        if savename:
+            label = savename
+        else:
+            label = strftime("%Y-%m-%d %H_%M_%S", gmtime()) #TODO 5: Why is it in GM time, not local time? 
+        
+        
+        
+        
         # np.savetxt(datadir + '{}{}.csv'.format(label, i), 
         #            np.transpose([recording['in1'], recording['in2'], recording['out1'], recording['out2']]), 
         #            delimiter=";", fmt='%d',
@@ -669,11 +675,22 @@ class RedPitaya():
             for key in self.CH1.config.keys():
                 config_string += ("{};{};{}\n".format(key, str(self.CH1.config[key]), str(self.CH2.config[key])))
             
+            
+            
+        if os.path.exists(datadir + '{}.csv'.format(label)):
+            i = 0
+            while os.path.exists(datadir + '{}_{}.csv'.format(label, i)):
+                i += 1
+            np.savetxt(datadir + '{}_{}.csv'.format(label, i), 
+                       np.transpose([recording['in1'], recording['in2'], recording['out1'], recording['out2']]), 
+                       delimiter=";", fmt='%d',
+                       header="Sample rate: {}\n".format(sample_rate) +config_string+ "In1; In2; Out1; Out2")
+        else:
+            np.savetxt(datadir + '{}.csv'.format(label), 
+                       np.transpose([recording['in1'], recording['in2'], recording['out1'], recording['out2']]), 
+                       delimiter=";", fmt='%d',
+                       header="Sample rate: {}\n".format(sample_rate) +config_string+ "In1; In2; Out1; Out2")
         
-        np.savetxt(datadir + '{}{}.csv'.format(label, i), 
-                   np.transpose([recording['in1'], recording['in2'], recording['out1'], recording['out2']]), 
-                   delimiter=";", fmt='%d',
-                   header="Sample rate: {}\n".format(sample_rate) +config_string+ "In1; In2; Out1; Out2")
         
         
         # Close shared memory

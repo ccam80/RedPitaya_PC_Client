@@ -43,16 +43,16 @@ logging.getLogger("matplotlib").setLevel(logging.WARNING)
 
 default_CH1_example = {"mode": 'linear_feedback',
                        "input_channel": 1,
-                       "frequency_start": 1,           # in Hz
+                       "frequency_start": 0,           # in Hz
                        "frequency_stop": 0,             # in Hz
                        "frequency_sweep": False,
                        "linear_amplitude_start": 0,
                        "linear_amplitude_stop": 0,
                        "linear_amplitude_sweep": False,
-                       "offset_start": 1000,
-                       "offset_stop": -1000,
+                       "offset_start": -1000,        # mV
+                       "offset_stop": 1000,        # mV
                        "offset_sweep": True,
-                       "cubic_amplitude_start": 0,
+                       "cubic_amplitude_start": 0,  
                        "cubic_amplitude_stop": 0,
                        "cubic_amplitude_sweep": False,
                        "quadratic_amplitude_start": 0,
@@ -66,10 +66,10 @@ default_CH2_example = {"mode": 'cubic',
                        "frequency_start": 0,
                        "frequency_stop": 0,
                        "frequency_sweep": False,
-                       "linear_amplitude_start": 0,
+                       "linear_amplitude_start": 1,
                        "linear_amplitude_stop": 0,
                        "linear_amplitude_sweep": False,
-                       "offset_start": 1000,
+                       "offset_start": 0,
                        "offset_stop": 0,
                        "offset_sweep": False,
                        "cubic_amplitude_start": 0,
@@ -81,29 +81,29 @@ default_CH2_example = {"mode": 'cubic',
                        "duration": 1.0
                        }
 
-default_CBC_example = {"CBC_enabled": False,
-                       "input_order": 1,
-                       "velocity_external": False,
-                       "displacement_external": True,
-                       "polynomial_target": 'displacement',
-                       "proportional_gain": 1,
+default_CBC_example = {"CBC_enabled": True,
+                       "input_order": 2, # The channel which displacement goes into
+                       "velocity_external": True,
+                       "displacement_external": False,
+                       "polynomial_target": 'velocity',
+                       "proportional_gain":0,
                        "derivative_gain": 1,
-                       "reference_amplitude_start": 100,
+                       "reference_amplitude_start": 0.5,
                        "reference_amplitude_stop": 0,
                        "reference_amplitude_sweep": False,
                        "frequency_start": 100,
                        "frequency_stop": 0,
                        "frequency_sweep": False,
-                       "linear_amplitude_start": 100,
+                       "linear_amplitude_start":0,
                        "linear_amplitude_stop": 0,
                        "linear_amplitude_sweep": False,
-                       "quadratic_amplitude_start": 10,
+                       "quadratic_amplitude_start": 0,
                        "quadratic_amplitude_stop": 0,
                        "quadratic_amplitude_sweep": False,
-                       "cubic_amplitude_start": 10,
+                       "cubic_amplitude_start": 1,
                        "cubic_amplitude_stop": 0,
                        "cubic_amplitude_sweep": False,
-                       "offset_start": 100,
+                       "offset_start": -0,
                        "offset_stop": 0,
                        "offset_sweep": False,
                        "duration": 0.1}
@@ -137,7 +137,7 @@ default_CBC_example = {"CBC_enabled": False,
 
 default_system = {"continuous_output": False,
                   "ip_address": "192.168.1.3",
-                  "sampling_rate": "fast",
+                  "sampling_rate": "slow",
                   "duration": 5.0}
 
 RP = RedPitaya(CH1_init=default_CH1_example,
@@ -148,8 +148,11 @@ RP = RedPitaya(CH1_init=default_CH1_example,
 if __name__ == '__main__':
     # RP.start()
     
-
+    # RP.choose_output("CBC")
+    # RP.choose_CBC_input_order("displacement", "none")
     RP.set_duration(0.1)
+    # RP.print_config("CBC")
+    
     RP.update_FPGA_settings()
     RP.start_record()
     # RP.close_recording()

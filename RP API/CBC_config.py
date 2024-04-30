@@ -76,7 +76,7 @@ _limits = {"CBC_enabled": [0, 1],
            "displacement_external": [0, 1],
            "polynomial_target": ["displacement", "velocity"],
            "proportional_gain": [-1024, 1024],
-           "derivative_gain": [-1024, 1024],
+           "derivative_gain": [-32767, 32767], # Chris has changed this for testing, if it's still above 1000 then I forgot to change it back
            "reference_amplitude_start": [-1000, 1000],
            "reference_amplitude_stop": [-1000, 1000],
            "reference_amplitude_sweep": [0, 1],

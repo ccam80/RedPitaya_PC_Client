@@ -546,21 +546,32 @@ _CBC_mappings = {
                                             "velocity_external",
                                             "displacement_external",
                                             "polynomial_target")),
-    "Parameter_A": (scale_and_convert, (1, 'reference_amplitude_start')),
+    
+    
+    "Parameter_A": (_float_to_fix, ('reference_amplitude_start',)),
+    
+    # Copy-paste setting from CH frequency_sweep mode. Didn't work
+    # "Parameter_A": (scale_and_convert, (_millivolts_to_counts, "reference_amplitude_start")),
+    
+    
     "Parameter_B": (interval_if_sweep, ("reference_amplitude_start",
                                         "reference_amplitude_stop",
                                         "reference_amplitude_sweep",
                                         "duration",
-                                        partial(scale_and_convert, 1))), #this may need to be multiplied up from 1000 max to ADC_max
+                                        _float_to_fix)), #this may need to be multiplied up from 1000 max to ADC_max
+    
+    
     "Parameter_C": (freq_to_phase, ("frequency_start", )),
     "Parameter_D": (interval_if_sweep, ("frequency_start",
-                                         "frequency_stop",
-                                         "frequency_sweep",
-                                         "duration",
-                                         freq_to_phase)),
+                                          "frequency_stop",
+                                          "frequency_sweep",
+                                          "duration",
+                                          freq_to_phase)),
+    
+    
     "Parameter_E": (_float_to_fix, ("proportional_gain",)),
     "Parameter_F": (_float_to_fix, ("derivative_gain",)),
-    "Parameter_G": (scale_and_convert, (64*0.96659, # 0.967 is a measured calibration constant
+    "Parameter_G": (scale_and_convert, (1/(64*0.96659), # 0.967 is a measured calibration constant
                                         'cubic_amplitude_start',
                                         _float_to_fix)),
     "Parameter_H": (interval_if_sweep, ("cubic_amplitude_start",
@@ -568,9 +579,9 @@ _CBC_mappings = {
                                         "cubic_amplitude_sweep",
                                         "duration",
                                         partial(scale_and_convert,
-                                                64*0.96659,
+                                                1/(64*0.96659),
                                                 conversion=_float_to_fix))),
-    "Parameter_I":(scale_and_convert, (64*0.98631, # 0.987 is a measured calibration constant
+    "Parameter_I":(scale_and_convert, (1/(64*0.98631), # 0.987 is a measured calibration constant
                                         'quadratic_amplitude_start',
                                         _float_to_fix)),
     "Parameter_J": (interval_if_sweep, ("quadratic_amplitude_start",
@@ -578,9 +589,9 @@ _CBC_mappings = {
                                         "quadratic_amplitude_sweep",
                                         "duration",
                                         partial(scale_and_convert,
-                                                64*0.98631,
+                                                1/(64*0.98631),
                                                  conversion=_float_to_fix))),
-    "Parameter_K": (scale_and_convert, (1/512,
+    "Parameter_K": (scale_and_convert, (128, #Shift modified in FPGA, change this back to 1/512 once bitstream updated
                                         'linear_amplitude_start',
                                         _float_to_fix)),
     "Parameter_L": (interval_if_sweep, ("linear_amplitude_start",
@@ -590,12 +601,22 @@ _CBC_mappings = {
                                         partial(scale_and_convert,
                                                 1/512,
                                                 conversion=_float_to_fix))),
+    
+    # Copy-paste settings from CH linear_feedback mode. Didn't work.
+    # "Parameter_K": (_float_to_fix, ("linear_amplitude_start",)),
+    # "Parameter_L": (interval_if_sweep, ("linear_amplitude_start",
+    #                                     "linear_amplitude_stop",
+    #                                     "linear_amplitude_sweep",
+    #                                     "duration",
+    #                                     _float_to_fix)),
+    
+    
     "Parameter_M": (scale_and_convert, (_millivolts_to_counts, 'offset_start')),
     "Parameter_N": (interval_if_sweep, ("offset_start",
                                         "offset_stop",
                                         "offset_sweep",
                                         "duration",
                                         partial(scale_and_convert,
-                                                _millivolts_to_counts,
-                                                conversion=_float_to_fix)))
+                                                _millivolts_to_counts)))
+    
 }
