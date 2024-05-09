@@ -16,8 +16,6 @@ from _utils import *
 
 _CBC_keys = ["CBC_enabled",
              "input_order",
-             "velocity_external",
-             "displacement_external",
              "polynomial_target",
              "proportional_gain",
              "derivative_gain",
@@ -45,8 +43,6 @@ _CBC_keys = ["CBC_enabled",
 
 _datatypes = {"CBC_enabled": bool,
               "input_order": int,
-              "velocity_external": bool,
-              "displacement_external": bool,
               "polynomial_target": str,
               "proportional_gain": float,
               "derivative_gain": float,
@@ -72,8 +68,6 @@ _datatypes = {"CBC_enabled": bool,
 
 _limits = {"CBC_enabled": [0, 1],
            "input_order": [0, 2],
-           "velocity_external": [0, 1],
-           "displacement_external": [0, 1],
            "polynomial_target": ["displacement", "velocity"],
            "proportional_gain": [-1024, 1024],
            "derivative_gain": [-32767, 32767], # Chris has changed this for testing, if it's still above 1000 then I forgot to change it back

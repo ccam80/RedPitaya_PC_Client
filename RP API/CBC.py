@@ -21,8 +21,6 @@ CBC_sweepable = ["r_hat",
 
 CBC_static = ["CBC_enabled",
              "input_order",
-             "velocity_external",
-             "displacement_external",
              "polynomial_target",
              "kp",
              "kd",
@@ -32,8 +30,6 @@ CBC_static = ["CBC_enabled",
 
 _default_values = {"CBC_enabled": 0,
            "input_order": 1,
-           # "velocity_external": [0, 1],
-           # "displacement_external": [0, 1],
            "polynomial_target":"displacement",
            "proportional_gain": 0,
            "derivative_gain": 0,
@@ -137,153 +133,108 @@ class CBC:
             self.set_param("derivative_gain", derivative_gain)
         if polynomial_target:
             self.set_polynomial_target(polynomial_target)
-        if displacement_external:
-            self.set_displacement_external(displacement_external)
-        if velocity_external:
-            self.set_velocity_external(velocity_external)
         if input_order:
             self.set_input_order(input_order)
 
-        def set_input_order(self, input_channel):
-            """
-            Note: This is an old function - please use 'determine_input_order' instead.
-            This function sets which input channel is displacement.
 
-            Parameters
-            ----------
-            input_channel : int
-                1 or 2
-
-            Returns
-            -------
-            None.
-            """
-
-            if input_channel in [1, 2]:
-                self.config["input_channel"] = input_channel
-            else:
-                raise ValueError("'input_channel' must be either 1 or 2.")
-
-
-    def determine_input_order(self, IN1, IN2):
+    def set_displacement_input(self, channel):
         """
-        This function takes in the physical description of the signal in each
-        input channel, and interprets the logic required for setting the
-        relevant MUX within the FPGA.
-        (See TODO1 for logic, and put in description here)
+        This function assigns the channel given as an argument to be the 
+        "displacement" input to the CBC system. The other channel is 
+        automatically assigned to be velocity (the system can not accept 
+                                               multiple displacement inputs)
 
         Parameters
         ----------
-        IN1 : string
-            'displacement' or 'velocity'.
-        IN2 : string
-            'displacement' or 'velocity'.
+        channel : int or string
+            The channel that the displacement input is plugged into
+            Can be 1, 2, "IN1", "IN2", "1", "2", "CH1", "CH2", to be
+            a bit more user friendly.
 
         Returns
         -------
         None.
 
         """
-        # TODO1 - check whether the logic here makes sense. Added an additional option of "0" where both inputs are not set at all.
-        #   If IN1=Disp, IN2=Vel  -> input_order=1?
-        #   If IN1=Vel,  IN2=Disp -> input_order=2?
-        # On top of this logic, if an input is set to "none", then whichever option the other input is, it conforms to that.
-        # Of course, it means that if there is no input set, then that state must be either differentiated/integrated to be re-constructed down the line.
-
-        # velocity_external     = 0 -> to use the differentiater?
-        # displacement_external = 0 -> to use the integrator?
-
-        # Case 0 - Neither input is plugged in
-        if IN1 == "none"            and IN2 == "none":
-            self.config["input_order"] = 0
-
-        # Case 1 - Only one of the inputs are given
-        elif IN1 == "none"          and IN2 == "displacement":
-            self.config["input_order"] = 2
-            self.config["displacement_external"] = True
-            self.config["velocity_external"] = False
-        elif IN1 == "none"          and IN2 == "velocity":
+        if str(channel) in ["1", "IN1", "CH1"]:
             self.config["input_order"] = 1
-            self.config["displacement_external"] = False
-            self.config["velocity_external"] = True
-        elif IN1 == "displacement"  and IN2 == "none":
-            self.config["input_order"] = 1
-            self.config["displacement_external"] = True
-            self.config["velocity_external"] = False
-        elif IN1 == "velocity"      and IN2 == "none":
+        elif str(channel) in ["2", "IN2", "CH2"]:
             self.config["input_order"] = 2
-            self.config["displacement_external"] = False
-            self.config["velocity_external"] = True
-
-        # Case 2 - both inputs are uniquely given
-        elif IN1 == "displacement"  and IN2 == "velocity":
-            self.config["input_order"] = 1
-        elif IN1 == "velocity"      and IN2 == "displacement":
-            self.config["input_order"] = 2
-
-        # Case 3 - both inputs are repeated of the same (this basically shouldn't happen)
-        elif IN1 == "displacement"  and IN2 == "displacement":
-            raise ValueError("Both inputs are set to 'displacement'. For computation, only one of these channels will be used in CBC mode.")
-        elif IN1 == "velocity"      and IN2 == "velocity":
-            raise ValueError("Both inputs are set to 'velocity'. For computation, only one of these channels will be used in CBC mode.")
+            
         else:
-            raise ValueError("'IN1' and 'IN2' must be either 'displacement', 'velocity', or 'none'")
+            raise ValueError("channel must be either X, CHX, or INX, where X=1 or X=2")
+            
+    def get_displacement_input(self):
+          """
+          This function returns the channel currently set as the displacement input
+          to CBC. As multiple inputs to each state are impossible, the other 
+          channel can be assumed to be displacement.
+          
+          Parameters
+          ----------
+          None 
 
+          Returns
+          -------
+          channel (int) - 1 or 2, indicating the current displacement input.
 
-    def set_external(self, external_input, logic):
-        """
-        A general function which determines whether a particular input should use
-        the original signal, or an integrated/differentiated variant of itself.
+          """
+          if self.config["input_order"] == 1:
+              print("Displacement input is set to IN1")
+              return 1
+          elif self.config["input_order"] == 2:
+              print("Displacement input is set to IN2")
+              return 2
+            
+    def set_velocity_input(self, channel):
+          """
+          This function assigns the channel, given as an argument, to be the 
+          "velocity" input to the CBC system. The other channel is 
+          automatically assigned to be displacement (the system can not accept 
+                                                 multiple velocity inputs)
 
-        Parameters
-        ----------
-        external_input : string
-            'displacement' or 'velocity'
-        logic : bool
-            True  - To use the original, external signal.
-            False - To differentiate/integrate the signal.
+          Parameters
+          ----------
+          channel : int or string
+              The channel that the displacement input is plugged into
+              Can be 1, 2, "IN1", "IN2", "1", "2", "CH1", "CH2", to be
+              a bit more user friendly.
 
-        Returns
-        -------
-        None.
+          Returns
+          -------
+          None.
 
-        """
-        # TODO1: To check whether logic is the correct way around.
-        if not isinstance(logic, bool):
-            raise TypeError("'logic' should be of boolean type; either True or False")
+          """
+          if str(channel) in ["1", "IN1", "CH1"]:
+              self.config["input_order"] = 2
+          elif str(channel) in ["2", "IN2", "CH2"]:
+              self.config["input_order"] = 1
+              
+          else:
+              raise ValueError("channel must be either X, CHX, or INX, where X=1 or X=2")   
+    
+    def get_velocity_input(self):
+          """
+          This function returns the channel currently set as the velocity input
+          to CBC. As multiple inputs to each state are impossible, the other 
+          channel can be assumed to be displacement.
+          
+          Parameters
+          ----------
+          None 
 
-        if external_input == "displacement":
-            self.set_displacement_external(logic)
-        elif external_input == "velocity":
-            self.set_velocity_external(logic)
-        else:
-            raise ValueError("input type '%s' is invalid. Use either 'displacement' or 'velocity'")
+          Returns
+          -------
+          channel (int) - 1 or 2, indicating the current velocity input.
 
-
-    def set_displacement_external(self, logic):
-        """
-        Determines whether to use the direct displacement measure, or an integrated veocity measure.
-            True  = Direct/external
-            False = Integrated
-        """
-        # TODO1: To check whether logic is the correct way around.
-        if isinstance(logic, bool):
-            self.config["displacement_external"] = logic
-        else:
-            raise TypeError("'logic' should be of type 'bool'")
-
-
-    def set_velocity_external(self, logic):
-        """
-        Determines whether to use the direct velocity measure, or a differentiated displacement measure.
-            True  = Direct/external
-            False = Differentiated
-        """
-        # TODO1: To check whether logic is the correct way around.
-        if isinstance(logic, bool):
-            self.config["velocity_external"] = logic
-        else:
-            raise TypeError("'logic' should be of type 'bool'")
+          """
+          if self.config["input_order"] == 2:
+              print("Velocity input is set to IN1")
+              return 1
+          elif self.config["input_order"] == 1:
+              print("Velocity input is set to IN2")
+              return 2
+ 
 
     def clear_param(self, parameter):
         self[parameter] = _default_values[parameter]

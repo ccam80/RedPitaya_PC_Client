@@ -197,8 +197,6 @@ def channel_settings_for_CBC(ignored):
     
 
 def CBC_settings_to_byte(input_order,
-                         velocity_external,
-                         displacement_external,
                          polynomial_target):
     """Take CBC settings dictionary and manipulate the boolean options
     into an integer value corresponding to their position in memory, outlined
@@ -222,10 +220,8 @@ def CBC_settings_to_byte(input_order,
     """
     try:
         input_order = _CBC_input_orders[input_order]
-        velocity = int(velocity_external) << 1
-        displacement = int(displacement_external) << 2
         poly = _polynomial_targets[polynomial_target] <<3
-        return (input_order | velocity | displacement | poly)
+        return (input_order | poly)
     except:
         raise TypeError(f"The CBC settings arguments (mode, input_select) are not valid!")
 
@@ -543,8 +539,6 @@ _CBC_mappings = {
                           # strategy.
     "CH2_settings": (channel_settings_for_CBC, (0,)),
     "CBC_settings": (CBC_settings_to_byte, ("input_order",
-                                            "velocity_external",
-                                            "displacement_external",
                                             "polynomial_target")),
     
     

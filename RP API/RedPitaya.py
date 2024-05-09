@@ -345,13 +345,18 @@ class RedPitaya():
             raise ValueError("'channel' must be either 'CH1', 'CH2', 'Both' or 'CBC'.")
 
 
-
-    def choose_CBC_input_order(self, IN1="none", IN2="none"):
-        self.CBC.determine_input_order(IN1, IN2)
-
-
-
-
+    def set_CBC_displacement_input(self, channel):
+        self.CBC.set_displacement_input(channel)
+        
+    def set_CBC_velocity_input(self, channel):
+        self.CBC.set_velocity_input(channel)  
+        
+    def get_CBC_displacement_input(self):
+        self.CBC.get_displacement_input()   
+        
+    def get_CBC_velocity_input(self):
+        self.CBC.get_velocity_input()
+        
     def set_param(self, channel, parameter_name, value):
         """
         A general-purpose parameter setting function. Called by various
