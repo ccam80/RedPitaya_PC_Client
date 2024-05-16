@@ -57,3 +57,9 @@ foobar.singularize('phenomena')
 ## CBC_config.py
 
 ## shared_config.py
+
+#Implementation details and errata:
+```
+In 'fast' mode, recording time is limited to about 0.1s. This is long enough to capture high-frequency signal components, and longer recordings should be done on 'slow' mode.
+Some parameters can be swept, some can not.
+There is a hardware offset and linear gain applied to the inputs that is currently uncompensated.

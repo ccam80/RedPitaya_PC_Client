@@ -12,6 +12,12 @@ to a start-interval pair for swept values, and from frequency to phase increment
 
 This is a translation from human to hardware, so the output is not intended to
 be particularly human-readable, however the mapping should be readable.
+
+If you're here looking for bit scalings to close the loop on total system scale/gain,
+arbitrary shifts by a number of bits are commented next to the entry in the mapping dictionary,
+otherwise scale_and_convert does the work. _millivolts_to_counts scales by 8.191, and float_to_fix
+left shifts the integer by 16 bits, and represents the fractional portion as the remaining 16 bits.
+Mathematically, kind of like a 16 bit left shift, but with some truncation/quantisation.
 """
 
 from float_converter import NumpyFloatToFixConverter
@@ -40,9 +46,11 @@ _CBC_input_orders = {1:1,
 _polynomial_targets = {'displacement': 0,
                      'velocity': 1}
 
+# Map "continuous mode" onto binary toggle on fabric
 _continuous_modes = {True: 1,
                      False: 0}
 
+# Map "sampling rate" onto binary toggle on fabric
 _fast_modes = {'fast': 1,
                'slow': 0}
 
@@ -319,7 +327,7 @@ _CH1_mappings = {
         "CH1_settings": (channel_settings_to_byte, ("mode",
                                                     "input_channel")),
         "Parameter_A": (freq_to_phase, ("frequency_start",)),
-        "Parameter_B": (scale_and_convert, (_millivolts_to_counts, "linear_amplitude_start",)),
+        "Parameter_B": (scale_and_convert, (_millivolts_to_counts, "linear_amplitude_start",)), 
         "Parameter_C": (scale_and_convert, (_millivolts_to_counts, "offset_start")),
         "Parameter_D": 0,
         "Parameter_E": 0,
@@ -366,13 +374,13 @@ _CH1_mappings = {
     "cubic": {
         "CH1_settings": (channel_settings_to_byte, ("mode",
                                                     "input_channel")),
-        "Parameter_A": (scale_and_convert, (1/512,
+        "Parameter_A": (scale_and_convert, (1/512,          # << 9 bits
                                             'linear_amplitude_start',
                                             _float_to_fix)),
-        "Parameter_B": (scale_and_convert, (1/(64*0.98631), # 0.987 is a measured calibration constant
+        "Parameter_B": (scale_and_convert, (1/(64),           # << 6 bits
                                             'quadratic_amplitude_start',
                                             _float_to_fix)),
-        "Parameter_C": (scale_and_convert, (1/(64*0.96659), # 0.967 is a measured calibration constant
+        "Parameter_C": (scale_and_convert, (1/(64),          # << 6 bits
                                             'cubic_amplitude_start',
                                             _float_to_fix)),
         "Parameter_D": 0,
@@ -474,13 +482,13 @@ _CH2_mappings = {
     "cubic": {
         "CH2_settings": (channel_settings_to_byte, ("mode",
                                                     "input_channel")),
-        "Parameter_G": (scale_and_convert, (1/512,
+        "Parameter_G": (scale_and_convert, (1/512,                    # << 9  bits
                                             'linear_amplitude_start',
                                             _float_to_fix)),
-        "Parameter_H": (scale_and_convert, (1/(64*0.98631), # 0.987 is a measured calibration constant
+        "Parameter_H": (scale_and_convert, (1/(64),                    # << 6 bits
                                             'quadratic_amplitude_start',
                                             _float_to_fix)),
-        "Parameter_I": (scale_and_convert, (1/(64*0.96659), # 0.967 is a measured calibration constant
+        "Parameter_I": (scale_and_convert, (1/(64),                    # << 6 bits
                                             'cubic_amplitude_start',
                                             _float_to_fix)),
         "Parameter_J": 0,
@@ -534,26 +542,22 @@ _CBC_mappings = {
     "CH1_settings": (channel_settings_for_CBC, (0,)), # CBC is toggled by the 4-bits which represent CH1's mode. 
                           # Turning channels 'off' should turn CBC on (by design, this 
                           # makes sense to me), but I could be persuaded otherwise.
-                          # therefore, to tur CBC on, ew need to turn channels off in
+                          # therefore, to turn CBC on, we need to turn channels off in
                           # this mapping. This doesn't make sense, open to an alternative
                           # strategy.
     "CH2_settings": (channel_settings_for_CBC, (0,)),
+    
     "CBC_settings": (CBC_settings_to_byte, ("input_order",
                                             "polynomial_target")),
     
     
-    "Parameter_A": (_float_to_fix, ('reference_amplitude_start',)),
-    
-    # Copy-paste setting from CH frequency_sweep mode. Didn't work
-    # "Parameter_A": (scale_and_convert, (_millivolts_to_counts, "reference_amplitude_start")),
-    
+    "Parameter_A": (_float_to_fix, ('reference_amplitude_start',)), 
     
     "Parameter_B": (interval_if_sweep, ("reference_amplitude_start",
                                         "reference_amplitude_stop",
                                         "reference_amplitude_sweep",
                                         "duration",
-                                        _float_to_fix)), #this may need to be multiplied up from 1000 max to ADC_max
-    
+                                        _float_to_fix)), 
     
     "Parameter_C": (freq_to_phase, ("frequency_start", )),
     "Parameter_D": (interval_if_sweep, ("frequency_start",
@@ -562,50 +566,47 @@ _CBC_mappings = {
                                           "duration",
                                           freq_to_phase)),
     
-    
     "Parameter_E": (_float_to_fix, ("proportional_gain",)),
+    
     "Parameter_F": (_float_to_fix, ("derivative_gain",)),
-    "Parameter_G": (scale_and_convert, (1/(64*0.96659), # 0.967 is a measured calibration constant
+    
+    "Parameter_G": (scale_and_convert, (1/(64),                     # >> 6 bits
                                         'cubic_amplitude_start',
                                         _float_to_fix)),
+    
     "Parameter_H": (interval_if_sweep, ("cubic_amplitude_start",
                                         "cubic_amplitude_stop",
                                         "cubic_amplitude_sweep",
                                         "duration",
                                         partial(scale_and_convert,
-                                                1/(64*0.96659),
+                                                1/(64),                     # >> 6 bits
                                                 conversion=_float_to_fix))),
-    "Parameter_I":(scale_and_convert, (1/(64*0.98631), # 0.987 is a measured calibration constant
+    
+    "Parameter_I":(scale_and_convert, (1/(64),                              # >> 6 bits
                                         'quadratic_amplitude_start',
                                         _float_to_fix)),
+    
     "Parameter_J": (interval_if_sweep, ("quadratic_amplitude_start",
                                         "quadratic_amplitude_stop",
                                         "quadratic_amplitude_sweep",
                                         "duration",
                                         partial(scale_and_convert,
-                                                1/(64*0.98631),
+                                                1/(64),                     # >> 6 bits
                                                  conversion=_float_to_fix))),
-    "Parameter_K": (scale_and_convert, (1/512, 
+    "Parameter_K": (scale_and_convert, (1/512,                      # >> 9 bits
                                         'linear_amplitude_start',
                                         _float_to_fix)),
+    
     "Parameter_L": (interval_if_sweep, ("linear_amplitude_start",
                                         "linear_amplitude_stop",
                                         "linear_amplitude_sweep",
                                         "duration",
                                         partial(scale_and_convert,
-                                                1/512,
+                                                1/512,                     # << 9 bits
                                                 conversion=_float_to_fix))),
     
-    # Copy-paste settings from CH linear_feedback mode. Didn't work.
-    # "Parameter_K": (_float_to_fix, ("linear_amplitude_start",)),
-    # "Parameter_L": (interval_if_sweep, ("linear_amplitude_start",
-    #                                     "linear_amplitude_stop",
-    #                                     "linear_amplitude_sweep",
-    #                                     "duration",
-    #                                     _float_to_fix)),
-    
-    
     "Parameter_M": (scale_and_convert, (_millivolts_to_counts, 'offset_start')),
+    
     "Parameter_N": (interval_if_sweep, ("offset_start",
                                         "offset_stop",
                                         "offset_sweep",

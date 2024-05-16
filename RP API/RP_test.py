@@ -41,17 +41,17 @@ import logging
 logging.getLogger("matplotlib").setLevel(logging.WARNING)
 
 
-default_CH1_example = {"mode": 'linear_feedback',
+default_CH1_example = {"mode": 'frequency_sweep',
                        "input_channel": 1,
-                       "frequency_start": 0,           # in Hz
-                       "frequency_stop": 0,             # in Hz
-                       "frequency_sweep": False,
-                       "linear_amplitude_start": 0,
+                       "frequency_start": 1,           # in Hz
+                       "frequency_stop": 100,             # in Hz
+                       "frequency_sweep": True,
+                       "linear_amplitude_start": 100,
                        "linear_amplitude_stop": 0,
                        "linear_amplitude_sweep": False,
-                       "offset_start": -1000,        # mV
-                       "offset_stop": 1000,        # mV
-                       "offset_sweep": True,
+                       "offset_start": 100,        # mV
+                       "offset_stop": 0,        # mV
+                       "offset_sweep": False,
                        "cubic_amplitude_start": 0,  
                        "cubic_amplitude_stop": 0,
                        "cubic_amplitude_sweep": False,
@@ -61,15 +61,15 @@ default_CH1_example = {"mode": 'linear_feedback',
                        "duration": 1.0
                        }
 
-default_CH2_example = {"mode": 'cubic',
+default_CH2_example = {"mode": 'frequency_sweep',
                        "input_channel": 2,
-                       "frequency_start": 0,
-                       "frequency_stop": 0,
-                       "frequency_sweep": False,
-                       "linear_amplitude_start": 1,
+                       "frequency_start": 100,
+                       "frequency_stop": 1000,
+                       "frequency_sweep": True,
+                       "linear_amplitude_start": 1000,
                        "linear_amplitude_stop": 0,
                        "linear_amplitude_sweep": False,
-                       "offset_start": 0,
+                       "offset_start": 100,
                        "offset_stop": 0,
                        "offset_sweep": False,
                        "cubic_amplitude_start": 0,
@@ -81,18 +81,18 @@ default_CH2_example = {"mode": 'cubic',
                        "duration": 1.0
                        }
 
-default_CBC_example = {"CBC_enabled": True,
-                       "input_order": 1, # The channel which displacement goes into
+default_CBC_example = {"CBC_enabled": False,
+                       "input_order": 1 , # The channel which displacement goes into
                        "polynomial_target": 'displacement',
-                       "proportional_gain":0.01,
+                       "proportional_gain": 0,
                        "derivative_gain": 0,
-                       "reference_amplitude_start": 1,
+                       "reference_amplitude_start": 0,          # Value in [0, 1] depicicting the proportion of the reference amplitude
                        "reference_amplitude_stop": 0,
                        "reference_amplitude_sweep": False,
-                       "frequency_start": 100,
+                       "frequency_start": 0,
                        "frequency_stop": 0,
                        "frequency_sweep": False,
-                       "linear_amplitude_start":1,
+                       "linear_amplitude_start": -10,          # Representing mV/units
                        "linear_amplitude_stop": 0,
                        "linear_amplitude_sweep": False,
                        "quadratic_amplitude_start": 0,
@@ -101,10 +101,10 @@ default_CBC_example = {"CBC_enabled": True,
                        "cubic_amplitude_start": 0,
                        "cubic_amplitude_stop": 0,
                        "cubic_amplitude_sweep": False,
-                       "offset_start": 0,
+                       "offset_start": 900,                     # Value in [-1000, 1000], representing mV output offset
                        "offset_stop": 0,
-                       "offset_sweep": False,
-                       "duration": 0.1}
+                       "offset_sweep": True,
+                       "duration": 0.5}
 
 # default_config =    {"CBC_enabled": True,
 #                        "input_order": 1,
@@ -148,15 +148,16 @@ if __name__ == '__main__':
     
     # RP.choose_output("CBC")
     # RP.choose_CBC_input_order("displacement", "none")
-    RP.set_duration(0.1)
+    RP.set_duration(1)
     # RP.print_config("CBC")
     
     RP.update_FPGA_settings()
-    RP.start_record()
+    # RP.start_record(savename="Bug8_2")
+    RP.start_record()         # Run this if you don't care about renaming filename
     # RP.close_recording()
     
     RP.PlotRecording()
-    
+
     
     
     
