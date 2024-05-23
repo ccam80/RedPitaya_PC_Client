@@ -167,7 +167,7 @@ class Window(QtWidgets.QMainWindow):
             # Mode dependent parameter calculation
             
             if self.ui.Fixed_Frequency.isChecked():
-                if float(self.ui.inputData1.text()) <= 62500000 and int(self.ui.inputData1.text()) > 0:
+                if float(self.ui.inputData1.text()) <= 500000 and int(self.ui.inputData1.text()) > 0:
                     self.FPGA_config["param_a"] = int(float(self.ui.inputData1.text())/ 125.0e6 * (1<<30) + 0.5) #calculate fixed phase
                 else:
                     logging.debug("Value out of Range")
@@ -193,7 +193,7 @@ class Window(QtWidgets.QMainWindow):
 
                 
             if self.ui.Frequency_Sweep.isChecked():
-                if int(self.ui.inputData1.text()) <= 62500000 and int(self.ui.inputData1.text()) > 0 and int(self.ui.inputData2.text()) <= 62500000 and int(self.ui.inputData2.text()) > 0:
+                if int(self.ui.inputData1.text()) <= 1000000 and int(self.ui.inputData1.text()) > 0 and int(self.ui.inputData2.text()) <= 1000000 and int(self.ui.inputData2.text()) > 0:
                     start_phase = float(self.ui.inputData1.text())/ 125.0e6 * (1<<30) + 0.5 #calculate start phase
                     stop_phase = float(self.ui.inputData2.text())/ 125.0e6 * (1<<30) + 0.5 #calculate stop phase
                     phase_span = stop_phase - start_phase
@@ -278,7 +278,7 @@ class Window(QtWidgets.QMainWindow):
                 else:
                     logging.debug("Value out of Range")
                     self.FPGA_config["param_c"] = 0
-                if float(self.ui.inputData4.text()) <= 62500000 and float(self.ui.inputData4.text()) > 0: 
+                if float(self.ui.inputData4.text()) <= 1000000 and float(self.ui.inputData4.text()) > 0: 
                     self.FPGA_config["param_d"] = int(self.ui.inputData4.text())
                     #[63:10] 2048|0
                     #[63:9] 1024|0
@@ -301,7 +301,7 @@ class Window(QtWidgets.QMainWindow):
             if self.ui.A_x_plus_b.isChecked():
     
                                    
-                if float(self.ui.inputData1.text()) <= 32768 and float(self.ui.inputData1.text()) > -32768:
+                if float(self.ui.inputData1.text()) <= 20 and float(self.ui.inputData1.text()) > -20:
                     self.FPGA_config["param_b"] = self.FloatToFix(float(self.ui.inputData1.text()))
 
                 else:
@@ -371,7 +371,7 @@ class Window(QtWidgets.QMainWindow):
                 self.FPGA_config["param_h"] = 0
                     
             if self.ui.polynomial.isChecked():
-                if float(self.ui.inputData1.text()) <= 1000 and float(self.ui.inputData1.text()) > -1000: 
+                if float(self.ui.inputData1.text()) <= 10000 and float(self.ui.inputData1.text()) > 0: 
                     self.FPGA_config["param_e"] = int(float(self.ui.inputData1.text())*8.192*32768)
                 else:
                     logging.debug("Value out of Range")

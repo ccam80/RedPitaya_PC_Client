@@ -8,7 +8,7 @@ class MyFigureCanvas(FigureCanvas):
         FigureCanvas.__init__(self, mpl_fig.Figure())
         
         # Store a figure and ax
-        self.ax  = self.figure.subplots(2,1, sharex=True)
+        self.ax  = self.figure.subplots(2,1)
         self.line0, = self.ax[0].plot([], [],label='IN1')
         #self.line1, = self.ax[0].plot([], [],label='IN2')
         self.line2, = self.ax[1].plot([], [],label='OUT1')

@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = 'empty-project-type'
-recent_files = ['..\\..\\..\\..\\.spyder-py3\\temp.py', 'Main.py', 'socket_process.py', 'Canvas.py', 'UI.py', 'analysis_scratch.py', 'readme.md']
+recent_files = ['..\\..\\..\\..\\.spyder-py3\\temp.py', 'socket_process.py', 'Canvas.py', 'UI.py', 'readme.md', 'float_converter.py', 'Data\\sin_sweep_from_FPGA\\analysis.py', 'Main.py']
 
 [main]
 version = 0.2.0
