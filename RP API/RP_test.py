@@ -41,18 +41,20 @@ import logging
 logging.getLogger("matplotlib").setLevel(logging.WARNING)
 
 
+
+
 default_CH1_example = {"mode": 'frequency_sweep',
                        "input_channel": 1,
-                       "frequency_start": 1,           # in Hz
-                       "frequency_stop": 100,             # in Hz
+                       "frequency_start": 1,
+                       "frequency_stop": 100,
                        "frequency_sweep": True,
-                       "linear_amplitude_start": 100,
+                       "linear_amplitude_start": 1000,
                        "linear_amplitude_stop": 0,
                        "linear_amplitude_sweep": False,
-                       "offset_start": 100,        # mV
-                       "offset_stop": 0,        # mV
+                       "offset_start": 0,
+                       "offset_stop": 0,
                        "offset_sweep": False,
-                       "cubic_amplitude_start": 0,  
+                       "cubic_amplitude_start": 0,
                        "cubic_amplitude_stop": 0,
                        "cubic_amplitude_sweep": False,
                        "quadratic_amplitude_start": 0,
@@ -61,18 +63,18 @@ default_CH1_example = {"mode": 'frequency_sweep',
                        "duration": 1.0
                        }
 
-default_CH2_example = {"mode": 'frequency_sweep',
-                       "input_channel": 2,
-                       "frequency_start": 100,
-                       "frequency_stop": 1000,
-                       "frequency_sweep": True,
-                       "linear_amplitude_start": 1000,
+default_CH2_example = {"mode": 'linear_feedback',
+                       "input_channel": 1,
+                       "frequency_start": 0,           # in Hz
+                       "frequency_stop": 0,             # in Hz
+                       "frequency_sweep": False,
+                       "linear_amplitude_start": 10,
                        "linear_amplitude_stop": 0,
                        "linear_amplitude_sweep": False,
-                       "offset_start": 100,
-                       "offset_stop": 0,
+                       "offset_start": 500,        # mV
+                       "offset_stop": 0,        # mV
                        "offset_sweep": False,
-                       "cubic_amplitude_start": 0,
+                       "cubic_amplitude_start": 0,  
                        "cubic_amplitude_stop": 0,
                        "cubic_amplitude_sweep": False,
                        "quadratic_amplitude_start": 0,
@@ -136,7 +138,7 @@ default_CBC_example = {"CBC_enabled": False,
 default_system = {"continuous_output": False,
                   "ip_address": "192.168.1.3",
                   "sampling_rate": "slow",
-                  "duration": 5.0}
+                  "duration": 1.0}
 
 RP = RedPitaya(CH1_init=default_CH1_example,
                CH2_init=default_CH2_example,
@@ -144,11 +146,14 @@ RP = RedPitaya(CH1_init=default_CH1_example,
                system_init=default_system)
 
 if __name__ == '__main__':
+    
+    # f0=1, f1 = 10, T=4secs -> weird
+    
     # RP.start()
     
     # RP.choose_output("CBC")
     # RP.choose_CBC_input_order("displacement", "none")
-    RP.set_duration(1)
+    RP.set_duration(3)
     # RP.print_config("CBC")
     
     RP.update_FPGA_settings()
