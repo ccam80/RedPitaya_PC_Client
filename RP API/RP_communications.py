@@ -94,8 +94,15 @@ class RP_communications(object):
         values_to_pack = [self.config[key] for key in config_keys]
 
         config_send = struct.pack(format_, *values_to_pack)
-        logging.debug("Hex below is the config memory block for the FPGA:")
+        logging.debug("################ FPGA SIMULATION INFO #################")
+        logging.debug("Hex below is the config signal (S_AXIS_CFG) for CBC portion of the config bus:")
         logging.debug(config_send[4:][::-1].hex())
+        logging.debug("Hex below is the config signal (S_AXIS_CFG) for CH1:")
+        logging.debug(config_send[4:28][::-1].hex())
+        logging.debug("Hex below is the config signal (S_AXIS_CFG) for CH2:")
+        logging.debug(config_send[28:52][::-1].hex())
+        logging.debug("################ END FPGA NONSENSE #################")
+
         self.open_socket()
         if (self.initiate_transfer("config") < 1):
             logging.debug("Socket type (config) not acknowledged by server")
