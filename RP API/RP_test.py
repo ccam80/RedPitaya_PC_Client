@@ -46,7 +46,7 @@ logging.getLogger("matplotlib").setLevel(logging.WARNING)
 
 default_CH1_example = {"mode": 'artificial_nonlinearity_parametric',
                        "input_channel": 2,
-                       "frequency_start": 5,           # in Hz
+                       "frequency_start": 100e3,           # in Hz
                        "frequency_stop": 0,             # in Hz
                        "frequency_sweep": False,
                        "linear_amplitude_start": 1.0,
