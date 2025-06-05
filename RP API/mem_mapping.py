@@ -32,10 +32,11 @@ _channel_modes = {"fixed_frequency": 0,
                   "cubic": 6,
                   "linear_feedback": 4,
                   "white_noise": 5,
-                  "off": 7}
+                  "off": 15}
 
 # Map selected input channel onto binary toggle on fabric
-_channel_inputs = {1:1,
+_channel_inputs = {0:0, # Allow user to select "no input"
+                   1:1,
                    2:0}
 
 # Map CBC channel selection onto binary toggle on fabric
@@ -201,7 +202,7 @@ def channel_settings_for_CBC(ignored):
     channel_settings_for_CBC(42)
     >> 14
     """
-    return(int(_channel_modes['off'] << 1))
+    return(int(_channel_modes['CBC'] << 1))
     
 
 def CBC_settings_to_byte(input_order,
@@ -354,9 +355,15 @@ _CH1_mappings = {
                                                     "input_channel")),
         "Parameter_A": (scale_and_convert, (_millivolts_to_counts, "offset_start")),
         "Parameter_B": 0,
-        "Parameter_C": (scale_and_convert, (1, 'linear_amplitude_start')),
-        "Parameter_D": (scale_and_convert, (1, 'quadratic_amplitude_start')),
-        "Parameter_E": (scale_and_convert, (1, 'cubic_amplitude_start')),
+        "Parameter_C": (scale_and_convert, (1/64,          # << 9 bits
+                                            'linear_amplitude_start',
+                                            _float_to_fix)),
+        "Parameter_D": (scale_and_convert, (1/(64),           # << 6 bits
+                                            'quadratic_amplitude_start',
+                                            _float_to_fix)),
+        "Parameter_E": (scale_and_convert, (1/(64),          # << 6 bits
+                                            'cubic_amplitude_start',
+                                            _float_to_fix)),
         "Parameter_F": 0,
     },
 
@@ -365,9 +372,15 @@ _CH1_mappings = {
                                                     "input_channel")),
         "Parameter_A": (scale_and_convert, (_millivolts_to_counts, "offset_start")),
         "Parameter_B": 0,
-        "Parameter_C": (scale_and_convert, (1, 'linear_amplitude_start')),
-        "Parameter_D": (scale_and_convert, (1, 'quadratic_amplitude_start')),
-        "Parameter_E": (scale_and_convert, (1, 'cubic_amplitude_start')),
+        "Parameter_C": (scale_and_convert, (1/64,          # << 9 bits
+                                            'linear_amplitude_start',
+                                            _float_to_fix)),
+        "Parameter_D": (scale_and_convert, (1/(64),           # << 6 bits
+                                            'quadratic_amplitude_start',
+                                            _float_to_fix)),
+        "Parameter_E": (scale_and_convert, (1/(64),          # << 6 bits
+                                            'cubic_amplitude_start',
+                                            _float_to_fix)),
         "Parameter_F": (freq_to_phase, ('frequency_start', )),
     },
 
@@ -456,15 +469,20 @@ _CH2_mappings = {
         "Parameter_K": 0,
         "Parameter_L": 0,
     },
-
     "artificial_nonlinearity": {
         "CH2_settings": (channel_settings_to_byte, ("mode",
                                                     "input_channel")),
         "Parameter_G": (scale_and_convert, (_millivolts_to_counts, "offset_start")),
         "Parameter_H": 0,
-        "Parameter_I": (scale_and_convert, (1, 'linear_amplitude_start')),
-        "Parameter_J": (scale_and_convert, (1, 'quadratic_amplitude_start')),
-        "Parameter_K": (scale_and_convert, (1, 'cubic_amplitude_start')),
+        "Parameter_I": (scale_and_convert, (1/64,          # << 9 bits
+                                            'linear_amplitude_start',
+                                            _float_to_fix)),
+        "Parameter_J": (scale_and_convert, (1/(64),           # << 6 bits
+                                            'quadratic_amplitude_start',
+                                            _float_to_fix)),
+        "Parameter_K": (scale_and_convert, (1/(64),          # << 6 bits
+                                            'cubic_amplitude_start',
+                                            _float_to_fix)),
         "Parameter_L": 0,
     },
 
@@ -473,9 +491,15 @@ _CH2_mappings = {
                                                     "input_channel")),
         "Parameter_G": (scale_and_convert, (_millivolts_to_counts, "offset_start")),
         "Parameter_H": 0,
-        "Parameter_I": (scale_and_convert, (1, 'linear_amplitude_start')),
-        "Parameter_J": (scale_and_convert, (1, 'quadratic_amplitude_start')),
-        "Parameter_K": (scale_and_convert, (1, 'cubic_amplitude_start')),
+        "Parameter_I": (scale_and_convert, (1/64,          # << 9 bits
+                                            'linear_amplitude_start',
+                                            _float_to_fix)),
+        "Parameter_J": (scale_and_convert, (1/(64),           # << 6 bits
+                                            'quadratic_amplitude_start',
+                                            _float_to_fix)),
+        "Parameter_K": (scale_and_convert, (1/(64),          # << 6 bits
+                                            'cubic_amplitude_start',
+                                            _float_to_fix)),
         "Parameter_L": (freq_to_phase, ('frequency_start', )),
     },
 

@@ -75,11 +75,11 @@ _limits = {"mode": _channel_modes,
            "quadratic_amplitude_start": [-1000, 1000],
            "quadratic_amplitude_stop": [-1000, 1000],
            "quadratic_amplitude_sweep": [0, 1],
-           "linear_amplitude_start": [-1000, 1000],
+           "linear_amplitude_start": [-32768, 32767],
            "linear_amplitude_stop": [-1000, 1000],
            "linear_amplitude_sweep": [0, 1],
            "offset_start": [-1000, 1000],
-           "offset_stop": [1000, -1000],
+           "offset_stop": [-1000, 1000],
            "offset_sweep": [0, 1],
            "duration": [0, 60]
            }
