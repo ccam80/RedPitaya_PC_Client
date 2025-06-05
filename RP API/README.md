@@ -36,18 +36,6 @@ for val in range(10):
 
 ## RedPitaya.py
 
-```python
-import foobar
-
-# returns 'words'
-foobar.pluralize('word')
-
-# returns 'geese'
-foobar.pluralize('goose')
-
-# returns 'phenomenon'
-foobar.singularize('phenomena')
-```
 
 ## system_config.py
 
