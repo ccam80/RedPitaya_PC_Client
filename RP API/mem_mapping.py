@@ -371,7 +371,11 @@ _CH1_mappings = {
         "CH1_settings": (channel_settings_to_byte, ("mode",
                                                     "input_channel")),
         "Parameter_A": (scale_and_convert, (_millivolts_to_counts, "offset_start")),
-        "Parameter_B": 0,
+        "Parameter_B": (interval_if_sweep, ("frequency_start",
+                                             "frequency_stop",
+                                             "frequency_sweep",
+                                             "duration",
+                                             freq_to_phase)),
         "Parameter_C": (scale_and_convert, (1/64,          # << 9 bits
                                             'linear_amplitude_start',
                                             _float_to_fix)),
@@ -474,7 +478,7 @@ _CH2_mappings = {
                                                     "input_channel")),
         "Parameter_G": (scale_and_convert, (_millivolts_to_counts, "offset_start")),
         "Parameter_H": 0,
-        "Parameter_I": (scale_and_convert, (1/64,          # << 9 bits
+        "Parameter_I": (scale_and_convert, (1/64,          # << 6 bits
                                             'linear_amplitude_start',
                                             _float_to_fix)),
         "Parameter_J": (scale_and_convert, (1/(64),           # << 6 bits
@@ -490,8 +494,12 @@ _CH2_mappings = {
         "CH2_settings": (channel_settings_to_byte, ("mode",
                                                     "input_channel")),
         "Parameter_G": (scale_and_convert, (_millivolts_to_counts, "offset_start")),
-        "Parameter_H": 0,
-        "Parameter_I": (scale_and_convert, (1/64,          # << 9 bits
+        "Parameter_H": (interval_if_sweep, ("frequency_start",
+                                             "frequency_stop",
+                                             "frequency_sweep",
+                                             "duration",
+                                             freq_to_phase)),
+        "Parameter_I": (scale_and_convert, (1/64,          # << 6 bits
                                             'linear_amplitude_start',
                                             _float_to_fix)),
         "Parameter_J": (scale_and_convert, (1/(64),           # << 6 bits

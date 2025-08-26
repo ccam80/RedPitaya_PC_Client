@@ -476,6 +476,7 @@ class RedPitaya():
         if self.CBC.config.CBC_enabled:
             update_FPGA_channel('CBC', self.CBC.config, self.system.comms.config)
         else:
+            
             update_FPGA_channel(1, self.CH1.config, self.system.comms.config)
             update_FPGA_channel(2, self.CH2.config, self.system.comms.config)
             
@@ -704,25 +705,65 @@ class RedPitaya():
         self.recording = recording
         
         
-    def PlotRecording(self):
-        recording = self.recording
-        recording = np.transpose([recording['in1'], recording['in2'], recording['out1'], recording['out2']])
-        fig, ax = plt.subplots(4,1, sharex=True, layout='constrained')
-        ax = ax.ravel()
+    def PlotRecording(self, channel_params=None):
         
-        
-        time = np.linspace(0, self.system.config.duration, len(recording[:,0]))
-        # Nbits = 2**12
-        Nbits = 1 # counts are more useful for debugging
-        
-        ax[0].plot(time, recording[:,0]/Nbits, label="Input 1")
-        ax[0].set_title("In1")
-        ax[1].plot(time, recording[:,1]/Nbits, label="Input 2")
-        ax[1].set_title("In2")
-        ax[2].plot(time, recording[:,2]/Nbits, label="Input 3")
-        ax[2].set_title("Out1")
-        ax[3].plot(time, recording[:,3]/Nbits, label="Input 4")
-        ax[3].set_title("Out2")
+        if channel_params is None:
+            recording = self.recording
+            recording = np.transpose([recording['in1'], recording['in2'], recording['out1'], recording['out2']])
+            fig, ax = plt.subplots(4,1, sharex=True, layout='constrained')
+            ax = ax.ravel()
+            
+            
+            time = np.linspace(0, self.system.config.duration, len(recording[:,0]))
+            # Nbits = 2**12
+            Nbits = 1 # counts are more useful for debugging
+            
+            ax[0].plot(time, recording[:,0]/Nbits, label="Input 1")
+            ax[0].set_title("In1")
+            ax[1].plot(time, recording[:,1]/Nbits, label="Input 2")
+            ax[1].set_title("In2")
+            ax[2].plot(time, recording[:,2]/Nbits, label="Input 3")
+            ax[2].set_title("Out1")
+            ax[3].plot(time, recording[:,3]/Nbits, label="Input 4")
+            ax[3].set_title("Out2")
              
+        else:
+            rec  = self.recording
+            data = np.transpose([rec['in1'], rec['in2'], rec['out1'], rec['out2']])
+            time = np.linspace(0, self.system.config.duration, len(data[:,0]))
+            
+            fig = plt.figure(figsize=(10, 8), constrained_layout=True)
+            gs  = fig.add_gridspec(nrows=4, ncols=2,
+                                   width_ratios=[3, 1],  
+                                   wspace=0.05)
+            
+            axes = []
+            for i in range(4):
+                if i == 0:
+                    ax = fig.add_subplot(gs[i, 0])
+                else:
+                    ax = fig.add_subplot(gs[i, 0], sharex=axes[0])
+                axes.append(ax)
+            
+            labels = ["In1", "In2", "Out1", "Out2"]
+            for ax, col, lbl in zip(axes, range(4), labels):
+                ax.plot(time, data[:, col])
+                ax.set_title(lbl)
+                if col == 3:
+                    ax.set_xlabel("Time (s)")
+            
+            for ax in axes[:-1]:
+                ax.tick_params(labelbottom=False)
+            
+            if channel_params is not None:
+                text_ax = fig.add_subplot(gs[:, 1])
+                text_ax.axis("off")
+                param_text = "\n".join(f"{k}: {v}" for k, v in channel_params.items())
+                text_ax.text(0, 0.5, param_text, va="center", ha="left",
+                             family="monospace", fontsize=9)
+            
+            plt.show()
+
+         
         
     
